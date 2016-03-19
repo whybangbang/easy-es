@@ -51,7 +51,7 @@ filter:
      	example:
 	     	"exists" : { "field" : "user" }
 
-	 term_filter:
+	term_filter:
 	 	field:term
 	 	child:{}
 	 		field:user(用户填写)
