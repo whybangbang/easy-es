@@ -3,7 +3,6 @@ filter:
 		field:and
 		child:[可以选择多个filter]
 		example:
-			"filter" : {
             "and" : [
                 {
                     "range" : {
@@ -17,7 +16,6 @@ filter:
                     "term" : { "title" : "iphone" }
                 }
             ]
-        }
 
     bool_filter(这个比较难搞):
     	field:bool
@@ -56,3 +54,5 @@ filter:
 	 	child:{}
 	 		field:user(用户填写)
 	 		value:why(用户填写)
+	 	example:
+	 		"term" : { "user" : "kimchy"}
