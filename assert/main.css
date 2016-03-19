@@ -1,0 +1,38 @@
+.getstr{
+  border:0 !important;
+  outline: none;
+  color:#616161;
+  background-color: #e0f2f1;
+  height:400px;
+  font-size:12px;
+  line-height: 1.2;
+  overflow: hidden;
+}
+
+input.data-field{
+  padding:0.2em;
+  font-size: 0.9em;
+  width:6em;
+  height:1.4em;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #f5f5f5;
+  margin-bottom: 0.5em;
+}
+
+input.data-value{
+  padding:0.2em;
+  font-size: 0.9em;
+  width:6em;
+  height:1.4em;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #f5f5f5;
+  margin-bottom: 0.5em;
+}
+
+.data-item{
+  margin-left: 1em;
+}
+
+#app{
+  min-height: 100vh;;
+}
