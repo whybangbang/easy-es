@@ -1,0 +1,58 @@
+filter:
+	and_filter:
+		field:and
+		child:[可以选择多个filter]
+		example:
+			"filter" : {
+            "and" : [
+                {
+                    "range" : {
+                        "postDate" : {
+                            "from" : "2010-03-01",
+                            "to" : "2010-04-01"
+                        }
+                    }
+                },
+                {
+                    "term" : { "title" : "iphone" }
+                }
+            ]
+        }
+
+    bool_filter(这个比较难搞):
+    	field:bool
+    	value
+    	example:
+    		"bool" : {
+                "must" : {
+                    "term" : { "tag" : "wow" }
+                },
+                "must_not" : {
+                    "range" : {
+                        "age" : { "gte" : 10, "lt" : 20 }
+                    }
+                },
+                "should" : [
+                    {
+                        "term" : { "tag" : "sometag" }
+                    },
+                    {
+                        "term" : { "tag" : "sometagtag" }
+                    }
+                ]
+            }
+
+
+    exists_filter:
+    	field:exist
+     	child:{}
+     		field:field
+     		value:user(用户填写)
+     	example:
+	     	"exists" : { "field" : "user" }
+
+	 term_filter:
+	 	field:term
+	 	child:{}
+	 		field:user(用户填写)
+	 		value:why(用户填写)
