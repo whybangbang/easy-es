@@ -46,7 +46,7 @@
                 <ul v-show="choseChildShow" class="chose-child-box">
                     <li v-for="item in parts[model.extend]"
                         v-if="item.only!==1"
-                        
+
                         @click="extendChild(item)">
                         <a href="#!">{{item.field}}</a>
                     </li>
