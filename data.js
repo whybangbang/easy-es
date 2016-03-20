@@ -6,6 +6,7 @@ var data={
   open: true,
   extend:'es',
   root:true,
+  choose:true
 }
 var data2 = {
   field: 'Elasticsearch',

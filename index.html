@@ -154,7 +154,7 @@
         data: function () {
             return {
                 open: this.model.open ? this.model.open : false,
-                chooseChildShow:this.model.choose? true : false
+                chooseChildShow:!!this.model.choose
             }
         },
         computed: {

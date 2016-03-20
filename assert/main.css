@@ -33,10 +33,10 @@ input.data-value{
   margin-left: 1em;
 }
 
-.chose-child{
+.choose-child{
   position:relative;
 }
-.chose-child-box{
+.choose-child-box{
   position:absolute;
   top:0;
   left:0;
@@ -47,7 +47,7 @@ input.data-value{
   z-index:1000;
 }
 
-.chose-child-clear{
+.choose-child-clear{
   z-index:999;
   position:absolute;
   left:0;
@@ -57,7 +57,7 @@ input.data-value{
 
 }
 
-.chose-child-box li{
+.choose-child-box li{
   padding: 0.5em 1em;
 }
 #app{
