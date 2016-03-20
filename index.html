@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+
+
+        .bold {
+            /*font-weight: bold;*/
+        }
+
+    </style>
+    <script src="http://cdn.bootcss.com/vue/1.0.17/vue.js"></script>
+    <script src="http://cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
+
+    <link href="assert/materialize/css/materialize.min.css" rel="stylesheet">
+    <link href="assert/main.css" rel="stylesheet">
+
+    <script src="assert/materialize/js/materialize.min.js"></script>
+    <script src="help.js"></script>
+</head>
+<body>
+<!-- item template -->
+<script type="text/x-template" id="item-template">
+    <li>
+        <div :class="{bold: isFolder}">
+            <!--有子项,显示+--><span @click="toggleOpen" v-if="isFolder">+</span>
+            <!-- 无子项，补白--><span @click="toggleOpen" v-else>&nbsp;&nbsp;</span>
+
+            <!--field--><input type="text" v-model="model.field" class="data-field" placeholder="field">
+
+            <!--value--><span v-if="!model.child  && !model.extend">: <input type="text" v-model="model.value" class="data-value" placeholder="value"></span>
+
+            <!--有括展项--><span v-if=" model.extend" @click="extendChild">+</span>
+
+        </div>
+        <ul v-show="open" v-if="isFolder">
+            <item
+                    class="data-item"
+                    v-for="model in model.child"
+                    :model="model">
+            </item>
+            <li @click="addChild" v-show="false">+</li>
+        </ul>
+    </li>
+</script>
+
+<!--extend template -->
+<script type="text/x-template" id="extend-template">
+    <div>
+        <ul>
+11111111111111
+        </ul>
+    </div>
+</script>
+<! -- nav -->
+<nav>
+    <div class="nav-wrapper">
+        <div class="col s12">
+            <a href="#!" class="brand-logo">&nbsp;&nbsp;ES Query</a>
+            <ul class="right hide-on-med-and-down">
+                <li><a href="#">Document</a></li>
+                <li><a href="https://github.com/whybangbang/es_query_dsl_mindmanger">Github</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- app -->
+<div class="row" id="app">
+    <extend :model="extend"></extend>
+    <div class="col s6">
+        <ul>
+            <item
+                    class="item"
+                    :model="treeData">123
+            </item>
+        </ul>
+    </div>
+    <div class="col s6">
+        <p>Write DSL/Elasticsearch quickly! 让ES查询语句不发指！</p>
+        <textarea class="getstr">{{{getStr}}}</textarea>
+    </div>
+</div>
+
+<!-- footer -->
+<footer class="page-footer">
+    <div class="container">
+        <div class="row">
+            <div class="col l6 s12">
+                <h5 class="white-text">Footer Content</h5>
+                <p class="grey-text text-lighten-4">You can use rows and columns here to organize your footer content.</p>
+            </div>
+            <div class="col l4 offset-l2 s12">
+                <h5 class="white-text">Links</h5>
+                <ul>
+                    <li><a class="grey-text text-lighten-3" href="http://es.xiaoleilu.com/">Elasticsearch 权威指南</a></li>
+                    <li><a class="grey-text text-lighten-3" href="#!">Link 2</a></li>
+                    <li><a class="grey-text text-lighten-3" href="#!">Link 3</a></li>
+                    <li><a class="grey-text text-lighten-3" href="#!">Link 4</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="footer-copyright">
+        <div class="container">
+            © 2016 Copyright Text
+            <a class="grey-text text-lighten-4 right" href="#!">More Links</a>
+        </div>
+    </div>
+</footer>
+
+
+<script>
+    /*
+     编写示例：
+     field str 字键名
+     value 值，根据用户填的可自动生成，也可提供默认值
+     extend 可扩展，默认为false不可扩展，为ture为随意扩展，为filter时为term、range、exist、bool、and扩展
+     open 展开，默认为false，为true时默认为展开的
+
+     概念辨析：
+     extend：增加子项
+     add：增同级项目
+     open： 展开显示
+     */
+    //filter 可组合部分
+    var partFilter=[
+        {
+            field: 'term',
+            child: [
+                {field: ''}
+            ]
+        },
+        {
+            field:'exist',
+            child:[
+                {field:'field'}
+
+            ]
+        },
+        {
+            field: 'range',
+            child: [
+                {
+                    field: '',
+                    open: true,
+                    child: [
+                        {field: 'from'},
+                        {field: 'to'}
+                    ]
+                }
+            ]
+        },
+        {
+            field: 'bool',
+            child: [
+                {
+                    field: 'must',
+                    child: [
+                        {field: ''}
+                    ]
+                },
+                {
+                    field: 'must_not',
+                    child: [
+                        {field: ''}
+                    ]
+                },
+                {
+                    field: 'should',
+                    child: [
+                        {field: ''}
+                    ]
+                },
+
+            ]
+        },
+        {
+            field: 'and',
+            child: [
+                {
+                    field: 'term',
+                    child: []
+                }
+            ]
+        }
+    ];
+    // 整体框架
+    var data = {
+        field: 'Elasticsearch',
+        open: 'true',
+        child: [
+            {
+                field: 'sort',
+            },
+            {
+                field: 'filter',
+                extend:'filter',
+            },
+
+            {
+                field: 'query',
+                child: [
+                    {
+                        field: 'match',
+                        child: [
+                            {field: ''}
+                        ]
+                    }
+                ]
+            },
+            {
+                field: 'form',
+            },
+            {
+                field: 'size',
+            }
+
+        ]
+    }
+    Vue.config.debug = true
+    // define the item component
+    Vue.component('item', {
+        template: '#item-template',
+        props: {
+            model: Object
+        },
+        data: function () {
+            return {
+                open: this.model.open,
+                hide: this.model.hide
+            }
+        },
+        computed: {
+            isFolder: function () {
+                return this.model.child &&
+                        this.model.child.length
+            },
+
+        },
+        methods: {
+            toggleOpen: function () {
+                if (this.isFolder) {
+                    this.open = !this.open
+                }
+            },
+            extendChild: function () {
+                if (!this.isFolder) {
+                    Vue.set(this.model, 'child', [])
+                    this.addChild(this.model.extend);
+                }else{
+                    this.addChild(this.model.extend);
+                }
+            },
+            addChild: function (extend) {
+                this.open=true;
+                this.model.child.push({
+                    field: ''
+                })
+            },
+            hideItem: function () {
+                alert(1)
+                this.hide = true;
+            }
+        }
+    });
+
+    // boot up the demo
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            treeData: data
+        },
+        computed: {
+            getStr: function () {
+                var new_obj={};
+
+               return json_formate(this.obj_parser(new_obj,this.treeData));
+               //return json_formate(this.treeData);
+            }
+        },
+        methods: {
+            //转译json
+            obj_parser: function (new_obj, obj){
+                if(obj.hasOwnProperty('child')){
+
+                    var tmp={};
+
+                    for(var key in obj['child']){
+                        new_obj[obj['field']]= this.obj_parser(tmp,obj['child'][key]);
+                    }
+                }else{
+
+                    new_obj[obj['field']] = obj['value'];
+                    return new_obj
+
+                }
+                return new_obj
+            }
+
+
+        },
+        cc:function(){
+            return 4;
+        }
+    })
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <script>
+        data= {
+            "field": "es",
+            "open": "true",
+            "child": [
+                {
+                    "field": "sort",
+                    "unextend": true
+                },
+                {
+                    "field": "filter",
+                    "child": [
+                        {
+                            "field": "term",
+                            "child": [
+                                {
+                                    "field": ""
+                                }
+                            ]
+                        },
+                        {
+                            "field": "range",
+                            "child": [
+                                {
+                                    "field": ""
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "field": "query",
+                    "child": [
+                        {
+                            "field": "match",
+                            "child": [
+                                {
+                                    "field": ""
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "field": "form",
+                    "unextend": true
+                },
+                {
+                    "field": "size",
+                    "unextend": true
+                }
+            ]
+        }
+
+
+        function obj_parser(new_obj,obj){
+            if(obj.hasOwnProperty('child')){
+
+                var tmp={};
+
+                for(var key in obj['child']){
+                    new_obj[obj['field']]= obj_parser(tmp,obj['child'][key]);
+                }
+            }else{
+
+                    new_obj[obj['field']] = obj['value'];
+                    return new_obj
+
+            }
+            return new_obj
+        }
+
+        function parser(){
+            var new_obj={};
+            return obj_parser(new_obj,data);
+        }
+
+        a=parser()
+
+
+    </script>
+
+</body>
+</html>
