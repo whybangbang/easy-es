@@ -43,9 +43,10 @@
 
 
                 <!-- Dropdown Structure -->
-                <ul v-show="choseChildShow || model.root" class="chose-child-box">
+                <ul v-show="choseChildShow" class="chose-child-box">
                     <li v-for="item in parts[model.extend]"
                         v-if="item.only!==1"
+                        
                         @click="extendChild(item)">
                         <a href="#!">{{item.field}}</a>
                     </li>
@@ -152,7 +153,7 @@
         data: function () {
             return {
                 open: this.model.open ? this.model.open : false,
-                choseChildShow:false
+                choseChildShow:this.model.root? true : false
             }
         },
         computed: {

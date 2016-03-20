@@ -10,13 +10,16 @@ var parts={
     {
       field: 'filter',
       extend:'filter',
+      only:true
     },
 
     {
       field: 'query',
+      only:true,
       child: [
         {
           field: 'match',
+          only:true,
           child: [
             {field: ''}
           ]
@@ -25,9 +28,11 @@ var parts={
     },
     {
       field: 'form',
+      only:true
     },
     {
       field: 'size',
+      only:true
     }
   ],
   'filter':[
