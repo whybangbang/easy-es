@@ -25,35 +25,41 @@
 <script type="text/x-template" id="item-template">
     <li>
         <div :class="{bold: isFolder}">
-            <!--有子项,显示+--><span @click="toggleOpen" v-if="isFolder">+</span>
+            <!--有子项,显示+--><span @click="toggleOpen" v-if="isFolder">{{open ? '-' : '+'}}</span>
             <!-- 无子项，补白--><span @click="toggleOpen" v-else>&nbsp;&nbsp;</span>
 
             <!--field--><input type="text" v-model="model.field" class="data-field" placeholder="field">
 
             <!--value--><span v-if="!model.child  && !model.extend">: <input type="text" v-model="model.value" class="data-value" placeholder="value"></span>
 
-            <!--有括展项--><span v-if=" model.extend" @click="extendChild">+</span>
+            <!--有括展项-->
+            <div v-if="model.extend" class="chose-child-clear" @click="hideChildShow"></div>
+            <span v-if="model.extend" class="chose-child">
+                <a  href='#' @click="showChoseChild" >+</a>
+
+                <!-- Dropdown Structure -->
+                <ul v-show="choseChildShow" class="chose-child-box">
+                    <li v-for="item in parts[model.extend]"
+                        @click="extendChild(item.field)">
+                        <a href="#!">{{item.field}}</a>
+                    </li>
+                </ul>
+
+            </span>
 
         </div>
         <ul v-show="open" v-if="isFolder">
             <item
                     class="data-item"
                     v-for="model in model.child"
-                    :model="model">
+                    :model="model"
+                    :parts="parts">
             </item>
             <li @click="addChild" v-show="false">+</li>
         </ul>
     </li>
 </script>
 
-<!--extend template -->
-<script type="text/x-template" id="extend-template">
-    <div>
-        <ul>
-11111111111111
-        </ul>
-    </div>
-</script>
 <! -- nav -->
 <nav>
     <div class="nav-wrapper">
@@ -68,13 +74,13 @@
 </nav>
 
 <!-- app -->
-<div class="row" id="app">
-    <extend :model="extend"></extend>
+<div class="row" id="app" >
     <div class="col s6">
         <ul>
             <item
                     class="item"
-                    :model="treeData">123
+                    :model="treeData"
+                    :parts="parts">
             </item>
         </ul>
     </div>
@@ -126,67 +132,65 @@
      open： 展开显示
      */
     //filter 可组合部分
-    var partFilter=[
-        {
-            field: 'term',
-            child: [
-                {field: ''}
-            ]
-        },
-        {
-            field:'exist',
-            child:[
-                {field:'field'}
+    var parts={
+        'filter':[
+            {
+                field: 'term',
+                child: [
+                    {field: ''}
+                ]
+            },
+            {
+                field:'exist',
+                child:[
+                    {field:'field'}
 
-            ]
-        },
-        {
-            field: 'range',
-            child: [
-                {
-                    field: '',
-                    open: true,
-                    child: [
-                        {field: 'from'},
-                        {field: 'to'}
-                    ]
-                }
-            ]
-        },
-        {
-            field: 'bool',
-            child: [
-                {
-                    field: 'must',
-                    child: [
-                        {field: ''}
-                    ]
-                },
-                {
-                    field: 'must_not',
-                    child: [
-                        {field: ''}
-                    ]
-                },
-                {
-                    field: 'should',
-                    child: [
-                        {field: ''}
-                    ]
-                },
+                ]
+            },
+            {
+                field: 'range',
+                child: [
+                    {
+                        field: '',
+                        open: true,
+                        child: [
+                            {field: 'from'},
+                            {field: 'to'}
+                        ]
+                    }
+                ]
+            },
+            {
+                field: 'bool',
+                extend:'bool'
+            },
+            {
+                field: 'and',
+                extend:'filter'
+            }
+        ],
+        'bool':[
+            {
+                field: 'must',
+                child: [
+                    {field: ''}
+                ]
+            },
+            {
+                field: 'must_not',
+                child: [
+                    {field: ''}
+                ]
+            },
+            {
+                field: 'should',
+                child: [
+                    {field: ''}
+                ]
+            },
+        ]
+    };
 
-            ]
-        },
-        {
-            field: 'and',
-            child: [
-                {
-                    field: 'term',
-                    child: []
-                }
-            ]
-        }
-    ];
     // 整体框架
     var data = {
         field: 'Elasticsearch',
@@ -224,13 +228,12 @@
     // define the item component
     Vue.component('item', {
         template: '#item-template',
-        props: {
-            model: Object
-        },
+        props: ['model','parts'],
         data: function () {
             return {
                 open: this.model.open,
-                hide: this.model.hide
+                hide: this.model.hide,
+                choseChildShow:false
             }
         },
         computed: {
@@ -243,22 +246,34 @@
         methods: {
             toggleOpen: function () {
                 if (this.isFolder) {
-                    this.open = !this.open
+                    this.open = !this.open;
                 }
             },
-            extendChild: function () {
+            showChoseChild:function(){
+                console.log(this.choseChildShow)
+              this.choseChildShow=true;
+            },
+            hideChildShow:function(){
+                this.choseChildShow=false;
+            },
+            extendChild: function (field) {
+                this.choseChildShow=false;
                 if (!this.isFolder) {
                     Vue.set(this.model, 'child', [])
-                    this.addChild(this.model.extend);
+                    this.addChild(this.model.extend,field);
                 }else{
-                    this.addChild(this.model.extend);
+                    this.addChild(this.model.extend,field);
                 }
             },
-            addChild: function (extend) {
-                this.open=true;
-                this.model.child.push({
-                    field: ''
-                })
+            addChild: function (extend,field) {
+                for(var i in this.parts[extend]){
+                    if(parts[extend][i]['field']==field){
+                        this.model.child.push(parts[extend][i]);
+                        this.open=true;
+                        Vue.set(this.model.child[this.model.child.length-1],'open',true) //显示为展开
+                    }
+                }
+
             },
             hideItem: function () {
                 alert(1)
@@ -271,7 +286,8 @@
     var vm = new Vue({
         el: '#app',
         data: {
-            treeData: data
+            treeData: data,
+            parts:parts,
         },
         computed: {
             getStr: function () {
