@@ -35,18 +35,17 @@
 
             <!--value--><span v-if="!model.child  && !model.extend">: <input type="text" v-model="model.value" class="data-value" placeholder="value"></span>
 
-            <span @click="delChild" v-if="!model.root">X</span>
+            <span @click="delChild" v-if="!model.undelete">X</span>
             <!--有括展项-->
             <div v-if="chooseChildShow" class="choose-child-clear" @click="hideChildShow"></div>
             <span v-if="model.extend" class="choose-child">
                 <a  href='#' @click="showchooseChild" >+</a>
 
 
-                <!-- Dropdown Structure -->
+                <!-- 下拉扩展项 -->
                 <ul v-show="chooseChildShow" class="choose-child-box">
                     <li v-for="item in parts[model.extend]"
-                        v-if="item.only!==1"
-
+                        v-show="!item.only"
                         @click="extendChild(item)">
                         <a href="#!">{{item.field}}</a>
                     </li>
@@ -135,6 +134,9 @@
      open 展开，默认为false，为true时默认为展开的
      root 是否为根元素，根元素不可删除
      choose 是否自动显示菜单 true为显示，false默认值
+     undelete 无法删除，默认为false可删除，为true可删除
+     group 组，用数字表明，同1组的在一个层下只能出现1次
+     array 下面为数组，默认为false不是数组，特殊为true
 
      概念辨析：
      extend：增加子项
@@ -191,12 +193,27 @@
                         this.open=true;
                         //显示为展开
                         this.model.child[this.model.child.length-1]['open']=true;
+
                         //only处理
-                        if(field.only){
-                            field.only=1
+                        if(field.group){
+
+
+
+                            if(this.model.field!='and'){ //判断是否可以为并
+                                console.log(this.model.field)
+                                for(var i in parts[extend]){
+                                    if(parts[extend][i].group===field.group){
+                                        Vue.set(parts[extend][i],'only',true)
+                                        //Vue.set(field,'onlyUse',true)//表示正在使用
+
+                                    }
+
+                                }
+                        }
                         }
                     }
                 }
+
 
             },
             delChild:function(){
@@ -205,16 +222,14 @@
                         this.$parent.model.child.splice(i,1)
 
                         //only处理
+                        //第1步，先取消onlyUse的标示
                         for(var i in parts[this.$parent.model.extend]){
-                            if(parts[this.$parent.model.extend][i]['field']===this.model.field){
-                                if(parts[this.$parent.model.extend][i]['only']==1){
-                                    console.log(1);
-                                    parts[this.$parent.model.extend][i]['only']=true;
-                                }
+                            if(parts[this.$parent.model.extend][i]['group']===this.model.group){
+                                parts[this.$parent.model.extend][i]['only']=false
+
                             }
-
-
                         }
+
 
                     }
                 }
