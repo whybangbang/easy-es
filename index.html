@@ -37,13 +37,13 @@
 
             <span @click="delChild" v-if="!model.root">X</span>
             <!--有括展项-->
-            <div v-if="choseChildShow" class="chose-child-clear" @click="hideChildShow"></div>
-            <span v-if="model.extend" class="chose-child">
-                <a  href='#' @click="showChoseChild" >+</a>
+            <div v-if="chooseChildShow" class="choose-child-clear" @click="hideChildShow"></div>
+            <span v-if="model.extend" class="choose-child">
+                <a  href='#' @click="showchooseChild" >+</a>
 
 
                 <!-- Dropdown Structure -->
-                <ul v-show="choseChildShow" class="chose-child-box">
+                <ul v-show="chooseChildShow" class="choose-child-box">
                     <li v-for="item in parts[model.extend]"
                         v-if="item.only!==1"
 
@@ -134,6 +134,7 @@
      extend 可扩展，默认为false不可扩展，为ture为随意扩展，为filter时为term、range、exist、bool、and扩展
      open 展开，默认为false，为true时默认为展开的
      root 是否为根元素，根元素不可删除
+     choose 是否自动显示菜单 true为显示，false默认值
 
      概念辨析：
      extend：增加子项
@@ -153,7 +154,7 @@
         data: function () {
             return {
                 open: this.model.open ? this.model.open : false,
-                choseChildShow:this.model.root? true : false
+                chooseChildShow:this.model.choose? true : false
             }
         },
         computed: {
@@ -168,14 +169,14 @@
                     this.open = !this.open;
                 }
             },
-            showChoseChild:function(){
-              this.choseChildShow=true;
+            showchooseChild:function(){
+              this.chooseChildShow=true;
             },
             hideChildShow:function(){
-                this.choseChildShow=false;
+                this.chooseChildShow=false;
             },
             extendChild: function (field) {
-                this.choseChildShow=false;
+                this.chooseChildShow=false;
                 if (!this.isFolder) {
                     Vue.set(this.model, 'child', []);
                     this.addChild(this.model.extend,field);

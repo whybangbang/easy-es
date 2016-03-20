@@ -10,7 +10,8 @@ var parts={
     {
       field: 'filter',
       extend:'filter',
-      only:true
+      only:true,
+      choose:false
     },
 
     {
@@ -64,7 +65,8 @@ var parts={
     },
     {
       field: 'bool',
-      extend:'bool'
+      extend:'bool',
+      choose:true,
     },
     {
       field: 'and',
