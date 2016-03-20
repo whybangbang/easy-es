@@ -14,6 +14,9 @@
     <script src="http://cdn.bootcss.com/vue/1.0.17/vue.js"></script>
     <script src="http://cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
 
+    <script src="data.js"></script>
+    <script src="parts.js"></script>
+
     <link href="assert/materialize/css/materialize.min.css" rel="stylesheet">
     <link href="assert/main.css" rel="stylesheet">
 
@@ -32,10 +35,12 @@
 
             <!--value--><span v-if="!model.child  && !model.extend">: <input type="text" v-model="model.value" class="data-value" placeholder="value"></span>
 
+            <span @click="delChild">X</span>
             <!--有括展项-->
-            <div v-if="model.extend" class="chose-child-clear" @click="hideChildShow"></div>
+            <div v-if="choseChildShow" class="chose-child-clear" @click="hideChildShow"></div>
             <span v-if="model.extend" class="chose-child">
                 <a  href='#' @click="showChoseChild" >+</a>
+
 
                 <!-- Dropdown Structure -->
                 <ul v-show="choseChildShow" class="chose-child-box">
@@ -55,7 +60,8 @@
                     :model="model"
                     :parts="parts">
             </item>
-            <li @click="addChild" v-show="false">+</li>
+
+            <!--<li @click="addChild" v-show="false">+</li>-->
         </ul>
     </li>
 </script>
@@ -132,98 +138,9 @@
      open： 展开显示
      */
     //filter 可组合部分
-    var parts={
-        'filter':[
-            {
-                field: 'term',
-                child: [
-                    {field: ''}
-                ]
-            },
-            {
-                field:'exist',
-                child:[
-                    {field:'field'}
-
-                ]
-            },
-            {
-                field: 'range',
-                child: [
-                    {
-                        field: '',
-                        open: true,
-                        child: [
-                            {field: 'from'},
-                            {field: 'to'}
-                        ]
-                    }
-                ]
-            },
-            {
-                field: 'bool',
-                extend:'bool'
-            },
-            {
-                field: 'and',
-                extend:'filter'
-            }
-        ],
-        'bool':[
-            {
-                field: 'must',
-                child: [
-                    {field: ''}
-                ]
-            },
-            {
-                field: 'must_not',
-                child: [
-                    {field: ''}
-                ]
-            },
-            {
-                field: 'should',
-                child: [
-                    {field: ''}
-                ]
-            },
-        ]
-    };
 
     // 整体框架
-    var data = {
-        field: 'Elasticsearch',
-        open: 'true',
-        child: [
-            {
-                field: 'sort',
-            },
-            {
-                field: 'filter',
-                extend:'filter',
-            },
 
-            {
-                field: 'query',
-                child: [
-                    {
-                        field: 'match',
-                        child: [
-                            {field: ''}
-                        ]
-                    }
-                ]
-            },
-            {
-                field: 'form',
-            },
-            {
-                field: 'size',
-            }
-
-        ]
-    }
     Vue.config.debug = true
     // define the item component
     Vue.component('item', {
@@ -231,8 +148,7 @@
         props: ['model','parts'],
         data: function () {
             return {
-                open: this.model.open,
-                hide: this.model.hide,
+                open: this.model.open ? this.model.open : false,
                 choseChildShow:false
             }
         },
@@ -240,8 +156,7 @@
             isFolder: function () {
                 return this.model.child &&
                         this.model.child.length
-            },
-
+            }
         },
         methods: {
             toggleOpen: function () {
@@ -250,7 +165,6 @@
                 }
             },
             showChoseChild:function(){
-                console.log(this.choseChildShow)
               this.choseChildShow=true;
             },
             hideChildShow:function(){
@@ -259,7 +173,7 @@
             extendChild: function (field) {
                 this.choseChildShow=false;
                 if (!this.isFolder) {
-                    Vue.set(this.model, 'child', [])
+                    Vue.set(this.model, 'child', []);
                     this.addChild(this.model.extend,field);
                 }else{
                     this.addChild(this.model.extend,field);
@@ -275,8 +189,16 @@
                 }
 
             },
+            delChild:function(){
+                for(var i in this.$parent.$children){
+                    if(this===this.$parent.$children[i]){
+                        this.$parent.model.child.splice(i,1)
+
+                    }
+                }
+            },
             hideItem: function () {
-                alert(1)
+                alert(1);
                 this.hide = true;
             }
         }
@@ -287,7 +209,7 @@
         el: '#app',
         data: {
             treeData: data,
-            parts:parts,
+            parts:parts
         },
         computed: {
             getStr: function () {
@@ -322,6 +244,7 @@
             return 4;
         }
     })
+
 </script>
 
 
