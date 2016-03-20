@@ -43,9 +43,10 @@
 
 
                 <!-- Dropdown Structure -->
-                <ul v-show="choseChildShow" class="chose-child-box">
+                <ul v-show="choseChildShow || model.root" class="chose-child-box">
                     <li v-for="item in parts[model.extend]"
-                        @click="extendChild(item.field)">
+                        v-if="item.only!==1"
+                        @click="extendChild(item)">
                         <a href="#!">{{item.field}}</a>
                     </li>
                 </ul>
@@ -183,10 +184,15 @@
             },
             addChild: function (extend,field) {
                 for(var i in this.parts[extend]){
-                    if(parts[extend][i]['field']==field){
+                    if(parts[extend][i]['field']==field.field){
                         this.model.child.push(parts[extend][i]);
                         this.open=true;
-                        this.model.child[this.model.child.length-1]['open']=true //显示为展开
+                        //显示为展开
+                        this.model.child[this.model.child.length-1]['open']=true;
+                        //only处理
+                        if(field.only){
+                            field.only=1
+                        }
                     }
                 }
 
@@ -196,8 +202,22 @@
                     if(this===this.$parent.$children[i]){
                         this.$parent.model.child.splice(i,1)
 
+                        //only处理
+                        for(var i in parts[this.$parent.model.extend]){
+                            if(parts[this.$parent.model.extend][i]['field']===this.model.field){
+                                if(parts[this.$parent.model.extend][i]['only']==1){
+                                    console.log(1);
+                                    parts[this.$parent.model.extend][i]['only']=true;
+                                }
+                            }
+
+
+                        }
+
                     }
                 }
+
+
             },
             hideItem: function () {
                 alert(1);
