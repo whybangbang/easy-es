@@ -1,10 +1,17 @@
 /**
  * Created by seaasun on 2016-3-20.
  */
-var data = {
+var data={
   field: 'Elasticsearch',
-  open: 'true',
+  open: true,
   extend:'es',
+  root:true,
+}
+var data2 = {
+  field: 'Elasticsearch',
+  open: true,
+  extend:'es',
+  root:true,
   child: [
     {
       field: 'sort',

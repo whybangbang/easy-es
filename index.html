@@ -35,7 +35,7 @@
 
             <!--value--><span v-if="!model.child  && !model.extend">: <input type="text" v-model="model.value" class="data-value" placeholder="value"></span>
 
-            <span @click="delChild">X</span>
+            <span @click="delChild" v-if="!model.root">X</span>
             <!--有括展项-->
             <div v-if="choseChildShow" class="chose-child-clear" @click="hideChildShow"></div>
             <span v-if="model.extend" class="chose-child">
@@ -131,11 +131,13 @@
      value 值，根据用户填的可自动生成，也可提供默认值
      extend 可扩展，默认为false不可扩展，为ture为随意扩展，为filter时为term、range、exist、bool、and扩展
      open 展开，默认为false，为true时默认为展开的
+     root 是否为根元素，根元素不可删除
 
      概念辨析：
      extend：增加子项
      add：增同级项目
      open： 展开显示
+     only: 此值为唯一
      */
     //filter 可组合部分
 
@@ -184,7 +186,7 @@
                     if(parts[extend][i]['field']==field){
                         this.model.child.push(parts[extend][i]);
                         this.open=true;
-                        Vue.set(this.model.child[this.model.child.length-1],'open',true) //显示为展开
+                        this.model.child[this.model.child.length-1]['open']=true //显示为展开
                     }
                 }
 

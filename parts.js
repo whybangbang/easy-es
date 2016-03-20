@@ -5,6 +5,7 @@ var parts={
   'es':[
     {
       field: 'sort',
+      only:true
     },
     {
       field: 'filter',
