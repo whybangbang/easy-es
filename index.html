@@ -14,6 +14,9 @@
     <script src="http://cdn.bootcss.com/vue/1.0.17/vue.js"></script>
     <script src="http://cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
 
+    <script src="data.js"></script>
+    <script src="parts.js"></script>
+
     <link href="assert/materialize/css/materialize.min.css" rel="stylesheet">
     <link href="assert/main.css" rel="stylesheet">
 
@@ -25,35 +28,46 @@
 <script type="text/x-template" id="item-template">
     <li>
         <div :class="{bold: isFolder}">
-            <!--有子项,显示+--><span @click="toggleOpen" v-if="isFolder">+</span>
+            <!--有子项,显示+--><span @click="toggleOpen" v-if="isFolder">{{open ? '-' : '+'}}</span>
             <!-- 无子项，补白--><span @click="toggleOpen" v-else>&nbsp;&nbsp;</span>
 
             <!--field--><input type="text" v-model="model.field" class="data-field" placeholder="field">
 
             <!--value--><span v-if="!model.child  && !model.extend">: <input type="text" v-model="model.value" class="data-value" placeholder="value"></span>
 
-            <!--有括展项--><span v-if=" model.extend" @click="extendChild">+</span>
+            <span @click="delChild" v-if="!model.root">X</span>
+            <!--有括展项-->
+            <div v-if="chooseChildShow" class="choose-child-clear" @click="hideChildShow"></div>
+            <span v-if="model.extend" class="choose-child">
+                <a  href='#' @click="showchooseChild" >+</a>
+
+
+                <!-- Dropdown Structure -->
+                <ul v-show="chooseChildShow" class="choose-child-box">
+                    <li v-for="item in parts[model.extend]"
+                        v-if="item.only!==1"
+
+                        @click="extendChild(item)">
+                        <a href="#!">{{item.field}}</a>
+                    </li>
+                </ul>
+
+            </span>
 
         </div>
         <ul v-show="open" v-if="isFolder">
             <item
                     class="data-item"
                     v-for="model in model.child"
-                    :model="model">
+                    :model="model"
+                    :parts="parts">
             </item>
-            <li @click="addChild" v-show="false">+</li>
+
+            <!--<li @click="addChild" v-show="false">+</li>-->
         </ul>
     </li>
 </script>
 
-<!--extend template -->
-<script type="text/x-template" id="extend-template">
-    <div>
-        <ul>
-11111111111111
-        </ul>
-    </div>
-</script>
 <! -- nav -->
 <nav>
     <div class="nav-wrapper">
@@ -68,13 +82,13 @@
 </nav>
 
 <!-- app -->
-<div class="row" id="app">
-    <extend :model="extend"></extend>
+<div class="row" id="app" >
     <div class="col s6">
         <ul>
             <item
                     class="item"
-                    :model="treeData">123
+                    :model="treeData"
+                    :parts="parts">
             </item>
         </ul>
     </div>
@@ -119,149 +133,96 @@
      value 值，根据用户填的可自动生成，也可提供默认值
      extend 可扩展，默认为false不可扩展，为ture为随意扩展，为filter时为term、range、exist、bool、and扩展
      open 展开，默认为false，为true时默认为展开的
+     root 是否为根元素，根元素不可删除
+     choose 是否自动显示菜单 true为显示，false默认值
 
      概念辨析：
      extend：增加子项
      add：增同级项目
      open： 展开显示
+     only: 此值为唯一
      */
     //filter 可组合部分
-    var partFilter=[
-        {
-            field: 'term',
-            child: [
-                {field: ''}
-            ]
-        },
-        {
-            field:'exist',
-            child:[
-                {field:'field'}
 
-            ]
-        },
-        {
-            field: 'range',
-            child: [
-                {
-                    field: '',
-                    open: true,
-                    child: [
-                        {field: 'from'},
-                        {field: 'to'}
-                    ]
-                }
-            ]
-        },
-        {
-            field: 'bool',
-            child: [
-                {
-                    field: 'must',
-                    child: [
-                        {field: ''}
-                    ]
-                },
-                {
-                    field: 'must_not',
-                    child: [
-                        {field: ''}
-                    ]
-                },
-                {
-                    field: 'should',
-                    child: [
-                        {field: ''}
-                    ]
-                },
-
-            ]
-        },
-        {
-            field: 'and',
-            child: [
-                {
-                    field: 'term',
-                    child: []
-                }
-            ]
-        }
-    ];
     // 整体框架
-    var data = {
-        field: 'Elasticsearch',
-        open: 'true',
-        child: [
-            {
-                field: 'sort',
-            },
-            {
-                field: 'filter',
-                extend:'filter',
-            },
 
-            {
-                field: 'query',
-                child: [
-                    {
-                        field: 'match',
-                        child: [
-                            {field: ''}
-                        ]
-                    }
-                ]
-            },
-            {
-                field: 'form',
-            },
-            {
-                field: 'size',
-            }
-
-        ]
-    }
     Vue.config.debug = true
     // define the item component
     Vue.component('item', {
         template: '#item-template',
-        props: {
-            model: Object
-        },
+        props: ['model','parts'],
         data: function () {
             return {
-                open: this.model.open,
-                hide: this.model.hide
+                open: this.model.open ? this.model.open : false,
+                chooseChildShow:!!this.model.choose
             }
         },
         computed: {
             isFolder: function () {
                 return this.model.child &&
                         this.model.child.length
-            },
-
+            }
         },
         methods: {
             toggleOpen: function () {
                 if (this.isFolder) {
-                    this.open = !this.open
+                    this.open = !this.open;
                 }
             },
-            extendChild: function () {
+            showchooseChild:function(){
+              this.chooseChildShow=true;
+            },
+            hideChildShow:function(){
+                this.chooseChildShow=false;
+            },
+            extendChild: function (field) {
+                this.chooseChildShow=false;
                 if (!this.isFolder) {
-                    Vue.set(this.model, 'child', [])
-                    this.addChild(this.model.extend);
+                    Vue.set(this.model, 'child', []);
+                    this.addChild(this.model.extend,field);
                 }else{
-                    this.addChild(this.model.extend);
+                    this.addChild(this.model.extend,field);
                 }
             },
-            addChild: function (extend) {
-                this.open=true;
-                this.model.child.push({
-                    field: ''
-                })
+            addChild: function (extend,field) {
+                for(var i in this.parts[extend]){
+                    if(parts[extend][i]['field']==field.field){
+                        this.model.child.push(parts[extend][i]);
+                        this.open=true;
+                        //显示为展开
+                        this.model.child[this.model.child.length-1]['open']=true;
+                        //only处理
+                        if(field.only){
+                            field.only=1
+                        }
+                    }
+                }
+
+            },
+            delChild:function(){
+                for(var i in this.$parent.$children){
+                    if(this===this.$parent.$children[i]){
+                        this.$parent.model.child.splice(i,1)
+
+                        //only处理
+                        for(var i in parts[this.$parent.model.extend]){
+                            if(parts[this.$parent.model.extend][i]['field']===this.model.field){
+                                if(parts[this.$parent.model.extend][i]['only']==1){
+                                    console.log(1);
+                                    parts[this.$parent.model.extend][i]['only']=true;
+                                }
+                            }
+
+
+                        }
+
+                    }
+                }
+
+
             },
             hideItem: function () {
-                alert(1)
+                alert(1);
                 this.hide = true;
             }
         }
@@ -271,7 +232,8 @@
     var vm = new Vue({
         el: '#app',
         data: {
-            treeData: data
+            treeData: data,
+            parts:parts
         },
         computed: {
             getStr: function () {
@@ -306,6 +268,7 @@
             return 4;
         }
     })
+
 </script>
 
 
