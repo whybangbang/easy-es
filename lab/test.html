@@ -6,55 +6,22 @@
 </head>
 <body>
     <script>
-        data= {
+        var data={
             "field": "es",
-            "open": "true",
             "child": [
                 {
-                    "field": "sort",
-                    "unextend": true
-                },
-                {
-                    "field": "filter",
-                    "child": [
-                        {
-                            "field": "term",
-                            "child": [
-                                {
-                                    "field": ""
-                                }
-                            ]
-                        },
-                        {
-                            "field": "range",
-                            "child": [
-                                {
-                                    "field": ""
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "field": "query",
-                    "child": [
-                        {
-                            "field": "match",
-                            "child": [
-                                {
-                                    "field": ""
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "field": "form",
-                    "unextend": true
-                },
-                {
                     "field": "size",
-                    "unextend": true
+                    "gorup": 5,
+                    "array": true,
+                    child:[
+                        {'field':1,value:1},
+                        {'field':2,value:2}
+                    ]
+                },
+                {
+                    "field": "sss",
+                    "gorup": 5,
+                    "open": true
                 }
             ]
         }
@@ -64,9 +31,16 @@
             if(obj.hasOwnProperty('child')){
 
                 var tmp={};
+                if(!obj['array']){
+                    for(var key in obj['child']){
+                            new_obj[obj['field']] = obj_parser(tmp, obj['child'][key]);
+                    }
+                }else{
+                    new_obj[obj['field']]=[]
+                    for(var key in obj['child']){
+                        new_obj[obj['field']].push(obj_parser(tmp, obj['child'][key]));
+                    }
 
-                for(var key in obj['child']){
-                    new_obj[obj['field']]= obj_parser(tmp,obj['child'][key]);
                 }
             }else{
 
@@ -83,7 +57,7 @@
         }
 
         a=parser()
-
+        console.log(a)
 
     </script>
 

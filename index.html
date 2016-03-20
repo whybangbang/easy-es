@@ -44,13 +44,13 @@
 
                 <!-- 下拉扩展项 -->
                 <ul v-show="chooseChildShow" class="choose-child-box">
-                    <li v-for="item in parts[model.extend]"
+                    <li v-for="item in subparts[model.extend]"
                         v-show="!item.only"
                         @click="extendChild(item)">
                         <a href="#!">{{item.field}}</a>
                     </li>
-                </ul>
 
+                </ul>
             </span>
 
         </div>
@@ -59,7 +59,8 @@
                     class="data-item"
                     v-for="model in model.child"
                     :model="model"
-                    :parts="parts">
+                    :parts="parts"
+                    >
             </item>
 
             <!--<li @click="addChild" v-show="false">+</li>-->
@@ -126,6 +127,26 @@
 
 
 <script>
+    function clone(obj){
+        var o, obj;
+        if (obj.constructor == Object){
+            o = new obj.constructor();
+        }else{
+            o = new obj.constructor(obj.valueOf());
+        }
+        for(var key in obj){
+            if ( o[key] != obj[key] ){
+                if ( typeof(obj[key]) == 'object' ){
+                    o[key] = clone(obj[key]);
+                }else{
+                    o[key] = obj[key];
+                }
+            }
+        }
+        o.toString = obj.toString;
+        o.valueOf = obj.valueOf;
+        return o;
+    }
     /*
      编写示例：
      field str 字键名
@@ -156,7 +177,8 @@
         data: function () {
             return {
                 open: this.model.open ? this.model.open : false,
-                chooseChildShow:!!this.model.choose
+                chooseChildShow:!!this.model.choose,
+                subparts:clone(parts)
             }
         },
         computed: {
@@ -189,21 +211,20 @@
             addChild: function (extend,field) {
                 for(var i in this.parts[extend]){
                     if(parts[extend][i]['field']==field.field){
-                        this.model.child.push(parts[extend][i]);
+                        var tmp=clone(parts[extend][i])//拷贝原码
+                        this.model.child.push(tmp);
                         this.open=true;
                         //显示为展开
                         this.model.child[this.model.child.length-1]['open']=true;
 
                         //only处理
                         if(field.group){
-
-
-
                             if(this.model.field!='and'){ //判断是否可以为并
                                 console.log(this.model.field)
                                 for(var i in parts[extend]){
                                     if(parts[extend][i].group===field.group){
-                                        Vue.set(parts[extend][i],'only',true)
+                                        Vue.set(this.subparts[extend][i],'only',true)
+                                        console.log(parts[extend][i].only)
                                         //Vue.set(field,'onlyUse',true)//表示正在使用
 
                                     }
@@ -222,10 +243,9 @@
                         this.$parent.model.child.splice(i,1)
 
                         //only处理
-                        //第1步，先取消onlyUse的标示
                         for(var i in parts[this.$parent.model.extend]){
                             if(parts[this.$parent.model.extend][i]['group']===this.model.group){
-                                parts[this.$parent.model.extend][i]['only']=false
+                                this.subparts[this.$parent.model.extend][i]['only']=false
 
                             }
                         }
@@ -264,9 +284,18 @@
                 if(obj.hasOwnProperty('child')){
 
                     var tmp={};
-
-                    for(var key in obj['child']){
-                        new_obj[obj['field']]= this.obj_parser(tmp,obj['child'][key]);
+                    //不转数组
+                    if(!obj['array']){
+                        for(var key in obj['child']){
+                            new_obj[obj['field']] = this.obj_parser(tmp, obj['child'][key]);
+                        }
+                    //转数组
+                    }else{
+                        new_obj[obj['field']]=[]
+                        for(var key in obj['child']){
+                            var t=clone(this.obj_parser(tmp, obj['child'][key]))
+                            new_obj[obj['field']].push(t);
+                        }
                     }
                 }else{
 
