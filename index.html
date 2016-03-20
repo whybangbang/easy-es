@@ -157,7 +157,7 @@
      choose 是否自动显示菜单 true为显示，false默认值
      undelete 无法删除，默认为false可删除，为true可删除
      group 组，用数字表明，同1组的在一个层下只能出现1次
-     array 下面为数组，默认为false不是数组，特殊为true
+     and、or、bool按array处理
 
      概念辨析：
      extend：增加子项
@@ -219,7 +219,7 @@
 
                         //only处理
                         if(field.group){
-                            if(this.model.field!='and'){ //判断是否可以为并
+                            if(this.model.field!='and'&&this.model.field!='or'&&this.model.field!='bool'){ //判断是否可以为并
                                 console.log(this.model.field)
                                 for(var i in parts[extend]){
                                     if(parts[extend][i].group===field.group){
@@ -284,18 +284,19 @@
                 if(obj.hasOwnProperty('child')){
 
                     var tmp={};
-                    //不转数组
-                    if(!obj['array']){
-                        for(var key in obj['child']){
-                            new_obj[obj['field']] = this.obj_parser(tmp, obj['child'][key]);
-                        }
                     //转数组
-                    }else{
+                    if(obj['field']=='and' || obj['field']=='or' || obj['field']=='bool'){
                         new_obj[obj['field']]=[]
                         for(var key in obj['child']){
                             var t=clone(this.obj_parser(tmp, obj['child'][key]))
                             new_obj[obj['field']].push(t);
                         }
+                    //不转数组
+                    }else{
+                        for(var key in obj['child']){
+                            new_obj[obj['field']] = this.obj_parser(tmp, obj['child'][key]);
+                        }
+
                     }
                 }else{
 

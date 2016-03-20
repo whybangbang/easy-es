@@ -98,14 +98,12 @@ var parts={
       field: 'and',
       group:1,
       choose:true,
-      array:true,
       extend:'filter'
     },
     {
       field: 'or',
       group:1,
       choose:true,
-      array:true,
       extend:'filter'
     },
     {
