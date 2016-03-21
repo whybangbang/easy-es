@@ -46,6 +46,7 @@
                 <ul v-show="chooseChildShow" class="choose-child-box">
                     <li v-for="item in subparts[model.extend]"
                         v-show="!item.only"
+                        v-if="!item.disabled"
                         @click="extendChild(item)">
                         <a href="#!">{{item.field}}</a>
                     </li>
@@ -149,51 +150,9 @@
 
 
 <script>
-    function clone(obj){
-        var o, obj;
-        if (obj.constructor == Object){
-            o = new obj.constructor();
-        }else{
-            o = new obj.constructor(obj.valueOf());
-        }
-        for(var key in obj){
-            if ( o[key] != obj[key] ){
-                if ( typeof(obj[key]) == 'object' ){
-                    o[key] = clone(obj[key]);
-                }else{
-                    o[key] = obj[key];
-                }
-            }
-        }
-        o.toString = obj.toString;
-        o.valueOf = obj.valueOf;
-        return o;
-    }
-    /*
-     编写示例：
-     field str 字键名
-     value 值，根据用户填的可自动生成，也可提供默认值
-     extend 可扩展，默认为false不可扩展，为ture为随意扩展，为filter时为term、range、exist、bool、and扩展
-     open 展开，默认为false，为true时默认为展开的
-     root 是否为根元素，根元素不可删除
-     choose 是否自动显示菜单 true为显示，false默认值
-     undelete 无法删除，默认为false可删除，为true可删除
-     group 组，用数字表明，同1组的在一个层下只能出现1次
-     and、or、bool按array处理
-
-     概念辨析：
-     extend：增加子项
-     add：增同级项目
-     open： 展开显示
-     only: 此值为唯一
-     tree: 原始数据
-     parts: 辅助供选择的； subparts 各子临时缓存的
-     dsl：最终生成的语句
-     */
-    //filter 可组合部分
 
     // 整体框架
-
+    var help=help();
     Vue.config.debug = true
     // define the item component
     Vue.component('item', {
@@ -203,8 +162,29 @@
             return {
                 open: this.model.open ? this.model.open : false,
                 chooseChildShow:!!this.model.choose,
-                subparts:clone(parts)
+                subparts:help.clone(parts)
             }
+        },
+        created:function(){
+            //清除父展开的选项
+            if(this.$parent.hasOwnProperty('chooseChildShow')){
+                this.$parent.chooseChildShow=false;
+            }
+            /*
+            console.log(this.model.field)
+            //清除唯一
+            if(this.group){
+                for(var son in this.$parent.$children){
+                    if($parent.$children[i].parts
+                    }
+                }
+            for(var i in parts[extend]){
+                if(parts[extend][i].group===field.group){
+                    Vue.set(this.subparts[extend][i],'only',true)
+
+
+                }
+            }*/
         },
         computed: {
             isFolder: function () {
@@ -219,10 +199,38 @@
                 }
             },
             showchooseChild:function(){
+                //查询子数据
+
+                //先进行only处理
+                //遍历子部件
+                if(!help.checkArray(this.model.field)){//排除and、or
+                    for(var son in this.$children){
+                        if(this.$children[son].model.group){//判断是否分组
+                            var group_num=this.$children[son].model.group;//得到分组号
+                            //修改数据subparts
+                            for(var i in parts[this.model.extend]){
+                                if(parts[this.model.extend][i].group===group_num){
+                                    Vue.set(this.subparts[this.model.extend][i],'only',true)
+                                }
+                            }
+                        }
+                    }
+                }
+              //显示选项栏
               this.chooseChildShow=true;
             },
             hideChildShow:function(){
                 this.chooseChildShow=false;
+                //隐藏选项，这里vm.create冗余,单质量写并不好
+                function hide(obj){
+                    for(var i in obj.$children){
+                        if(obj.hasOwnProperty('chooseChildShow')){
+                            obj['chooseChildShow']=false
+                        }
+                            hide(obj.$children[i])
+                    }
+                }
+                hide(vm)
             },
             extendChild: function (field) {
                 this.chooseChildShow=false;
@@ -236,26 +244,12 @@
             addChild: function (extend,field) {
                 for(var i in this.parts[extend]){
                     if(parts[extend][i]['field']==field.field){
-                        var tmp=clone(parts[extend][i])//拷贝原码
+                        var tmp=help.clone(parts[extend][i])//拷贝原码
                         this.model.child.push(tmp);
                         this.open=true;
                         //显示为展开
                         this.model.child[this.model.child.length-1]['open']=true;
 
-                        //only处理
-                        if(field.group){
-                            if(this.model.field!='and'&&this.model.field!='or'&&this.model.field!='bool'){ //判断是否可以为并
-
-                                for(var i in parts[extend]){
-                                    if(parts[extend][i].group===field.group){
-                                        Vue.set(this.subparts[extend][i],'only',true)
-
-
-                                    }
-
-                                }
-                        }
-                        }
                         break;
                     }
                 }
@@ -297,107 +291,96 @@
             treeName:'start',
             treeNameLists:[]
         },
-        created:function(){
+        created:function() {
             this.updateTree()
+
+            //隐藏选项，这里同上冗余
+        },
+        ready:function(){
+
+        },
+        watch: {
+            treeProject:'updateTree'
         },
         computed: {
             getStr: function () {
                 var new_obj={};
 
-               return json_formate(this.obj_parser(new_obj,this.treeData));
-               //return json_formate(this.treeData);
+               return help.json_formate(help.obj_parser(new_obj,this.treeData));
+                // return help.json_formate(this.treeData);
+               //return JSON.stringify(help.obj_parser(new_obj,this.treeData))
             }
         },
         methods: {
             //保存树
-            saveTree:function(){
+            saveTree: function () {
+                console.log(this.treeProject)
                 //已储存有树
-                if(localStorage['tree']){
-                    var tmp=JSON.parse(localStorage['tree']);
+                if (localStorage['tree']) {
+                    var tmp = JSON.parse(localStorage['tree']);
 
                     //没有此项目则新建项目
-                    if(!tmp[this.treeProject]){
-                        tmp[this.treeProject]={}
+                    if (!tmp[this.treeProject]) {
+                        tmp[this.treeProject] = {}
                     }
 
                     //检查重名
-                    if(tmp[this.treeProject][this.treeName]){
-                        if(!confirm('Name already exists, you want to replace it?')){
-                            return None;
+                    if (tmp[this.treeProject][this.treeName]) {
+                        if (!confirm('Name already exists, you want to replace it?')) {
+                            return ;
                         }
                     }
 
-                    tmp[this.treeProject][this.treeName]=this.treeData;
-                    localStorage['tree']=JSON.stringify(tmp);
+                    tmp[this.treeProject][this.treeName] = this.treeData;
+                    localStorage['tree'] = JSON.stringify(tmp);
 
-                //从未存储树（可以取消了）
-                }else{
-                    var tmp={};
-                    tmp[this.treeProject]={}
-                    tmp[this.treeProject][this.treeName]=this.treeData;
-                    localStorage['tree']=JSON.stringify(tmp);
+                    //从未存储树（可以取消了）
+                } else {
+                    var tmp = {};
+                    tmp[this.treeProject] = {}
+                    tmp[this.treeProject][this.treeName] = this.treeData;
+                    localStorage['tree'] = JSON.stringify(tmp);
                 }
                 //更新树的视图
                 this.updateTree()
+                Materialize.toast('template saved', 4000)
             },
             //打开树
-            openTree:function(){
-                var tmp=JSON.parse(localStorage['tree']);
-                this.treeData=tmp[this.treeProject][this.treeName];
+            openTree: function () {
+                var tmp = JSON.parse(localStorage['tree']);
+                if(tmp[this.treeProject][this.treeName]){
+                    this.treeData = tmp[this.treeProject][this.treeName];
+                    Materialize.toast('template open', 4000)
+                }else{
+                    Materialize.toast("there is no this template,pleses check name", 4000)
+                }
+
             },
             //更新树的显示
-            updateTree:function(){
+            updateTree: function () {
+
                 //读取已本地保存的tree
-                if(localStorage['tree']) {
+                if (localStorage['tree']) {
                     var tree = JSON.parse(localStorage['tree']);
+                    this.treeProjectLists=[]; //清空之前的选项
                     for (var key in tree) {
                         this.treeProjectLists.push(key);
                     }
+                    this.treeNameLists=[];//清空之前的选项
                     for (var key in tree[this.treeProject]) {
                         this.treeNameLists.push(key);
                     }
                     //本地没有保存则创建新tree
-                }else{
-                    var tmp={};
-                    tmp[this.treeProject]={}
-                    tmp[this.treeProject][this.treeName]=this.treeData;
-                    localStorage['tree']=JSON.stringify(tmp);
+                } else {
+                    var tmp = {};
+                    tmp[this.treeProject] = {}
+                    tmp[this.treeProject][this.treeName] = this.treeData;
+                    localStorage['tree'] = JSON.stringify(tmp);
                 }
-            },
-            //转译json
-            obj_parser: function (new_obj, obj){
-                if(obj.hasOwnProperty('child')){
-
-                    var tmp={};
-                    //and、or、bool转数组
-                    if(obj['field']=='and' || obj['field']=='or' || obj['field']=='bool'){
-                        new_obj[obj['field']]=[]
-                        for(var key in obj['child']){
-                            var t=clone(this.obj_parser(tmp, obj['child'][key]))
-                            new_obj[obj['field']].push(t);
-                        }
-                    //不转数组
-                    }else{
-                        for(var key in obj['child']){
-                            new_obj[obj['field']] = this.obj_parser(tmp, obj['child'][key]);
-                        }
-
-                    }
-                }else{
-
-                    new_obj[obj['field']] = obj['value'];
-                    return new_obj
-
-                }
-                return new_obj
             }
-
-
-        },
-        cc:function(){
-            return 4;
         }
     })
+
 
 </script>
 
