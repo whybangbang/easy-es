@@ -39,7 +39,7 @@
             <!--有括展项-->
             <div v-if="chooseChildShow" class="choose-child-clear" @click="hideChildShow"></div>
             <span v-if="model.extend" class="choose-child">
-                <a  href='#' @click="showchooseChild" >+</a>
+                <a  href='#' @click="showchooseChild" v-bind:class="{'color-grey':view.hideChooseChildBtn}">{{view.hideChooseChildBtn}}+</a>
 
 
                 <!-- 下拉扩展项 -->
@@ -152,7 +152,6 @@
 <script>
 
     // 整体框架
-    var help=help();
     Vue.config.debug = true
     // define the item component
     Vue.component('item', {
@@ -162,7 +161,8 @@
             return {
                 open: this.model.open ? this.model.open : false,
                 chooseChildShow:!!this.model.choose,
-                subparts:help.clone(parts)
+                subparts:help.clone(parts),
+                view:{}
             }
         },
         created:function(){
@@ -170,21 +170,6 @@
             if(this.$parent.hasOwnProperty('chooseChildShow')){
                 this.$parent.chooseChildShow=false;
             }
-            /*
-            console.log(this.model.field)
-            //清除唯一
-            if(this.group){
-                for(var son in this.$parent.$children){
-                    if($parent.$children[i].parts
-                    }
-                }
-            for(var i in parts[extend]){
-                if(parts[extend][i].group===field.group){
-                    Vue.set(this.subparts[extend][i],'only',true)
-
-
-                }
-            }*/
         },
         computed: {
             isFolder: function () {
@@ -216,6 +201,7 @@
                         }
                     }
                 }
+
               //显示选项栏
               this.chooseChildShow=true;
             },
@@ -254,6 +240,38 @@
                     }
                 }
 
+                //先进行only处理,为了处理+
+                //遍历子部件
+
+                /*
+                if(!help.checkArray(this.model.field)){//排除and、or
+
+                    for(var son in this.$children){
+                        if(this.$children[son].model.group){//判断是否分组
+
+                            var group_num=this.$children[son].model.group;//得到分组号
+                            //修改数据subparts
+                            for(var i in parts[this.model.extend]){
+                                if(parts[this.model.extend][i].group===group_num){
+                                    Vue.set(this.subparts[this.model.extend][i],'only',true)
+                                }
+                            }
+                        }
+                    }
+                }
+
+                //查询还有无子选项,无可用的选项则禁用“+”
+                var tmp=true;
+                for(var i in this.subparts[this.model.extend]){
+                    if(!this.subparts[this.model.extend][i]['only'] && !this.subparts[this.model.extend][i]['disabled'] && this.subparts[this.model.extend][i]['field']){
+                        tmp=false;
+                        //break
+                    }
+                }
+                if(tmp){
+                    Vue.set(this.view,'hideChooseChildBtn',true)
+                }
+                */
 
             },
             delChild:function(){
@@ -307,14 +325,13 @@
                 var new_obj={};
 
                return help.json_formate(help.obj_parser(new_obj,this.treeData));
-                // return help.json_formate(this.treeData);
+                //return help.json_formate(this.treeData);
                //return JSON.stringify(help.obj_parser(new_obj,this.treeData))
             }
         },
         methods: {
             //保存树
             saveTree: function () {
-                console.log(this.treeProject)
                 //已储存有树
                 if (localStorage['tree']) {
                     var tmp = JSON.parse(localStorage['tree']);
