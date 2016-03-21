@@ -56,3 +56,86 @@ filter:
 	 		value:why(用户填写)
 	 	example:
 	 		"term" : { "user" : "kimchy"}
+
+    Geo Bounding Box Filter:
+        field: geo_bounding_box
+        child:{}
+            field:location(用户填写)
+            value:
+                "top_left":[-71.12, 40.01]
+                "bottom_right":[-71.12, 40.01]
+        example:
+            "geo_bounding_box" : {
+                "location" : {
+                    "top_left" : [-74.1, 40.73],
+                    "bottom_right" : [-71.12, 40.01]
+                }
+            }
+
+    Geo Distance Filter:
+        field:geo_distance
+        child:{}
+        example(过滤在location为这个这个经纬度的200km内的东西):
+            "geo_distance" : {
+                "distance" : "200km",
+                "location" : {
+                    "lat" : 40,
+                    "lon" : -70
+                }
+            }
+
+
+    Missing Filter:
+        field:missing
+        child:{}
+            field:field
+            value:user(用户填写，字段名称)
+        example:
+            "filter" : {
+                "missing" : { "field" : "user" }
+        }
+
+    Not Filter:
+        field:not
+        child:里面嵌套其他的一个filter，只能嵌套一个
+        example:
+            "not" : {
+                "range" : {
+                    "postDate" : {
+                        "from" : "2010-03-01",
+                        "to" : "2010-04-01"
+                    }
+                }
+            }
+
+    Or Filter(和and使用相似):
+        field:or
+        child:[可以选择多个filter]
+        example:
+            "or" : [
+                {
+                    "term" : { "name.second" : "banon" }
+                },
+                {
+                    "term" : { "name.nick" : "kimchy" }
+                }
+            ]
+
+    Range Filter:
+        field:range
+        child:
+        example(这个例子表示age大于等于10，小于等于20，如果是大于则是gt，小于则是lt):
+             "range" : {
+                "age" : {
+                    "gte": 10,
+                    "lte": 20
+                }
+            }
+
+    Terms Filter:
+        filter:terms
+
+        example:
+            "terms" : { "user" : ["kimchy", "elasticsearch"]}
+
+
