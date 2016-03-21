@@ -54,14 +54,13 @@ var parts={
       extend:'exist_null',
       child:[
         {field:'field',
-          undelete:true},
-
-
+          undelete:true}
       ]
     },
     {
       field:'prefix',
       group:1,
+      disabled:true,
       child:[
         {field:'name.second',
           undelete:true}
@@ -71,6 +70,7 @@ var parts={
     {
       field:'_cache',
       value:true,
+      disabled:true,
       group:2
     },
     {

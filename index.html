@@ -46,6 +46,7 @@
                 <ul v-show="chooseChildShow" class="choose-child-box">
                     <li v-for="item in subparts[model.extend]"
                         v-show="!item.only"
+                        v-if="!item.disabled"
                         @click="extendChild(item)">
                         <a href="#!">{{item.field}}</a>
                     </li>
@@ -161,6 +162,7 @@
      undelete 无法删除，默认为false可删除，为true可删除
      group 组，用数字表明，同1组的在一个层下只能出现1次
      and、or、bool按array处理
+     disabled: 不显示该字段，默认为false显示，true为不显示
 
      概念辨析：
      extend：增加子项
