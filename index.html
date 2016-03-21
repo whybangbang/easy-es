@@ -82,19 +82,41 @@
 </nav>
 
 <!-- app -->
-<div class="row" id="app" >
-    <div class="col s6">
-        <ul>
-            <item
-                    class="item"
-                    :model="treeData"
-                    :parts="parts">
-            </item>
-        </ul>
+<div id="app">
+
+    <div class="row">
+        <div class="col s2 input-select">
+            <input type="text" v-model="treeProject">
+            <select v-model="treeProject">
+                <option v-for="item in treeProjectLists">{{item}}</option>
+            </select>
+
+        </div>
+        <div class="col s6 input-select">
+            <input type="text" v-model="treeName">
+            <select v-model="treeName">
+                <option v-for="item in treeNameLists">{{item}}</option>
+            </select>
+        </div>
+        <div class="col s4">
+            <a  @click="openTree" class="waves-effect waves-light btn">open</a>
+            <a @click="saveTree"  class="waves-effect waves-light btn">save</a>
+        </div>
     </div>
-    <div class="col s6">
-        <p>Write DSL/Elasticsearch quickly! 让ES查询语句不发指！</p>
-        <textarea class="getstr">{{{getStr}}}</textarea>
+    <div class="row">
+        <div class="col s6">
+            <ul>
+                <item
+                        class="item"
+                        :model="treeData"
+                        :parts="parts">
+                </item>
+            </ul>
+        </div>
+        <div class="col s6">
+            <p>Write DSL/Elasticsearch quickly! 让ES查询语句不发指！</p>
+            <textarea class="getstr">{{{getStr}}}</textarea>
+        </div>
     </div>
 </div>
 
@@ -164,6 +186,9 @@
      add：增同级项目
      open： 展开显示
      only: 此值为唯一
+     tree: 原始数据
+     parts: 辅助供选择的； subparts 各子临时缓存的
+     dsl：最终生成的语句
      */
     //filter 可组合部分
 
@@ -266,7 +291,14 @@
         el: '#app',
         data: {
             treeData: data,
-            parts:parts
+            parts:parts,
+            treeProject:'base',
+            treeProjectLists:[],
+            treeName:'start',
+            treeNameLists:[]
+        },
+        created:function(){
+            this.updateTree()
         },
         computed: {
             getStr: function () {
@@ -277,6 +309,51 @@
             }
         },
         methods: {
+            //保存树
+            saveTree:function(){
+                //已储存有树
+                if(localStorage['tree']){
+                    var tmp=JSON.parse(localStorage['tree']);
+                    if(!tmp[this.treeProject]){
+                        tmp[this.treeProject]={}
+                    }
+                    tmp[this.treeProject][this.treeName]=this.treeData;
+                    localStorage['tree']=JSON.stringify(tmp);
+
+                //从未存储树（可以取消了）
+                }else{
+                    var tmp={};
+                    tmp[this.treeProject]={}
+                    tmp[this.treeProject][this.treeName]=this.treeData;
+                    localStorage['tree']=JSON.stringify(tmp);
+                }
+                //更新树的视图
+                this.updateTree()
+            },
+            //打开树
+            openTree:function(){
+                var tmp=JSON.parse(localStorage['tree']);
+                this.treeData=tmp[this.treeProject][this.treeName];
+            },
+            //更新树的显示
+            updateTree:function(){
+                //读取已本地保存的tree
+                if(localStorage['tree']) {
+                    var tree = JSON.parse(localStorage['tree']);
+                    for (var key in tree) {
+                        this.treeProjectLists.push(key);
+                    }
+                    for (var key in tree[this.treeProject]) {
+                        this.treeNameLists.push(key);
+                    }
+                    //本地没有保存则创建新tree
+                }else{
+                    var tmp={};
+                    tmp[this.treeProject]={}
+                    tmp[this.treeProject][this.treeName]=this.treeData;
+                    localStorage['tree']=JSON.stringify(tmp);
+                }
+            },
             //转译json
             obj_parser: function (new_obj, obj){
                 if(obj.hasOwnProperty('child')){
