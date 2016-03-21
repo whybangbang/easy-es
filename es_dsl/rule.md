@@ -21,7 +21,8 @@
 8. group 组，用数字表明，同1组的在一个层下只能出现1次
 9.  and、or、bool按array处理,在help中提供checkArray()
 10.  disabled: 不显示该字段，默认为false显示，true为不显示
-
+11. name:别名，用于field解释不清楚时用
+12. placeholder:value的提示词，不填显示value
  概念辨析：
 1.  extend：增加子项
 2.  add：增同级项目
@@ -31,6 +32,10 @@
 6.  parts: 辅助供选择的； subparts 各子临时缓存的
 7.  dsl：最终生成的语句
 
+
+TODO
+1. 去除不要的+
+2. 必填的不能删
 整体部分
 =
     es

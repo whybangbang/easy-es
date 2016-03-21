@@ -110,7 +110,7 @@ function help(){
 
   //检验是否为为bool、and、or,如果t是返回true
   function checkArray(obj){
-    var lists=['and','or','bool'];
+    var lists=['and','or','bool','must','must_not','should','sort'];
     for(var i in lists){
       if(obj===lists[i]){
         return true;
@@ -128,7 +128,8 @@ function help(){
 
 
       //转数组
-      if (checkArray(obj['field'])) {
+      if (obj['array']) {
+
         var tmp={};
         new_obj[obj['field']] = [];
         for (var key in obj['child']) {
