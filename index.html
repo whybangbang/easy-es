@@ -34,7 +34,7 @@
 
             <!--field--><input type="text" v-model="model.field" class="data-field" placeholder="field">
 
-            <!--value--><span v-if="!model.child  && !model.extend">: <input type="text" v-model="model.value" class="data-value" placeholder="value"></span>
+            <!--value--><span v-if="!model.child  && !model.extend">: <input type="text" v-model="model.value" class="data-value" placeholder="{{model.placeholder || 'value'}}"></span>
 
             <span @click="delChild" v-if="!model.undelete">X</span>
             <!--有括展项-->

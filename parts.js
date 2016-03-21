@@ -14,22 +14,14 @@ var parts={
       field: 'filter',
       extend:'filter',
       group:2,
-      choose:true,
+      choose:true
     },
 
     {
       field: 'query',
       group:3,
-      child: [
-        {
-          field: 'match',
-          open:true,
-          undelete:true,
-          child: [
-            {field: ''}
-          ]
-        }
-      ]
+      extend:'query',
+      choose:true
     },
     {
       field: 'from',
@@ -96,7 +88,7 @@ var parts={
     {
       field: 'bool',
       group:1,
-      extend:'bool',
+      extend:'filte_bool',
       choose:true,
     },
     {
@@ -181,7 +173,7 @@ var parts={
       ]
     }
   ],
-  'bool':[
+  'filter_bool':[
     {
       field: 'must',
       group:1,
@@ -238,6 +230,126 @@ var parts={
       ]
 
 
+    }
+  ],
+  query:[
+    {
+      field:'term',
+      open:true,
+      group:1,
+      child:[
+        {
+          field:''
+        }
+      ]
+    },
+    {
+      field:'match',
+      open:true,
+      group:1,
+      child:[
+        {
+          field:'',
+          open:true,
+          extend:'ony_analyzer',
+          undelete:true,
+          child:[
+            {
+              field:'query',
+              undelete:true
+            },
+            {
+              field:'operator',
+              placeholder:'and/or',
+              undelete:true
+            },
+            {
+              field:'analyzer'
+            }
+          ]
+        }
+      ]
+    },
+    {
+      field:'multi_match',
+      extend:'only_analyzer',
+      group:1,
+      open:true,
+      child:[
+        {
+          field:'query',
+          undelete:true,
+        },
+        {
+          field:'fields',
+          extend:'fields',
+          array:true,
+          open:true,
+          undelete:true,
+          child:[
+            {
+              'field':''
+            },
+            {
+              'field':''
+            },
+          ]
+        },
+        {
+          field:'operator',
+          placeholder:'and/or',
+          undelete:true
+        },
+        {
+          field:'analyzer',
+          group:1,
+        }
+      ]
+    },
+    {
+      field:'bool',
+      extend:'query_bool',
+      group:3,
+      choose:true,
+      array:true
+    }
+  ],
+  query_bool:[
+    {
+      field:'must',
+      extend:'query',
+      array:true,
+      choose:true,
+    },
+    {
+      field:'must_not',
+      extend:'query',
+      array:true,
+      choose:true,
+    },
+    {
+      field:'should',
+      extend:'query',
+      array:true,
+      choose:true,
+    },
+    {
+      field:"minimum_should_match",
+      group:1,
+    },{
+      field:"boost",
+      group:1,
+    }
+  ],
+  only_analyzer:[{
+    field:'analyzer',
+    open:true,
+    group:1,
+  }],
+  fields:[
+    {
+      field:'',
+      name:'[filed]'
     }
   ]
 };
