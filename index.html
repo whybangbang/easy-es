@@ -35,23 +35,22 @@
 
             <!--value--><span v-if="!model.child  && !model.extend">: <input type="text" v-model="model.value" class="data-value" placeholder="value"></span>
 
-            <span @click="delChild" v-if="!model.root">X</span>
+            <span @click="delChild" v-if="!model.undelete">X</span>
             <!--有括展项-->
             <div v-if="chooseChildShow" class="choose-child-clear" @click="hideChildShow"></div>
             <span v-if="model.extend" class="choose-child">
                 <a  href='#' @click="showchooseChild" >+</a>
 
 
-                <!-- Dropdown Structure -->
+                <!-- 下拉扩展项 -->
                 <ul v-show="chooseChildShow" class="choose-child-box">
-                    <li v-for="item in parts[model.extend]"
-                        v-if="item.only!==1"
-
+                    <li v-for="item in subparts[model.extend]"
+                        v-show="!item.only"
                         @click="extendChild(item)">
                         <a href="#!">{{item.field}}</a>
                     </li>
-                </ul>
 
+                </ul>
             </span>
 
         </div>
@@ -60,7 +59,8 @@
                     class="data-item"
                     v-for="model in model.child"
                     :model="model"
-                    :parts="parts">
+                    :parts="parts"
+                    >
             </item>
 
             <!--<li @click="addChild" v-show="false">+</li>-->
@@ -127,6 +127,26 @@
 
 
 <script>
+    function clone(obj){
+        var o, obj;
+        if (obj.constructor == Object){
+            o = new obj.constructor();
+        }else{
+            o = new obj.constructor(obj.valueOf());
+        }
+        for(var key in obj){
+            if ( o[key] != obj[key] ){
+                if ( typeof(obj[key]) == 'object' ){
+                    o[key] = clone(obj[key]);
+                }else{
+                    o[key] = obj[key];
+                }
+            }
+        }
+        o.toString = obj.toString;
+        o.valueOf = obj.valueOf;
+        return o;
+    }
     /*
      编写示例：
      field str 字键名
@@ -135,6 +155,9 @@
      open 展开，默认为false，为true时默认为展开的
      root 是否为根元素，根元素不可删除
      choose 是否自动显示菜单 true为显示，false默认值
+     undelete 无法删除，默认为false可删除，为true可删除
+     group 组，用数字表明，同1组的在一个层下只能出现1次
+     and、or、bool按array处理
 
      概念辨析：
      extend：增加子项
@@ -154,7 +177,8 @@
         data: function () {
             return {
                 open: this.model.open ? this.model.open : false,
-                chooseChildShow:!!this.model.choose
+                chooseChildShow:!!this.model.choose,
+                subparts:clone(parts)
             }
         },
         computed: {
@@ -187,16 +211,30 @@
             addChild: function (extend,field) {
                 for(var i in this.parts[extend]){
                     if(parts[extend][i]['field']==field.field){
-                        this.model.child.push(parts[extend][i]);
+                        var tmp=clone(parts[extend][i])//拷贝原码
+                        this.model.child.push(tmp);
                         this.open=true;
                         //显示为展开
                         this.model.child[this.model.child.length-1]['open']=true;
+
                         //only处理
-                        if(field.only){
-                            field.only=1
+                        if(field.group){
+                            if(this.model.field!='and'&&this.model.field!='or'&&this.model.field!='bool'){ //判断是否可以为并
+
+                                for(var i in parts[extend]){
+                                    if(parts[extend][i].group===field.group){
+                                        Vue.set(this.subparts[extend][i],'only',true)
+
+
+                                    }
+
+                                }
                         }
+                        }
+                        break;
                     }
                 }
+
 
             },
             delChild:function(){
@@ -206,16 +244,11 @@
 
                         //only处理
                         for(var i in parts[this.$parent.model.extend]){
-                            if(parts[this.$parent.model.extend][i]['field']===this.model.field){
-                                if(parts[this.$parent.model.extend][i]['only']==1){
-                                    console.log(1);
-                                    parts[this.$parent.model.extend][i]['only']=true;
-                                }
+                            if(this.subparts[this.$parent.model.extend][i]['group']===this.model.group){
+                                this.$parent.subparts[this.$parent.model.extend][i]['only']=false
                             }
-
-
                         }
-
+                    break;
                     }
                 }
 
@@ -249,9 +282,19 @@
                 if(obj.hasOwnProperty('child')){
 
                     var tmp={};
+                    //and、or、bool转数组
+                    if(obj['field']=='and' || obj['field']=='or' || obj['field']=='bool'){
+                        new_obj[obj['field']]=[]
+                        for(var key in obj['child']){
+                            var t=clone(this.obj_parser(tmp, obj['child'][key]))
+                            new_obj[obj['field']].push(t);
+                        }
+                    //不转数组
+                    }else{
+                        for(var key in obj['child']){
+                            new_obj[obj['field']] = this.obj_parser(tmp, obj['child'][key]);
+                        }
 
-                    for(var key in obj['child']){
-                        new_obj[obj['field']]= this.obj_parser(tmp,obj['child'][key]);
                     }
                 }else{
 
