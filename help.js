@@ -84,4 +84,51 @@ function json_formate(json, options) {
   return formatted;
 };
 
+//深度复制js对象
+function clone(obj){
+  var o, obj;
+  if (obj.constructor == Object){
+    o = new obj.constructor();
+  }else{
+    o = new obj.constructor(obj.valueOf());
+  }
+  for(var key in obj){
+    if ( o[key] != obj[key] ){
+      if ( typeof(obj[key]) == 'object' ){
+        o[key] = clone(obj[key]);
+      }else{
+        o[key] = obj[key];
+      }
+    }
+  }
+  o.toString = obj.toString;
+  o.valueOf = obj.valueOf;
+  return o;
+}
+
+//json转换
+function obj_parser(new_obj,obj){
+  if(obj.hasOwnProperty('child')){
+
+    var tmp={};
+    if(!obj['array']){
+      for(var key in obj['child']){
+        new_obj[obj['field']] = obj_parser(tmp, obj['child'][key]);
+      }
+    }else{
+      new_obj[obj['field']]=[]
+      for(var key in obj['child']){
+        new_obj[obj['field']].push(obj_parser(tmp, obj['child'][key]));
+      }
+
+    }
+  }else{
+
+    new_obj[obj['field']] = obj['value'];
+    return new_obj
+
+  }
+  return new_obj
+}
+
 

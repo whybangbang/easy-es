@@ -149,26 +149,7 @@
 
 
 <script>
-    function clone(obj){
-        var o, obj;
-        if (obj.constructor == Object){
-            o = new obj.constructor();
-        }else{
-            o = new obj.constructor(obj.valueOf());
-        }
-        for(var key in obj){
-            if ( o[key] != obj[key] ){
-                if ( typeof(obj[key]) == 'object' ){
-                    o[key] = clone(obj[key]);
-                }else{
-                    o[key] = obj[key];
-                }
-            }
-        }
-        o.toString = obj.toString;
-        o.valueOf = obj.valueOf;
-        return o;
-    }
+
     /*
      编写示例：
      field str 字键名
@@ -304,51 +285,52 @@
             getStr: function () {
                 var new_obj={};
 
-               return json_formate(this.obj_parser(new_obj,this.treeData));
-               //return json_formate(this.treeData);
+               return json_formate(obj_parser(new_obj,this.treeData));
+                // return json_formate(this.treeData);
+               //return JSON.stringify(obj_parser(new_obj,this.treeData))
             }
         },
         methods: {
             //保存树
-            saveTree:function(){
+            saveTree: function () {
                 //已储存有树
-                if(localStorage['tree']){
-                    var tmp=JSON.parse(localStorage['tree']);
+                if (localStorage['tree']) {
+                    var tmp = JSON.parse(localStorage['tree']);
 
                     //没有此项目则新建项目
-                    if(!tmp[this.treeProject]){
-                        tmp[this.treeProject]={}
+                    if (!tmp[this.treeProject]) {
+                        tmp[this.treeProject] = {}
                     }
 
                     //检查重名
-                    if(tmp[this.treeProject][this.treeName]){
-                        if(!confirm('Name already exists, you want to replace it?')){
+                    if (tmp[this.treeProject][this.treeName]) {
+                        if (!confirm('Name already exists, you want to replace it?')) {
                             return None;
                         }
                     }
 
-                    tmp[this.treeProject][this.treeName]=this.treeData;
-                    localStorage['tree']=JSON.stringify(tmp);
+                    tmp[this.treeProject][this.treeName] = this.treeData;
+                    localStorage['tree'] = JSON.stringify(tmp);
 
-                //从未存储树（可以取消了）
-                }else{
-                    var tmp={};
-                    tmp[this.treeProject]={}
-                    tmp[this.treeProject][this.treeName]=this.treeData;
-                    localStorage['tree']=JSON.stringify(tmp);
+                    //从未存储树（可以取消了）
+                } else {
+                    var tmp = {};
+                    tmp[this.treeProject] = {}
+                    tmp[this.treeProject][this.treeName] = this.treeData;
+                    localStorage['tree'] = JSON.stringify(tmp);
                 }
                 //更新树的视图
                 this.updateTree()
             },
             //打开树
-            openTree:function(){
-                var tmp=JSON.parse(localStorage['tree']);
-                this.treeData=tmp[this.treeProject][this.treeName];
+            openTree: function () {
+                var tmp = JSON.parse(localStorage['tree']);
+                this.treeData = tmp[this.treeProject][this.treeName];
             },
             //更新树的显示
-            updateTree:function(){
+            updateTree: function () {
                 //读取已本地保存的tree
-                if(localStorage['tree']) {
+                if (localStorage['tree']) {
                     var tree = JSON.parse(localStorage['tree']);
                     for (var key in tree) {
                         this.treeProjectLists.push(key);
@@ -357,45 +339,13 @@
                         this.treeNameLists.push(key);
                     }
                     //本地没有保存则创建新tree
-                }else{
-                    var tmp={};
-                    tmp[this.treeProject]={}
-                    tmp[this.treeProject][this.treeName]=this.treeData;
-                    localStorage['tree']=JSON.stringify(tmp);
+                } else {
+                    var tmp = {};
+                    tmp[this.treeProject] = {}
+                    tmp[this.treeProject][this.treeName] = this.treeData;
+                    localStorage['tree'] = JSON.stringify(tmp);
                 }
-            },
-            //转译json
-            obj_parser: function (new_obj, obj){
-                if(obj.hasOwnProperty('child')){
-
-                    var tmp={};
-                    //and、or、bool转数组
-                    if(obj['field']=='and' || obj['field']=='or' || obj['field']=='bool'){
-                        new_obj[obj['field']]=[]
-                        for(var key in obj['child']){
-                            var t=clone(this.obj_parser(tmp, obj['child'][key]))
-                            new_obj[obj['field']].push(t);
-                        }
-                    //不转数组
-                    }else{
-                        for(var key in obj['child']){
-                            new_obj[obj['field']] = this.obj_parser(tmp, obj['child'][key]);
-                        }
-
-                    }
-                }else{
-
-                    new_obj[obj['field']] = obj['value'];
-                    return new_obj
-
-                }
-                return new_obj
             }
-
-
-        },
-        cc:function(){
-            return 4;
         }
     })
 

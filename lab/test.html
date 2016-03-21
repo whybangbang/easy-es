@@ -6,22 +6,65 @@
 </head>
 <body>
     <script>
-        var data={
-            "field": "es",
+        var data=
+        {
+            "field": "Elasticsearch",
+            "open": true,
+            "extend": "es",
+            "root": true,
+            "choose": true,
+            "undelete": true,
             "child": [
                 {
-                    "field": "size",
-                    "gorup": 5,
-                    "array": true,
-                    child:[
-                        {'field':1,value:1},
-                        {'field':2,value:2}
+                    "field": "filter",
+                    "extend": "filter",
+                    "group": 2,
+                    "choose": true,
+                    "open": true,
+                    "child": [
+                        {
+                            "field": "and",
+                            "group": 1,
+                            "choose": true,
+                            "extend": "filter",
+                            "open": true,
+                            "child": [
+                                {
+                                    "field": "term",
+                                    "group": 1,
+                                    "child": [
+                                        {
+                                            "field": "",
+                                            "undelete": true
+                                        }
+                                    ],
+                                    "open": true
+                                },
+                                {
+                                    "field": "range",
+                                    "group": 1,
+                                    "child": [
+                                        {
+                                            "field": "",
+                                            "open": true,
+                                            "undelete": true,
+                                            "child": [
+                                                {
+                                                    "field": "from",
+                                                    "undelete": true
+                                                },
+                                                {
+                                                    "field": "to",
+                                                    "undelete": true
+                                                }
+                                            ]
+                                        }
+                                    ],
+                                    "open": true
+                                }
+                            ]
+                        }
                     ]
-                },
-                {
-                    "field": "sss",
-                    "gorup": 5,
-                    "open": true
                 }
             ]
         }
@@ -58,6 +101,7 @@
 
         a=parser()
         console.log(a)
+        console.log(JSON.stringify(a))
 
     </script>
 

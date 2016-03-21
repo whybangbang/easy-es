@@ -37,6 +37,8 @@ var parts={
       gorup:5,
     }
   ],
+
+
   'filter':[
     {
       field: 'term',
@@ -81,9 +83,9 @@ var parts={
           undelete:true,
           child: [
             {field: 'from',
-              undelete:true,},
+              },
             {field: 'to',
-              undelete:true,}
+              }
           ]
         }
       ]
@@ -112,6 +114,67 @@ var parts={
       choose:true,
       extend:'filter'
     },
+    {
+      field:'missing',
+      group:1,
+      open:true,
+      child:[
+        {
+          field:''
+        }
+      ]
+    },
+    {
+      field:'geo_bounding_box',
+      group:1,
+      open: true,
+      child:[
+        {
+          field:'',
+          open: true,
+          undelete:true,
+          child:[
+            {
+              field:'top_left',
+              undelete:true,
+            },
+            {
+              field:'bottom_right',
+              undelete:true,
+            }
+          ]
+        }
+      ]
+    },
+    {
+      field:'geo_distance',
+      group:1,
+      open:true,
+      child:[
+        {
+          field:'distance',
+          open:true,
+        },
+        {
+          field:'location',
+          open:true,
+          undelete:true,
+          child:[
+            {
+              field:'lat',
+              open:true,
+              undelete:true
+            },
+            {
+              field:'lon',
+              open:true,
+              undelete:true
+
+            }
+          ]
+        }
+      ]
+    }
   ],
   'bool':[
     {
