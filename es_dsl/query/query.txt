@@ -1,0 +1,76 @@
+match
+	field:match
+		field:mesage(自己填写)
+			field:query
+				value:whywhy (自己填写)
+			field:operator:
+				value: and 或者or
+	example:
+		"match" : {
+	        "message" : {
+	            "query" : "this is a test",
+	            "operator" : "and"
+	             "analyzer" : "my_analyzer"  #可选填
+	        }
+	    }
+
+multi match
+	example:
+		"multi_match" : {
+		    "query":      "Jon",
+		    "fields":     [   					#可以填写多个
+		        "first", "first.edge",
+		        "last",  "last.edge"
+		    ],
+		    "operator":   "and" 				#and 或者 or
+		    "analyzer" : "my_analyzer"  #可选填
+		  }
+
+bool
+	example:
+		{
+		    "bool" : {
+		        "must" : {
+		            "term" : { "user" : "kimchy" }   #还是可以嵌套其他query
+		        },
+		        "must_not" : {
+		            "range" : {
+		                "age" : { "from" : 10, "to" : 20 }
+		            }
+		        },
+		        "should" : [
+		            {
+		                "term" : { "tag" : "wow" }
+		            },
+		            {
+		                "term" : { "tag" : "elasticsearch" }
+		            }
+		        ],
+		        "minimum_should_match" : 1,     #可以填写
+		        "boost" : 1.0					#可以填写
+		    }
+		}
+
+filtered query
+	example:
+		"filtered": { 
+		      "query": {
+		        "match": { "tweet": "full text search" }    #这里面可以放query语句
+		      },
+		      "filter": {
+		        "range": { "created": { "gte": "now-1d/d" }}  ＃这里面可以放filter语句
+		      }
+		    }
+
+prefix
+	
+query string
+	
+range 
+regexp
+term
+terms
+Wildcard
+
+#这个最复杂，最强大
+function score query

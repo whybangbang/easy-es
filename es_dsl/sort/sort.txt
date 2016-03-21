@@ -1,0 +1,35 @@
+sort:
+	sort中有两种格式的排序
+		一种是根据一个字段值大小排序：{ "age" : "desc" }
+		一种根据经纬度距离排序
+					{
+			            "_geo_distance" : {
+			                "location(这个字段可以填)" : {
+			                    "lat" : 40, (可以填)
+			                    "lon" : -70 (可以填)
+			                },
+			                "order" : "asc", #这个参数可以填，但默认asc
+			                "unit" : "km"	#这个参数可以填，默认km
+
+			            }
+			        }
+
+
+	sort中可以多个排序并列
+		"sort" : [
+        { "post_date" : "asc"},
+        { "name" : "desc" },
+        { "age" : "desc" },
+        {
+			            "_geo_distance" : {
+			                "location(这个字段可以填)" : {
+			                    "lat" : 40, (可以填)
+			                    "lon" : -70 (可以填)
+			                },
+			                "order" : "asc", #这个参数可以填，但默认asc
+			                "unit" : "km"	#这个参数可以填，默认km
+
+			            }
+			        }
+
+    ],
