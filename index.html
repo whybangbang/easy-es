@@ -189,6 +189,27 @@
                 subparts:clone(parts)
             }
         },
+        created:function(){
+            //清除父展开的选项
+            if(this.$parent.hasOwnProperty('chooseChildShow')){
+                this.$parent.chooseChildShow=false;
+            }
+            /*
+            console.log(this.model.field)
+            //清除唯一
+            if(this.group){
+                for(var son in this.$parent.$children){
+                    if($parent.$children[i].parts
+                    }
+                }
+            for(var i in parts[extend]){
+                if(parts[extend][i].group===field.group){
+                    Vue.set(this.subparts[extend][i],'only',true)
+
+
+                }
+            }*/
+        },
         computed: {
             isFolder: function () {
                 return this.model.child &&
@@ -202,10 +223,38 @@
                 }
             },
             showchooseChild:function(){
+                //查询子数据
+
+                //先进行only处理
+                //遍历子部件
+                if(!checkArray(this.model.field)){//排除and、or
+                    for(var son in this.$children){
+                        if(this.$children[son].model.group){//判断是否分组
+                            var group_num=this.$children[son].model.group;//得到分组号
+                            //修改数据subparts
+                            for(var i in parts[this.model.extend]){
+                                if(parts[this.model.extend][i].group===group_num){
+                                    Vue.set(this.subparts[this.model.extend][i],'only',true)
+                                }
+                            }
+                        }
+                    }
+                }
+              //显示选项栏
               this.chooseChildShow=true;
             },
             hideChildShow:function(){
                 this.chooseChildShow=false;
+                //隐藏选项，这里vm.create冗余,单质量写并不好
+                function hide(obj){
+                    for(var i in obj.$children){
+                        if(obj.hasOwnProperty('chooseChildShow')){
+                            obj['chooseChildShow']=false
+                        }
+                            hide(obj.$children[i])
+                    }
+                }
+                hide(vm)
             },
             extendChild: function (field) {
                 this.chooseChildShow=false;
@@ -225,20 +274,6 @@
                         //显示为展开
                         this.model.child[this.model.child.length-1]['open']=true;
 
-                        //only处理
-                        if(field.group){
-                            if(this.model.field!='and'&&this.model.field!='or'&&this.model.field!='bool'){ //判断是否可以为并
-
-                                for(var i in parts[extend]){
-                                    if(parts[extend][i].group===field.group){
-                                        Vue.set(this.subparts[extend][i],'only',true)
-
-
-                                    }
-
-                                }
-                        }
-                        }
                         break;
                     }
                 }
@@ -280,8 +315,13 @@
             treeName:'start',
             treeNameLists:[]
         },
-        created:function(){
+        created:function() {
             this.updateTree()
+
+            //隐藏选项，这里同上冗余
+        },
+        ready:function(){
+
         },
         computed: {
             getStr: function () {
@@ -350,6 +390,7 @@
             }
         }
     })
+
 
 </script>
 

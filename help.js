@@ -106,29 +106,43 @@ function clone(obj){
   return o;
 }
 
-//json转换
-function obj_parser(new_obj,obj){
-  if(obj.hasOwnProperty('child')){
+//检验是否为为bool、and、or,如果t是返回true
+function checkArray(obj){
+  var lists=['and','or','bool'];
+  for(var i in lists){
+    if(obj===lists[i]){
+      return true;
+    }
+  }
+  return false;
+}
 
-    var tmp={};
-    if(!obj['array']){
-      for(var key in obj['child']){
-        new_obj[obj['field']] = obj_parser(tmp, obj['child'][key]);
+//json转换
+function obj_parser(new_obj,obj) {
+  if (obj.hasOwnProperty('child')) {
+
+    var tmp = {};
+    //转数组
+    if (checkArray(obj['field'])) {
+      new_obj[obj['field']] = []
+      for (var key in obj['child']) {
+        var t = clone(this.obj_parser(tmp, obj['child'][key]))
+        new_obj[obj['field']].push(t);
       }
-    }else{
-      new_obj[obj['field']]=[]
-      for(var key in obj['child']){
-        new_obj[obj['field']].push(obj_parser(tmp, obj['child'][key]));
+      //不转数组
+    } else {
+      for (var key in obj['child']) {
+        new_obj[obj['field']] = this.obj_parser(tmp, obj['child'][key]);
       }
 
     }
-  }else{
-
+  } else {
     new_obj[obj['field']] = obj['value'];
     return new_obj
-
   }
   return new_obj
 }
+
+
 
 
