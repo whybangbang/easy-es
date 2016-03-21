@@ -121,18 +121,36 @@ function help(){
 
   //json转换
   function obj_parser(new_obj,obj) {
+    //console.log('this is start');
+    //console.log(new_obj);
+    //console.log(obj);
     if (obj.hasOwnProperty('child')) {
 
-      var tmp = {};
+
       //转数组
       if (checkArray(obj['field'])) {
-        new_obj[obj['field']] = []
+        var tmp={};
+        new_obj[obj['field']] = [];
         for (var key in obj['child']) {
-          var t = clone(this.obj_parser(tmp, obj['child'][key]))
+
+          //TODO 这里有个问题，每次迭代完t会莫名奇妙增加1位，只好用小技巧删除，但不安全
+          var t = clone(this.obj_parser(tmp, obj['child'][key]));
+          var storeT=0;
+          for(var subT in t){
+            storeT=storeT+1
+          }
+          storeT=storeT-2;
+          for(var subT in t){
+            storeT=storeT-1;
+            if(storeT!==0){
+              delete t[subT];
+            }
+          }
           new_obj[obj['field']].push(t);
         }
         //不转数组
       } else {
+        var tmp = {};
         for (var key in obj['child']) {
           new_obj[obj['field']] = this.obj_parser(tmp, obj['child'][key]);
         }
@@ -151,7 +169,31 @@ function help(){
     obj_parser:obj_parser
   }
 }
+var help=help()
+function obj_parser(new_obj,obj) {
+  if (obj.hasOwnProperty('child')) {
 
+    var tmp = {};
+    //转数组
+    if (help.checkArray(obj['field'])) {
+      new_obj[obj['field']] = []
+      for(var key in obj['child']){
+        console.log(key)
+        new_obj[obj['field']].push(obj_parser(tmp, obj['child'][key]));
+      }
+      //不转数组
+    } else {
+      for (var key in obj['child']) {
+        new_obj[obj['field']] = this.obj_parser(tmp, obj['child'][key]);
+      }
+
+    }
+  } else {
+    new_obj[obj['field']] = obj['value'];
+    return new_obj
+  }
+  return new_obj
+}
 
 
 
