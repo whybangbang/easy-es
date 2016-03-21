@@ -6,6 +6,7 @@ var parts={
     {
       field: 'sort',
       extend:'sort',
+      array:true,
       group:1,
       choose:true,
     },
@@ -211,9 +212,7 @@ var parts={
   'sort':[
     {
       field:'',
-      name:'field',
-      value:'',
-      array:true,
+      name:'[field]',
     },
     {
       field:'_geo_distance',
@@ -222,13 +221,16 @@ var parts={
       child:[
         {
           field:'location',
+          undelete:true,
           open:true,
           child:[
             {
-              field:'lat'
+              field:'lat',
+              undelete:true
             },
             {
-              field:'lon'
+              field:'lon',
+              undelete:true
             }
           ]
 
