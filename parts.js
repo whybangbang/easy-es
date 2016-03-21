@@ -5,7 +5,9 @@ var parts={
   'es':[
     {
       field: 'sort',
+      extend:'sort',
       group:1,
+      choose:true,
     },
     {
       field: 'filter',
@@ -98,12 +100,14 @@ var parts={
     },
     {
       field: 'and',
+      array:true,
       group:1,
       choose:true,
       extend:'filter'
     },
     {
       field: 'or',
+      array:true,
       group:1,
       choose:true,
       extend:'filter'
@@ -179,26 +183,59 @@ var parts={
   'bool':[
     {
       field: 'must',
-      child: [
-        {field: ''}
-      ]
+      group:1,
+      array:true,
+      choose:true,
+      extend:'filter'
     },
     {
       field: 'must_not',
-      child: [
-        {field: ''}
-      ]
+      group:1,
+      array:true,
+      choose:true,
+      extend:'filter'
     },
     {
       field: 'should',
-      child: [
-        {field: ''}
-      ]
+      group:1,
+      array:true,
+      choose:true,
+      extend:'filter'
     },
   ],
   'exist_null':[
     {
     field:"null_value",
     value:"_null_"
-  }]
+  }],
+  'sort':[
+    {
+      field:'',
+      name:'field',
+      value:'',
+      array:true,
+    },
+    {
+      field:'_geo_distance',
+      open:true,
+      group:1,
+      child:[
+        {
+          field:'location',
+          open:true,
+          child:[
+            {
+              field:'lat'
+            },
+            {
+              field:'lon'
+            }
+          ]
+
+        }
+      ]
+
+
+    }
+  ]
 };

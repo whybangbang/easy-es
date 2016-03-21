@@ -13,6 +13,7 @@
     </style>
     <script src="http://cdn.bootcss.com/vue/1.0.17/vue.js"></script>
     <script src="http://cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
+    <script src="assert/clipboard.min.js"></script>
 
     <script src="data.js"></script>
     <script src="parts.js"></script>
@@ -48,7 +49,7 @@
                         v-show="!item.only"
                         v-if="!item.disabled"
                         @click="extendChild(item)">
-                        <a href="#!">{{item.field}}</a>
+                        <a href="#!">{{item.name || item.field  }}</a>
                     </li>
 
                 </ul>
@@ -115,8 +116,8 @@
             </ul>
         </div>
         <div class="col s6">
-            <p>Write DSL/Elasticsearch quickly! 让ES查询语句不发指！</p>
-            <textarea class="getstr">{{{getStr}}}</textarea>
+            <a class=" btn waves-effect waves-teal btn-flat" data-clipboard-target="#getstr">cope code</a>
+            <textarea class="getstr" id="getstr">{{{getStr}}}</textarea>
         </div>
     </div>
 </div>
@@ -150,7 +151,8 @@
 
 
 <script>
-
+    //注册剪贴板
+    new Clipboard('.btn');
     // 整体框架
     Vue.config.debug = true
     // define the item component
@@ -188,7 +190,7 @@
 
                 //先进行only处理
                 //遍历子部件
-                if(!help.checkArray(this.model.field)){//排除and、or
+                if(!this.model.array){//排除and、or
                     for(var son in this.$children){
                         if(this.$children[son].model.group){//判断是否分组
                             var group_num=this.$children[son].model.group;//得到分组号
