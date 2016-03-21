@@ -88,14 +88,14 @@
         <div class="col s2 input-select">
             <input type="text" v-model="treeProject">
             <select v-model="treeProject">
-                <option v-for="item in treeProjectLists">{{item}}</option>
+                <option v-for="item in treeProjectLists" track-by="$index">{{item}}</option>
             </select>
 
         </div>
         <div class="col s6 input-select">
             <input type="text" v-model="treeName">
             <select v-model="treeName">
-                <option v-for="item in treeNameLists">{{item}}</option>
+                <option v-for="item in treeNameLists" track-by="$index">{{item}}</option>
             </select>
         </div>
         <div class="col s4">
@@ -314,9 +314,19 @@
                 //已储存有树
                 if(localStorage['tree']){
                     var tmp=JSON.parse(localStorage['tree']);
+
+                    //没有此项目则新建项目
                     if(!tmp[this.treeProject]){
                         tmp[this.treeProject]={}
                     }
+
+                    //检查重名
+                    if(tmp[this.treeProject][this.treeName]){
+                        if(!confirm('Name already exists, you want to replace it?')){
+                            return None;
+                        }
+                    }
+
                     tmp[this.treeProject][this.treeName]=this.treeData;
                     localStorage['tree']=JSON.stringify(tmp);
 
