@@ -4,11 +4,12 @@
 var data={
   field: 'Elasticsearch',
   open: true,
-  extend:'es',
+  extend:'elastic_search',
   root:true,
   choose:true,
   undelete:true,
-}
+};
+
 var data2 = {
   field: 'Elasticsearch',
   open: true,
