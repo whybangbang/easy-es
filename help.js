@@ -150,11 +150,16 @@ function help(){
     }
     return new_obj
   }
+
+  function isArray(obj){
+    return (typeof obj=='object')&&obj.constructor==Array;
+  }
   return{
     json_formate:json_formate,
     clone:clone,
     checkArray:checkArray,
-    obj_parser:obj_parser
+    obj_parser:obj_parser,
+    isArray:isArray
   }
 }
 var help=help()

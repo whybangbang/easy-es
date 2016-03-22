@@ -24,6 +24,7 @@
 11. name:别名，用于field解释不清楚时用
 12. placeholder:value的提示词，不填显示value
 13. must_only,
+14. arrayValue: 提供value的选项 如 arrayValue=['and','or'],请将value='and',出现预先值
  概念辨析：
 1.  extend：增加子项
 2.  add：增同级项目

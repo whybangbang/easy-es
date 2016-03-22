@@ -205,6 +205,8 @@ var parts={
     {
       field:'',
       name:'[field]',
+      value:'asc',
+      arrayValue:['desc','asc'],
     },
     {
       field:'_geo_distance',
@@ -260,7 +262,8 @@ var parts={
             },
             {
               field:'operator',
-              placeholder:'and/or',
+              value:'and',
+              arrayValue:['and','or'],
               undelete:true
             },
             {
@@ -297,7 +300,8 @@ var parts={
         },
         {
           field:'operator',
-          placeholder:'and/or',
+          value:'and',
+          arrayValue:['and','or'],
           undelete:true
         },
         {

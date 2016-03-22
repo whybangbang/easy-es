@@ -34,7 +34,15 @@
 
             <!--field--><input type="text" v-model="model.field" class="data-field" placeholder="field">
 
-            <!--value--><span v-if="!model.child  && !model.extend">: <input type="text" v-model="model.value" class="data-value" placeholder="{{model.placeholder || 'value'}}"></span>
+            <!--value--><span v-if="!model.child  && !model.extend">:
+                <input  v-if="!model.arrayValue"
+                        type="text" v-model="model.value" class="data-value" placeholder="{{model.placeholder || 'value'}}">
+
+                <select v-else v-model="model.value" class="tree_select">
+                    <option v-for="v in model.arrayValue ">{{v}}</option>
+                </select>
+
+            </span>
 
             <span @click="delChild" v-if="!model.undelete">X</span>
             <!--有括展项-->
@@ -179,6 +187,9 @@
             isFolder: function () {
                 return this.model.child &&
                         this.model.child.length
+            },
+            isArray:function(){
+                return (typeof this.model.value=='object')&&this.model.value.constructor==Array;
             }
         },
         methods: {
