@@ -27,7 +27,7 @@ var parts = {
     },
     size: {
       field: 'size',
-      gorup: 5,
+      group: 5,
     }
   },
 
@@ -63,10 +63,10 @@ var parts = {
 
       ]
     },
-    _cache: {
+    '_cache': {
       value: true,
       disabled: true,
-      group: 2
+      group: 1
     },
     range: {
       group: 1,

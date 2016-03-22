@@ -199,6 +199,45 @@
             if(this.$parent.hasOwnProperty('chooseChildShow')){
                 this.$parent.chooseChildShow=false;
             }
+
+
+        },
+        ready:function(){
+            //only 处理
+            if(this.$parent.hasOwnProperty('model')){//非第一个组件
+                if(!this.$parent.model.array){
+                //排除and、or
+                //遍历子对象
+                for(var son in this.$parent.$children){
+
+                    if(this.$parent.$children[son].model.group){//判断是否分组
+                        var group_number=this.$parent.$children[son].model.group;//得到分组号
+                        //修改数据subparts
+                        for(var part in this.$parent.subparts){
+                            if(this.$parent.subparts[part].group===group_number){
+                                Vue.set(this.$parent.subparts[part],'only',true)
+                            }
+                        }
+                    }
+                }
+                }
+
+                var part_open=true;
+                for(var part in this.$parent.subparts){
+                    if(!this.$parent.subparts[part].only){
+                        part_open=false
+                    }
+
+                }
+                //console.log(part_open)
+                if(part_open){
+                    Vue.set(this.$parent.view,'hideChooseChildBtn',true)
+
+                }
+
+
+            }
+
         },
         computed: {
             isFolder: function () {
@@ -218,22 +257,16 @@
             //显示可添加的子项
             showchooseChild:function(){
 
-                //only 处理
-                if(!this.model.array){//排除and、or
-                    //遍历子对象
-                    for(var son in this.$children){
-                        if(this.$children[son].model.group){//判断是否分组
-                            var group_number=this.$children[son].model.group;//得到分组号
-
-                            //修改数据subparts
-                            for(var part in this.subparts){
-                                if(this.subparts[part].group===group_number){
-                                    Vue.set(this.subparts[part],'only',true)
-                                }
-                            }
-                        }
+                //影藏其他展开的选项
+                function hide(obj){
+                    obj.$data.chooseChildShow=false;
+                    //隐藏所有的子选项
+                    for(var i in obj.$children){
+                        hide(obj.$children[i])
                     }
                 }
+                hide(vm);
+
               this.chooseChildShow=true;
             },
 
@@ -248,7 +281,7 @@
                          hide(obj.$children[i])
                      }
                  }
-                 hide(this);
+                 hide(vm);
 
                 // 检查有无子child 数组
                 if (!this.isFolder) {
@@ -270,16 +303,6 @@
                 this.open=true
                 this.model.child[this.model.child.length-1]['open']=true;
 
-                 //检查还有无可增加的子选项
-                 var check_child=true
-                 for(part in this.subparts){
-                     if(!this.subparts[part].only){
-                         check_child=false
-                     }
-                 }
-                if(check_child){
-                    Vue.set(this.view,'hideChooseChildBtn',true)
-                }
 
             },
             //扩展自定义项目

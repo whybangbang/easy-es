@@ -164,12 +164,25 @@ function help() {
     return (typeof obj == 'object') && obj.constructor == Array;
   }
 
+  function uniqueArray(arr) {
+    var result = [], hash = {};
+    for (var i = 0, elem; (elem = arr[i]) != null; i++) {
+      if (!hash[elem]) {
+        result.push(elem);
+        hash[elem] = true;
+      }
+    }
+    return result;
+
+  }
+
   return {
     json_formate: json_formate,
     clone: clone,
     checkArray: checkArray,
     obj_parser: obj_parser,
-    isArray: isArray
+    isArray: isArray,
+    uniqueArray:uniqueArray
   }
 }
 var help = help()
