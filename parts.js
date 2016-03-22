@@ -314,7 +314,7 @@ var parts={
     {
       field:'bool',
       extend:'query_bool',
-      group:3,
+      group:1,
       choose:true,
     }
   ],

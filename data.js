@@ -8,7 +8,8 @@ var data={
   root:true,
   choose:true,
   undelete:true,
-}
+};
+
 var data2 = {
   field: 'Elasticsearch',
   open: true,
