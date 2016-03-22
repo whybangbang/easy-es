@@ -131,7 +131,7 @@ function help() {
 
   //json转换
   function obj_parser(new_obj, obj) {
-    var tmp = {};
+
 
     //中间情况
     if (obj.hasOwnProperty('child')) {
@@ -139,6 +139,7 @@ function help() {
       if (obj['array']) {
         new_obj[obj['field']] = [];
         for (var key in obj['child']) {
+            var tmp = {};
 
           //TODO 这里有个问题，每次迭代完t会莫名奇妙增加1位，只好用小技巧删除，但不安全
           var t = clone(this.obj_parser(tmp, obj['child'][key]));
@@ -148,6 +149,7 @@ function help() {
         //不转数组
       } else {
         for (var key in obj['child']) {
+            var tmp = {};
           new_obj[obj['field']] = this.obj_parser(tmp, obj['child'][key]);
         }
 

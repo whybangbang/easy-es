@@ -51,7 +51,7 @@ bool
 		    }
 		}
 
-filtered query
+filtered query（filtered这个和match是同一级别）
 	example:
 		"filtered": { 
 		      "query": {
@@ -63,14 +63,50 @@ filtered query
 		    }
 
 prefix
-	
+	example:
+		{
+    		"prefix" : { "user" : "ki" }
+		}
+
 query string
+	example:
+	{
+	    "query_string": {
+	      "query": "(content:this OR name:this) AND (content:that OR name:that)" (是否可以在一些查询语句旁边有个小的问号，当鼠标放在上面就给出范例)
+	    }
+	}
 	
 range 
+	example:
+	{
+	    "range" : {
+	        "age" : {
+	            "gte" : 10,
+	            "lte" : 20
+	        }
+	    }
+	}
+
 regexp
+	example:
+	{
+	    "regexp":{
+	        "name": "s.*y"(建议这个给出范例)
+	    }
+	}
+
 term
-terms
+	example:
+	{
+          "term": {
+            "status": {
+              "value": "urgent"
+            }
+          }
+        }
+
 Wildcard
+	
 
 #这个最复杂，最强大
 function score query
