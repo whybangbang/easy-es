@@ -11,7 +11,7 @@
 
  编写示例：
 
-1.  field str 字键名
+1.  field  字键名
 2.  value 值，根据用户填的可自动生成，也可提供默认值
 3.  extend 可扩展，默认为false不可扩展，为ture为随意扩展，为filter时为term、range、exist、bool、and扩展
 4.  open 展开，默认为false，为true时默认为展开的
@@ -23,8 +23,8 @@
 10.  disabled: 不显示该字段，默认为false显示，true为不显示
 11. name:别名，用于field解释不清楚时用
 12. placeholder:value的提示词，不填显示value
-13. must_only,
 14. arrayValue: 提供value的选项 如 arrayValue=['and','or'],请将value='and',出现预先值
+
  概念辨析：
 1.  extend：增加子项
 2.  add：增同级项目
