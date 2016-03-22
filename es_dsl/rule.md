@@ -34,6 +34,8 @@
 6.  parts: 辅助供选择的； subparts 各子临时缓存的
 7.  dsl：最终生成的语句
 
+全局状态
+tree_customize：true 打开自定义修改 false 关闭（默认）
 
 TODO
 1. 去除不要的+

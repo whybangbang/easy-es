@@ -119,3 +119,29 @@ select{
   border-bottom: 1px solid #f5f5f5;
   margin-bottom: 0.5em;
 }
+
+.customize-add{
+  background-color: #84c7c1;
+  color:#fff;
+  border-radius: 1em;
+  height:1em;
+  font-size: 0.7em;
+  padding: 0.1em 0.5em;
+}
+.customize-array{
+  background-color: #84c7c1;
+  color:#fff;
+  border-radius: 1em;
+  height:1em;
+  font-size: 0.7em;
+  padding: 0.1em 0.5em;
+}
+
+.customize-array input{
+  font-size: 0.7em;
+}
+.customize-array label{
+  font-size: 0.7em;
+  color:#fff
+}
+

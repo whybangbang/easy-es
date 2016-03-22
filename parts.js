@@ -2,6 +2,7 @@
  * Created by seaasun on 2016-3-20.
  */
 var parts={
+  'tree_customize':false,
   'es':[
     {
       field: 'sort',
