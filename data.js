@@ -4,7 +4,7 @@
 var data={
   field: 'Elasticsearch',
   open: true,
-  extend:'es',
+  extend:'elastic_earch',
   root:true,
   choose:true,
   undelete:true,

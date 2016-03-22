@@ -1,6 +1,22 @@
 /**
  * Created by seaasun on 2016-3-20.
  */
+
+var parts={
+  tree_customize:false,
+  elastic_earch:{
+    sort:{
+      group:1,
+      extend:'elastic_earch',
+    },
+    filter:{
+      group:1
+    }
+  }
+}
+
+
+/*
 var parts={
   'tree_customize':false,
   'es':[
@@ -360,3 +376,4 @@ var parts={
     }
   ]
 };
+*/

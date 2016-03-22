@@ -24,7 +24,7 @@
     <script src="assert/materialize/js/materialize.min.js"></script>
     <script src="help.js"></script>
 </head>
-<body>
+<body id="app" @click="hideChildShow">
 <!-- item template -->
 <script type="text/x-template" id="item-template">
     <li>
@@ -55,18 +55,16 @@
 
             <span @click="delChild" v-if="!model.undelete">X</span>
             <!--有括展项-->
-            <div v-if="chooseChildShow" class="choose-child-clear" @click="hideChildShow"></div>
             <span v-if="model.extend" class="choose-child">
-                <a  href='#' @click="showchooseChild" v-bind:class="{'color-grey':view.hideChooseChildBtn}">+</a>
-
+                <a  href='#' @click.stop="showchooseChild" v-bind:class="{'color-grey':view.hideChooseChildBtn}">+</a>
 
                 <!-- 下拉扩展项 -->
                 <ul v-show="chooseChildShow" class="choose-child-box">
-                    <li v-for="item in subparts[model.extend]"
+                    <li v-for="item in subparts"
                         v-show="!item.only"
                         v-if="!item.disabled"
-                        @click="extendChild(item)">
-                        <a href="#!">{{item.name || item.field  }}</a>
+                        @click="extendChild($key)">
+                        <a href="#!">{{$key}}</a>
                     </li>
 
                 </ul>
@@ -82,7 +80,6 @@
                     >
             </item>
 
-            <!--<li @click="addChild" v-show="false">+</li>-->
         </ul>
     </li>
 </script>
@@ -101,7 +98,7 @@
 </nav>
 
 <!-- app -->
-<div id="app">
+<div >
 
     <div class="row">
         <div class="col s2 input-select">
@@ -193,7 +190,7 @@
                 array:this.model.array ? this.model.array : false,
                 open: this.model.open ? this.model.open : false,
                 chooseChildShow:!!this.model.choose,
-                subparts:help.clone(parts),
+                subparts:help.clone(parts[this.model.extend]),
                 view:{}
             }
         },
@@ -218,66 +215,57 @@
                     this.open = !this.open;
                 }
             },
+            //显示可添加的子项
             showchooseChild:function(){
-                //查询子数据
 
-
-                //先进行only处理
-                //遍历子部件
+                //only 处理
                 if(!this.model.array){//排除and、or
+                    //遍历子对象
                     for(var son in this.$children){
                         if(this.$children[son].model.group){//判断是否分组
-                            var group_num=this.$children[son].model.group;//得到分组号
+                            var group_number=this.$children[son].model.group;//得到分组号
 
                             //修改数据subparts
-                            for(var i in parts[this.model.extend]){
-                                if(parts[this.model.extend][i].group===group_num){
-                                    Vue.set(this.subparts[this.model.extend][i],'only',true)
+                            for(var part in this.subparts){
+                                if(this.subparts[part].group===group_number){
+                                    Vue.set(this.subparts[part],'only',true)
                                 }
                             }
                         }
                     }
                 }
-
-                //查询还有无子选项,无可用的选项则禁用“+”
-                var tmp=true;
-                for(var i in this.subparts[this.model.extend]){
-                    if(!this.subparts[this.model.extend][i]['only'] && !this.subparts[this.model.extend][i]['disabled'] && this.subparts[this.model.extend][i]['field']){
-                        tmp=false;
-                        //break
-                    }
-                }
-                if(tmp){
-                    Materialize.toast("can't add more item,please delete children items  at first", 4000)
-                    Vue.set(this.view,'hideChooseChildBtn',true)
-                }
-
-
-              //显示选项栏
               this.chooseChildShow=true;
             },
-            hideChildShow:function(){
+
+            //扩展子项目
+            //field str 子项目的名称
+             extendChild: function (field) {
                 this.chooseChildShow=false;
-                //隐藏选项，这里vm.create冗余,单质量写并不好
-                function hide(obj){
-                    for(var i in obj.$children){
-                        if(obj.hasOwnProperty('chooseChildShow')){
-                            obj['chooseChildShow']=false
-                        }
-                            hide(obj.$children[i])
-                    }
-                }
-                hide(vm)
-            },
-            extendChild: function (field) {
-                this.chooseChildShow=false;
+
+                // 检查有无子child 数组
                 if (!this.isFolder) {
                     Vue.set(this.model, 'child', []);
-                    this.addChild(this.model.extend,field);
-                }else{
-                    this.addChild(this.model.extend,field);
                 }
+
+                //添加子项目,用push方法
+                //this.addChild(this.model.extend,field);
+                var child=help.clone(parts[this.model.extend][field]);
+                this.model.child.push(child);
+
+                //展开新添加的内容
+                this.open=true
+                this.model.child[this.model.child.length-1]['open']=true;
+
+                 //检查还有无可增加的子选项
+                 for(part in this.subparts){
+                     if(!this.subparts[part].only){
+                         Vue.set(this.view,'hideChooseChildBtn',true)
+                         break;
+                     }
+                 }
+
             },
+            //扩展自定义项目
             extendCustomizeChild:function(){
                 if(!this.isFolder){
                     Vue.set(this.model, 'child', []);
@@ -288,62 +276,32 @@
                 })
 
             },
-            addChild: function (extend,field) {
-                for(var i in this.parts[extend]){
-                    if(parts[extend][i]['field']==field.field){
-                        var tmp=help.clone(parts[extend][i])//拷贝原码
-                        this.model.child.push(tmp);
-                        this.open=true;
-                        //显示为展开
-                        this.model.child[this.model.child.length-1]['open']=true;
-
-                        break;
-                    }
-                }
-                //先进行only处理,为了处理+
-                //遍历子部件
-                this.showchooseChild()
-                /*
-                if(!help.checkArray(this.model.field)){//排除and、or
-
-                    for(var son in this.$children){
-                        if(this.$children[son].model.group){//判断是否分组
-
-                            var group_num=this.$children[son].model.group;//得到分组号
-                            //修改数据subparts
-                            for(var i in parts[this.model.extend]){
-                                if(parts[this.model.extend][i].group===group_num){
-                                    Vue.set(this.subparts[this.model.extend][i],'only',true)
-                                }
-                            }
-                        }
-                    }
-                }*/
-
-
-
-            },
+            //删除自项目
             delChild:function(){
                 for(var i in this.$parent.$children){
                     if(this===this.$parent.$children[i]){
+                        //通过父删除自己
                         this.$parent.model.child.splice(i,1)
 
-                        //only处理
-                        for(var i in parts[this.$parent.model.extend]){
-                            if(this.subparts[this.$parent.model.extend][i]['group']===this.model.group){
-                                this.$parent.subparts[this.$parent.model.extend][i]['only']=false
+                        //唯一属性的恢复 only处理
+                        for(var part in this.$parent.subparts){
+                            if(this.$parent.subparts[part]['group']===this.model.group){
+                                this.$parent.subparts[part]['only']=false
                             }
                         }
-                    break;
+                        break;
                     }
                 }
 
-
-            },
-            hideItem: function () {
-                alert(1);
-                this.hide = true;
+                //检查父有无可增加的项
+                for(part in this.$parent.subparts){
+                    console.log(this.$parent.subparts[part])
+                    if(!this.$parent.subparts[part].only){
+                        this.$parent.view.hideChooseChildBtn=false
+                    }
+                }
             }
+
         }
     });
 
@@ -359,12 +317,10 @@
             treeNameLists:[]
         },
         created:function() {
-            this.updateTree()
+            this.updateTree();
+            this.parts.tree_chooseChidShow=true;
 
             //隐藏选项，这里同上冗余
-        },
-        ready:function(){
-
         },
         watch: {
             treeProject:'updateTree'
@@ -448,6 +404,19 @@
             },
             ss:function(){
                 alert(1)
+            },
+            //隐藏添加子选项菜单
+            hideChildShow:function(){
+                function hide(obj){
+                    obj.$data.chooseChildShow=false;
+                    //隐藏所有的子选项
+                    for(var i in obj.$children){
+                        hide(obj.$children[i])
+                    }
+                }
+                hide(this);
+
+
             }
         }
     })

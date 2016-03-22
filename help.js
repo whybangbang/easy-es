@@ -3,7 +3,7 @@
  */
 
 
-function help(){
+function help() {
   //json 格式化工具
   function json_formate(json, options) {
     var reg = null,
@@ -60,7 +60,7 @@ function help(){
       json = json.replace(reg, ': ');
     }
 
-    $.each(json.split('\r\n'), function(index, node) {
+    $.each(json.split('\r\n'), function (index, node) {
       var i = 0,
         indent = 0,
         padding = '';
@@ -87,32 +87,42 @@ function help(){
   };
 
   //深度复制js对象
-  function clone(obj){
-    var o, obj;
-    if (obj.constructor == Object){
-      o = new obj.constructor();
-    }else{
-      o = new obj.constructor(obj.valueOf());
-    }
-    for(var key in obj){
-      if ( o[key] != obj[key] ){
-        if ( typeof(obj[key]) == 'object' ){
-          o[key] = clone(obj[key]);
-        }else{
-          o[key] = obj[key];
+  function clone(obj) {
+    var o, i, j, k;
+    if (typeof(obj) != "object" || obj === null)return obj;
+    if (obj instanceof (Array)) {
+      o = [];
+      i = 0;
+      j = obj.length;
+      for (; i < j; i++) {
+        if (typeof(obj[i]) == "object" && obj[i] != null) {
+          o[i] = arguments.callee(obj[i]);
+        }
+        else {
+          o[i] = obj[i];
         }
       }
     }
-    o.toString = obj.toString;
-    o.valueOf = obj.valueOf;
+    else {
+      o = {};
+      for (i in obj) {
+        if (typeof(obj[i]) == "object" && obj[i] != null) {
+          o[i] = arguments.callee(obj[i]);
+        }
+        else {
+          o[i] = obj[i];
+        }
+      }
+    }
+
     return o;
   }
 
   //检验是否为为bool、and、or,如果t是返回true
-  function checkArray(obj){
-    var lists=['and','or','bool','must','must_not','should','sort'];
-    for(var i in lists){
-      if(obj===lists[i]){
+  function checkArray(obj) {
+    var lists = ['and', 'or', 'bool', 'must', 'must_not', 'should', 'sort'];
+    for (var i in lists) {
+      if (obj === lists[i]) {
         return true;
       }
     }
@@ -120,9 +130,8 @@ function help(){
   }
 
   //json转换
-  function obj_parser(new_obj,obj) {
-    console.log(obj);
-    var tmp={};
+  function obj_parser(new_obj, obj) {
+    var tmp = {};
 
     //中间情况
     if (obj.hasOwnProperty('child')) {
@@ -143,7 +152,7 @@ function help(){
         }
 
       }
-    //最终
+      //最终
     } else {
       new_obj[obj['field']] = obj['value'];
       return new_obj
@@ -151,27 +160,27 @@ function help(){
     return new_obj
   }
 
-  function isArray(obj){
-    return (typeof obj=='object')&&obj.constructor==Array;
+  function isArray(obj) {
+    return (typeof obj == 'object') && obj.constructor == Array;
   }
-  return{
-    json_formate:json_formate,
-    clone:clone,
-    checkArray:checkArray,
-    obj_parser:obj_parser,
-    isArray:isArray
+
+  return {
+    json_formate: json_formate,
+    clone: clone,
+    checkArray: checkArray,
+    obj_parser: obj_parser,
+    isArray: isArray
   }
 }
-var help=help()
-function obj_parser(new_obj,obj) {
+var help = help()
+function obj_parser(new_obj, obj) {
   if (obj.hasOwnProperty('child')) {
 
     var tmp = {};
     //转数组
     if (help.checkArray(obj['field'])) {
       new_obj[obj['field']] = []
-      for(var key in obj['child']){
-        console.log(key)
+      for (var key in obj['child']) {
         new_obj[obj['field']].push(obj_parser(tmp, obj['child'][key]));
       }
       //不转数组
