@@ -34,13 +34,30 @@
 
             <!--field--><input type="text" v-model="model.field" class="data-field" placeholder="field">
 
-            <!--value--><span v-if="!model.child  && !model.extend">: <input type="text" v-model="model.value" class="data-value" placeholder="{{model.placeholder || 'value'}}"></span>
+            <!--value--><span v-if="!model.child  && !model.extend">:
+                <input  v-if="!model.arrayValue"
+                        type="text" v-model="model.value" class="data-value" placeholder="{{model.placeholder || 'value'}}">
+
+                <select v-else v-model="model.value" class="tree_select">
+                    <option v-for="v in model.arrayValue ">{{v}}</option>
+                </select>
+
+            </span>
+
+            <!--启用自定义模式--><span v-if="parts.tree_customize">
+            <a @click="extendCustomizeChild" class="customize-add">add</a>
+            <span class="customize-array">
+                <input type="checkbox" id="customize-array" v-model="model.array">
+                <label for="customize-array">array</label>
+            </span>
+            </span>
+
 
             <span @click="delChild" v-if="!model.undelete">X</span>
             <!--有括展项-->
             <div v-if="chooseChildShow" class="choose-child-clear" @click="hideChildShow"></div>
             <span v-if="model.extend" class="choose-child">
-                <a  href='#' @click="showchooseChild" v-bind:class="{'color-grey':view.hideChooseChildBtn}">{{view.hideChooseChildBtn}}+</a>
+                <a  href='#' @click="showchooseChild" v-bind:class="{'color-grey':view.hideChooseChildBtn}">+</a>
 
 
                 <!-- 下拉扩展项 -->
@@ -106,6 +123,17 @@
         </div>
     </div>
     <div class="row">
+        <div class="switch">
+            <label>
+                <input type="checkbox" v-model="parts.tree_customize">
+                <span class="lever"></span>
+                Customize Model
+            </label>
+        </div>
+
+    </div>
+    <!--<a  @mouseover="ss">Hover me!</a>-->
+    <div class="row">
         <div class="col s6">
             <ul>
                 <item
@@ -117,7 +145,8 @@
         </div>
         <div class="col s6">
             <a class=" btn waves-effect waves-teal btn-flat" data-clipboard-target="#getstr">cope code</a>
-            <textarea class="getstr" id="getstr">{{{getStr}}}</textarea>
+            <textarea class="getstr" id="getstr">{{{getStr | json 4}}}</textarea>
+            <textarea >{{getTree}}}</textarea>
         </div>
     </div>
 </div>
@@ -161,6 +190,7 @@
         props: ['model','parts'],
         data: function () {
             return {
+                array:this.model.array ? this.model.array : false,
                 open: this.model.open ? this.model.open : false,
                 chooseChildShow:!!this.model.choose,
                 subparts:help.clone(parts),
@@ -177,6 +207,9 @@
             isFolder: function () {
                 return this.model.child &&
                         this.model.child.length
+            },
+            isArray:function(){
+                return (typeof this.model.value=='object')&&this.model.value.constructor==Array;
             }
         },
         methods: {
@@ -188,12 +221,14 @@
             showchooseChild:function(){
                 //查询子数据
 
+
                 //先进行only处理
                 //遍历子部件
                 if(!this.model.array){//排除and、or
                     for(var son in this.$children){
                         if(this.$children[son].model.group){//判断是否分组
                             var group_num=this.$children[son].model.group;//得到分组号
+
                             //修改数据subparts
                             for(var i in parts[this.model.extend]){
                                 if(parts[this.model.extend][i].group===group_num){
@@ -203,6 +238,20 @@
                         }
                     }
                 }
+
+                //查询还有无子选项,无可用的选项则禁用“+”
+                var tmp=true;
+                for(var i in this.subparts[this.model.extend]){
+                    if(!this.subparts[this.model.extend][i]['only'] && !this.subparts[this.model.extend][i]['disabled'] && this.subparts[this.model.extend][i]['field']){
+                        tmp=false;
+                        //break
+                    }
+                }
+                if(tmp){
+                    Materialize.toast("can't add more item,please delete children items  at first", 4000)
+                    Vue.set(this.view,'hideChooseChildBtn',true)
+                }
+
 
               //显示选项栏
               this.chooseChildShow=true;
@@ -229,6 +278,16 @@
                     this.addChild(this.model.extend,field);
                 }
             },
+            extendCustomizeChild:function(){
+                if(!this.isFolder){
+                    Vue.set(this.model, 'child', []);
+                }
+                this.model.child.push({
+                    'field':'',
+                    'open':true
+                })
+
+            },
             addChild: function (extend,field) {
                 for(var i in this.parts[extend]){
                     if(parts[extend][i]['field']==field.field){
@@ -241,10 +300,9 @@
                         break;
                     }
                 }
-
                 //先进行only处理,为了处理+
                 //遍历子部件
-
+                this.showchooseChild()
                 /*
                 if(!help.checkArray(this.model.field)){//排除and、or
 
@@ -260,20 +318,9 @@
                             }
                         }
                     }
-                }
+                }*/
 
-                //查询还有无子选项,无可用的选项则禁用“+”
-                var tmp=true;
-                for(var i in this.subparts[this.model.extend]){
-                    if(!this.subparts[this.model.extend][i]['only'] && !this.subparts[this.model.extend][i]['disabled'] && this.subparts[this.model.extend][i]['field']){
-                        tmp=false;
-                        //break
-                    }
-                }
-                if(tmp){
-                    Vue.set(this.view,'hideChooseChildBtn',true)
-                }
-                */
+
 
             },
             delChild:function(){
@@ -326,9 +373,11 @@
             getStr: function () {
                 var new_obj={};
 
-               return help.json_formate(help.obj_parser(new_obj,this.treeData));
-                //return help.json_formate(this.treeData);
-               //return JSON.stringify(help.obj_parser(new_obj,this.treeData))
+                return help.obj_parser(new_obj,this.treeData)[this.treeData.field];
+
+            },
+            getTree: function(){
+                return JSON.stringify(this.treeData);
             }
         },
         methods: {
@@ -396,6 +445,9 @@
                     tmp[this.treeProject][this.treeName] = this.treeData;
                     localStorage['tree'] = JSON.stringify(tmp);
                 }
+            },
+            ss:function(){
+                alert(1)
             }
         }
     })

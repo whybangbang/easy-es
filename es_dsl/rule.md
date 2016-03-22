@@ -23,6 +23,8 @@
 10.  disabled: 不显示该字段，默认为false显示，true为不显示
 11. name:别名，用于field解释不清楚时用
 12. placeholder:value的提示词，不填显示value
+13. must_only,
+14. arrayValue: 提供value的选项 如 arrayValue=['and','or'],请将value='and',出现预先值
  概念辨析：
 1.  extend：增加子项
 2.  add：增同级项目
@@ -32,6 +34,8 @@
 6.  parts: 辅助供选择的； subparts 各子临时缓存的
 7.  dsl：最终生成的语句
 
+全局状态
+tree_customize：true 打开自定义修改 false 关闭（默认）
 
 TODO
 1. 去除不要的+

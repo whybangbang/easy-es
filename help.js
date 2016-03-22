@@ -121,53 +121,45 @@ function help(){
 
   //json转换
   function obj_parser(new_obj,obj) {
-    //console.log('this is start');
-    //console.log(new_obj);
-    //console.log(obj);
+    console.log(obj);
+    var tmp={};
+
+    //中间情况
     if (obj.hasOwnProperty('child')) {
-
-
       //转数组
       if (obj['array']) {
-
-        var tmp={};
         new_obj[obj['field']] = [];
         for (var key in obj['child']) {
 
           //TODO 这里有个问题，每次迭代完t会莫名奇妙增加1位，只好用小技巧删除，但不安全
           var t = clone(this.obj_parser(tmp, obj['child'][key]));
-          var storeT=0;
-          for(var subT in t){
-            storeT=storeT+1
-          }
-          storeT=storeT-2;
-          for(var subT in t){
-            storeT=storeT-1;
-            if(storeT!==0){
-              delete t[subT];
-            }
-          }
+
           new_obj[obj['field']].push(t);
         }
         //不转数组
       } else {
-        var tmp = {};
         for (var key in obj['child']) {
           new_obj[obj['field']] = this.obj_parser(tmp, obj['child'][key]);
         }
 
       }
+    //最终
     } else {
       new_obj[obj['field']] = obj['value'];
       return new_obj
     }
     return new_obj
   }
+
+  function isArray(obj){
+    return (typeof obj=='object')&&obj.constructor==Array;
+  }
   return{
     json_formate:json_formate,
     clone:clone,
     checkArray:checkArray,
-    obj_parser:obj_parser
+    obj_parser:obj_parser,
+    isArray:isArray
   }
 }
 var help=help()

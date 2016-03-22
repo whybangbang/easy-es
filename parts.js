@@ -2,6 +2,7 @@
  * Created by seaasun on 2016-3-20.
  */
 var parts={
+  'tree_customize':false,
   'es':[
     {
       field: 'sort',
@@ -88,7 +89,7 @@ var parts={
     {
       field: 'bool',
       group:1,
-      extend:'filte_bool',
+      extend:'filter_bool',
       choose:true,
     },
     {
@@ -183,14 +184,14 @@ var parts={
     },
     {
       field: 'must_not',
-      group:1,
+      group:2,
       array:true,
       choose:true,
       extend:'filter'
     },
     {
       field: 'should',
-      group:1,
+      group:3,
       array:true,
       choose:true,
       extend:'filter'
@@ -205,6 +206,8 @@ var parts={
     {
       field:'',
       name:'[field]',
+      value:'asc',
+      arrayValue:['desc','asc'],
     },
     {
       field:'_geo_distance',
@@ -260,7 +263,8 @@ var parts={
             },
             {
               field:'operator',
-              placeholder:'and/or',
+              value:'and',
+              arrayValue:['and','or'],
               undelete:true
             },
             {
@@ -297,7 +301,8 @@ var parts={
         },
         {
           field:'operator',
-          placeholder:'and/or',
+          value:'and',
+          arrayValue:['and','or'],
           undelete:true
         },
         {
@@ -311,34 +316,36 @@ var parts={
       extend:'query_bool',
       group:3,
       choose:true,
-      array:true
     }
   ],
   query_bool:[
     {
       field:'must',
       extend:'query',
+      group:1,
       array:true,
       choose:true,
     },
     {
       field:'must_not',
       extend:'query',
+      group:2,
       array:true,
       choose:true,
     },
     {
       field:'should',
       extend:'query',
+      group:3,
       array:true,
       choose:true,
     },
     {
       field:"minimum_should_match",
-      group:1,
+      group:4,
     },{
       field:"boost",
-      group:1,
+      group:5,
     }
   ],
   only_analyzer:[{
