@@ -45,10 +45,10 @@
             </span>
 
             <!--启用自定义模式--><span v-if="parts.tree_customize">
-            <a @click="extendCustomizeChild" class="customize-add">add customize</a>
+            <a @click="extendCustomizeChild" class="customize-add">add</a>
             <span class="customize-array">
                 <input type="checkbox" id="customize-array" v-model="model.array">
-                <label for="customize-array">is array</label>
+                <label for="customize-array">array</label>
             </span>
             </span>
 
@@ -190,6 +190,7 @@
         props: ['model','parts'],
         data: function () {
             return {
+                array:this.model.array ? this.model.array : false,
                 open: this.model.open ? this.model.open : false,
                 chooseChildShow:!!this.model.choose,
                 subparts:help.clone(parts),
