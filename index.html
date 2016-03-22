@@ -63,7 +63,7 @@
                     <li v-for="item in subparts"
                         v-show="!item.only"
                         v-if="!item.disabled"
-                        @click="extendChild($key)">
+                        @click.stop="extendChild($key)">
                         <a href="#!">{{$key}}</a>
                     </li>
 
@@ -189,7 +189,7 @@
             return {
                 array:this.model.array ? this.model.array : false,
                 open: this.model.open ? this.model.open : false,
-                chooseChildShow:!!this.model.choose,
+                chooseChildShow:this.model.choose ? this.model.choose : false,
                 subparts:help.clone(parts[this.model.extend]),
                 view:{}
             }
@@ -240,7 +240,15 @@
             //扩展子项目
             //field str 子项目的名称
              extendChild: function (field) {
-                this.chooseChildShow=false;
+                 //影藏所有展开的弹出菜单
+                 function hide(obj){
+                     obj.$data.chooseChildShow=false;
+                     //隐藏所有的子选项
+                     for(var i in obj.$children){
+                         hide(obj.$children[i])
+                     }
+                 }
+                 hide(this);
 
                 // 检查有无子child 数组
                 if (!this.isFolder) {
@@ -249,7 +257,13 @@
 
                 //添加子项目,用push方法
                 //this.addChild(this.model.extend,field);
-                var child=help.clone(parts[this.model.extend][field]);
+                var child=help.clone(this.subparts[field]);
+
+                 //增加 field 名称
+                 if(!child.hasOwnProperty('field')){
+                     child.field=field;
+                 }
+
                 this.model.child.push(child);
 
                 //展开新添加的内容
@@ -257,12 +271,15 @@
                 this.model.child[this.model.child.length-1]['open']=true;
 
                  //检查还有无可增加的子选项
+                 var check_child=true
                  for(part in this.subparts){
                      if(!this.subparts[part].only){
-                         Vue.set(this.view,'hideChooseChildBtn',true)
-                         break;
+                         check_child=false
                      }
                  }
+                if(check_child){
+                    Vue.set(this.view,'hideChooseChildBtn',true)
+                }
 
             },
             //扩展自定义项目
@@ -295,7 +312,6 @@
 
                 //检查父有无可增加的项
                 for(part in this.$parent.subparts){
-                    console.log(this.$parent.subparts[part])
                     if(!this.$parent.subparts[part].only){
                         this.$parent.view.hideChooseChildBtn=false
                     }
