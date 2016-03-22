@@ -23,6 +23,7 @@
 10.  disabled: 不显示该字段，默认为false显示，true为不显示
 11. name:别名，用于field解释不清楚时用
 12. placeholder:value的提示词，不填显示value
+13. must_only,
  概念辨析：
 1.  extend：增加子项
 2.  add：增同级项目
