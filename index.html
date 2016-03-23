@@ -3,14 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <style>
 
-
-        .bold {
-            /*font-weight: bold;*/
-        }
-
-    </style>
     <script src="http://cdn.bootcss.com/vue/1.0.17/vue.js"></script>
     <script src="http://cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
     <script src="assert/clipboard.min.js"></script>
@@ -28,11 +21,16 @@
 <!-- item template -->
 <script type="text/x-template" id="item-template">
     <li>
-        <div :class="{bold: isFolder}">
+        <div>
             <!--有子项,显示+--><span @click="toggleOpen" v-if="isFolder">{{open ? '-' : '+'}}</span>
             <!-- 无子项，补白--><span @click="toggleOpen" v-else>&nbsp;&nbsp;</span>
 
-            <!--field--><input type="text" v-model="model.field" class="data-field" placeholder="field">
+            <!--field--><input v-if="!model.arrayField"
+                               type="text" v-model="model.field" class="data-field" placeholder="field"
+        >
+                <select v-else v-model="model.field" class="tree_select">
+                    <option v-for="v in model.arrayField ">{{v}}</option>
+                </select>
 
             <!--value--><span v-if="!model.child  && !model.extend">:
                 <input  v-if="!model.arrayValue"
@@ -205,21 +203,24 @@
         ready:function(){
             //only 处理
             if(this.$parent.hasOwnProperty('model')){//非第一个组件
-                if(!this.$parent.model.array){ //排除and、or
+                //if(!this.$parent.model.array){ //排除and、or
 
                     for(var son in this.$parent.$children){ //遍历子对象
 
                         if(this.$parent.$children[son].model.group){//判断是否分组
                             var group_number=this.$parent.$children[son].model.group;//得到分组号
+
                             //修改数据subparts
                             for(var part in this.$parent.subparts){
-                                if(this.$parent.subparts[part].group===group_number){
-                                    Vue.set(this.$parent.subparts[part],'only',true)
+                                if(!this.$parent.model.array || this.$parent.subparts[part].force_only) {
+                                    if (this.$parent.subparts[part].group === group_number) {
+                                        Vue.set(this.$parent.subparts[part], 'only', true)
+                                    }
                                 }
                             }
                         }
                     }
-                }
+                //}
 
                 //检查父元素是否可以增加新的子元素
                 var part_open=true;

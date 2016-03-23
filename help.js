@@ -129,53 +129,86 @@ function help() {
     return false;
   }
 
-  //json转换
-  function obj_parser(new_obj, obj) {
 
 
-    //中间情况
-    if (obj.hasOwnProperty('child')) {
-      //转数组
-      if (obj['array']) {
-        new_obj[obj['field']] = [];
-        for (var key in obj['child']) {
-            var tmp = {};
-
-          //TODO 这里有个问题，每次迭代完t会莫名奇妙增加1位，只好用小技巧删除，但不安全
-          var t = clone(this.obj_parser(tmp, obj['child'][key]));
-
-          new_obj[obj['field']].push(t);
-        }
-        //不转数组
-      } else {
-        for (var key in obj['child']) {
-            var tmp = {};
-          new_obj[obj['field']] = this.obj_parser(tmp, obj['child'][key]);
-        }
-
-      }
-      //最终
-    } else {
-      new_obj[obj['field']] = obj['value'];
-      return new_obj
-    }
-    return new_obj
-  }
-
+  //检查是否为数组
   function isArray(obj) {
     return (typeof obj == 'object') && obj.constructor == Array;
   }
 
-  function uniqueArray(arr) {
-    var result = [], hash = {};
-    for (var i = 0, elem; (elem = arr[i]) != null; i++) {
-      if (!hash[elem]) {
-        result.push(elem);
-        hash[elem] = true;
+  //检查str是否可以转为数组
+  function strIsArray(str){
+    try
+    {
+      if(isArray(eval(str))){
+        return true
+      }else{
+        return false
       }
     }
-    return result;
+    catch(err)
+    {
+      return false;
+    }
+  }
 
+  //检查str是否可以转为bool
+  function strIsBool(str){
+    if(str==='true' || str=='false'){
+      return true
+    }else{
+      return false
+    }
+  }
+
+  //检查str是否可以转为数字
+  function strIsNum(str){
+    if (str!=null && str!="")
+    {
+      return !isNaN(str);
+    }
+    return false;
+  }
+
+  //json转换
+  function obj_parser(new_obj, obj) {
+    if (obj.hasOwnProperty('child')) {
+
+
+      //转数组
+      if (help.checkArray(obj['field'])) {
+        new_obj[obj['field']] = []
+        for (var key in obj['child']) {
+          var tmp = {};
+          new_obj[obj['field']].push(obj_parser(tmp, obj['child'][key]));
+        }
+        //不转数组
+      } else {
+        var tmp = {};
+        for (var key in obj['child']) {
+          new_obj[obj['field']] = this.obj_parser(tmp, obj['child'][key]);
+        }
+
+      }
+    } else {
+
+      try{
+        if(obj[transform]===false){
+          new_obj[obj['field']] = obj['value'];
+          return new_obj;
+        }
+      }catch(e){}
+
+      //判断是否可以转
+      if(strIsArray(obj['value']) || strIsBool(obj['value']) || strIsNum(obj['value'])){
+        new_obj[obj['field']] = eval(obj['value']);
+      }else{
+        new_obj[obj['field']] = obj['value'];
+      }
+
+      return new_obj
+    }
+    return new_obj
   }
 
   return {
@@ -184,7 +217,6 @@ function help() {
     checkArray: checkArray,
     obj_parser: obj_parser,
     isArray: isArray,
-    uniqueArray:uniqueArray
   }
 }
 var help = help()
