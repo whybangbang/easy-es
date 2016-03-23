@@ -200,7 +200,8 @@ function help() {
       }catch(e){}
 
       //判断是否可以转
-      if(strIsArray(obj['value']) || strIsBool(obj['value']) || strIsNum(obj['value'])){
+      //if(strIsArray(obj['value']) || strIsBool(obj['value']) || strIsNum(obj['value'])){
+      if(strIsArray(obj['value'])){
         new_obj[obj['field']] = eval(obj['value']);
       }else{
         new_obj[obj['field']] = obj['value'];
