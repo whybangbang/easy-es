@@ -22,17 +22,24 @@ var parts = {
       choose: true
     },
     from: {
-      field: 'from',
       group: 4,
     },
     size: {
-      field: 'size',
       group: 5,
+    },
+    _source:{
+      extend:'fields',
+      array:true,
+      open:true,
+      group:6,
+      child:[
+        {field:""}
+      ]
     }
   },
 
 
-  'filter': {
+  filter: {
     term: {
       group: 1,
       child: [
@@ -77,10 +84,12 @@ var parts = {
           undelete: true,
           child: [
             {
-              field: 'from',
+              field: 'gte',
+              arrayField:['gte','gt','from']
             },
             {
-              field: 'to',
+              field: 'lte',
+              arrayField:['lte','lt','to']
             }
           ]
         }
@@ -195,12 +204,14 @@ var parts = {
   sort: {
     '[field]': {
       field: '',
-      value: 'asc',
+      value:'asc',
       arrayValue: ['desc', 'asc'],
     },
     _geo_distance: {
       open: true,
       group: 1,
+      extend:'sort_geo_distance',
+      force_only:true,
       child: [
         {
           field: 'location',
@@ -216,8 +227,26 @@ var parts = {
               undelete: true
             }
           ]
+        },
+        {
+          field: 'order',
+          value:'asc',
+          arrayValue:['asc','desc']
+        },
+        {
+          field: 'unit',
+          value:'km'
         }
       ]
+    }
+  },
+  sort_geo_distance:{
+    order:{
+      value:'asc',
+      arrayValue:['asc','desc']
+    },
+    unnit:{
+      value:'km'
     }
   },
   query: {
@@ -252,6 +281,73 @@ var parts = {
             },
             {
               field: 'analyzer'
+            }
+          ]
+        }
+      ]
+    },
+    filtered:{
+      open:true,
+      group:1,
+      child:[
+        {
+          field:'query',
+          extend:'query',
+          undelete:true,
+          },
+        {
+          field:'query',
+          extend:'filter',
+          undelete:true,
+        },
+    ]
+    },
+    prefix:{
+      open:true,
+      group:1,
+      child:[
+        {field:'',
+        undelete:true
+        }
+      ]
+    },
+    query_string:{
+      open:true,
+      group:1,
+      child:[
+        {
+          field:'query',
+          value:'content:this OR name:this) AND (content:that OR name:that)',
+          undelete:true
+        }
+      ]
+    },
+    regexp:{
+      open:true,
+      group:1,
+      child:[
+        {
+          field:'name',
+          value:'s.*y',
+          undelete:true
+        }
+      ]
+    },
+    range: {
+      group: 1,
+      child: [
+        {
+          field: '',
+          open: true,
+          undelete: true,
+          child: [
+            {
+              field: 'gte',
+              arrayField:['gte','gt','from']
+            },
+            {
+              field: 'lte',
+              arrayField:['lte','lt','to']
             }
           ]
         }
@@ -335,7 +431,6 @@ var parts = {
   fields: {
     '[filed]': {
       field: '',
-      name: '[filed]'
     }
   }
 };
