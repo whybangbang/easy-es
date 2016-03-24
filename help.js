@@ -176,11 +176,11 @@ function help() {
 
 
       //转数组
-      if (help.checkArray(obj['field'])) {
+      if (obj['array']) {
         new_obj[obj['field']] = []
         for (var key in obj['child']) {
           var tmp = {};
-          new_obj[obj['field']].push(obj_parser(tmp, obj['child'][key]));
+          new_obj[obj['field']].push(this.obj_parser(tmp, obj['child'][key]));
         }
         //不转数组
       } else {
@@ -192,6 +192,7 @@ function help() {
       }
     } else {
 
+      //判断能否转数组
       try{
         if(obj[transform]===false){
           new_obj[obj['field']] = obj['value'];
@@ -221,29 +222,5 @@ function help() {
   }
 }
 var help = help()
-function obj_parser(new_obj, obj) {
-  if (obj.hasOwnProperty('child')) {
-
-    var tmp = {};
-    //转数组
-    if (help.checkArray(obj['field'])) {
-      new_obj[obj['field']] = []
-      for (var key in obj['child']) {
-        new_obj[obj['field']].push(obj_parser(tmp, obj['child'][key]));
-      }
-      //不转数组
-    } else {
-      for (var key in obj['child']) {
-        new_obj[obj['field']] = this.obj_parser(tmp, obj['child'][key]);
-      }
-
-    }
-  } else {
-    new_obj[obj['field']] = obj['value'];
-    return new_obj
-  }
-  return new_obj
-}
-
 
 
