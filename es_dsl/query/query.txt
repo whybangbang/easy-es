@@ -106,7 +106,12 @@ term
         }
 
 Wildcard
-	
+	example:
+	{
+    	"wildcard" : { "user" : "ki*y" }(建议给出范例)
+	}
 
 #这个最复杂，最强大
 function score query
+	
+
