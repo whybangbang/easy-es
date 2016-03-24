@@ -39,6 +39,7 @@ var parts = {
   },
 
 
+/***--filter--***/
   filter: {
     term: {
       group: 1,
@@ -122,7 +123,8 @@ var parts = {
       open: true,
       child: [
         {
-          field: ''
+          field: 'field',
+          undelete: true
         }
       ]
     },
@@ -131,16 +133,18 @@ var parts = {
       open: true,
       child: [
         {
-          field: '',
+          field: 'location',
           open: true,
           undelete: true,
           child: [
             {
               field: 'top_left',
+              value: '40.73, -74.1',
               undelete: true,
             },
             {
               field: 'bottom_right',
+              value: '40.73, -74.1',
               undelete: true,
             }
           ]
@@ -201,6 +205,8 @@ var parts = {
       value: "_null_"
     }
   },
+
+  /***--sort--***/
   sort: {
     '[field]': {
       field: '',
@@ -249,6 +255,8 @@ var parts = {
       value:'km'
     }
   },
+
+  /***--query--***/
   query: {
     term: {
       open: true,
@@ -303,6 +311,15 @@ var parts = {
     ]
     },
     prefix:{
+      open:true,
+      group:1,
+      child:[
+        {field:'',
+        undelete:true
+        }
+      ]
+    },
+    wildcard:{
       open:true,
       group:1,
       child:[
