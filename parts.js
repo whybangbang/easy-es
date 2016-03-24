@@ -433,14 +433,14 @@ var parts = {
       choose: true,
     },
     functions: {
-      extend: 'funs',
+      extend: 'function_score_functions',
       group: 3,
       array: true,
       choose: true,
     }
   },
 
-  funs:{
+  function_score_functions:{
     guass: {
       open: true,
       group: 1,
