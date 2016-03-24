@@ -304,7 +304,7 @@ var parts = {
           undelete:true,
           },
         {
-          field:'query',
+          field:'filter',
           extend:'filter',
           undelete:true,
         },
@@ -410,8 +410,73 @@ var parts = {
       extend: 'query_bool',
       group: 1,
       choose: true,
+    },
+    function_score: {
+      extend: 'function_score',
+      group: 1,
+      choose: true,
     }
   },
+
+  /***--bool--***/
+  function_score:{
+    filter: {
+      extend: 'filter',
+      group: 1,
+      array: true,
+      choose: true,
+    },
+    query: {
+      extend: 'query',
+      group: 2,
+      array: true,
+      choose: true,
+    },
+    functions: {
+      extend: 'funs',
+      group: 3,
+      array: true,
+      choose: true,
+    }
+  },
+
+  funs:{
+    guass: {
+      open: true,
+      group: 1,
+      child: [
+        {
+          field: '',
+          open: true,
+          undelete: true,
+          child: [
+            {
+              field: 'origin',
+              value: '29,117',
+              undelete: true
+            },
+            {
+              field: 'scale',
+              value: '172800',
+              undelete: true
+            },
+            {
+              field: 'delay',
+              value: '0.5',
+              undelete: true
+            },
+            {
+              field: 'offset',
+              value: '172800',
+              undelete: true
+            }
+          ]
+        }
+      ]
+    }
+  },
+
+  /***--bool--***/
   query_bool: {
     must: {
       extend: 'query',
@@ -439,6 +504,9 @@ var parts = {
       group: 5,
     }
   },
+  
+
+  /***--other mode--***/
   only_analyzer: {
     analyzer: {
       open: true,

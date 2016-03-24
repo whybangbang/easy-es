@@ -113,5 +113,5 @@ Wildcard
 
 #这个最复杂，最强大
 function score query
-
 	
+
