@@ -50,14 +50,14 @@ nav .brand-logo{
 
 .valid-json-pass{
   background-color: #efe;
-  color: #393;
   border: 1px solid #393;
 }
 
 .valid-json-fail {
   background-color: #fee;
-  color: #933;
-  border: 1px solid #933;
+  color: #ee6e73;
+  border: 1px solid #ee6e73;
+  border-radius: 2px;
 }
 
 input.data-field{

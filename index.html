@@ -147,9 +147,12 @@
         <div class="col s6">
             <a class="getstr-foramte" @click="validator">formate&validator</a>
             <a class="getstr-copy copy" data-clipboard-target="#getstr">cope code</a>
-            <div class="valid-json"
-                :class="{'valid-json-pass':validJson.state=='pass','valid-json-fail':validJson.state=='fail'}"
-            > {{{ validJson.doc }}}</div>
+            <div  v-if="validJson.state=='pass' " class="valid-json-pass">
+            </div>
+
+            <div  v-if="validJson.state=='fail' " class="valid-json-fail">
+                {{{ validJson.doc}}}
+            </div>
             <textarea class="getstr" id="getstr" v-model="showJson">{{{getStr | json 4}}}</textarea>
             <textarea >{{getTree}}</textarea>
         </div>
@@ -458,8 +461,10 @@
             validator:function(){
                 try {
                     var str;
-                    if(this.showJson.constructor==Object){
-                       str=JSON.stringify(this.showJson)
+                    if(this.showJson.constructor==Object) {
+                        str = JSON.stringify(this.showJson)
+                    }else if(this.showJson==''){
+                        return
                     }else{
                         str=this.showJson;
                     }
@@ -470,8 +475,11 @@
                     this.showJson=JSON.stringify(result,null,4);
 
                 } catch(e) {
-                    this.validJson.doc=e;
+                    this.validJson.doc= e.message;
+                    this.validJson.doc=this.validJson.doc.replace(/\n/, "<br>")
+                    console.log(this.validJson.doc)
                     this.validJson.state='fail';
+
                 };
 
             },
