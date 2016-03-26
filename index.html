@@ -21,14 +21,15 @@
 <body id="app" @click="hideChildShow">
 <!-- item template -->
 <script type="text/x-template" id="item-template">
-    <li>
-        <div>
-            <!--有子项,显示+--><span @click="toggleOpen" v-if="isFolder">{{open ? '-' : '+'}}</span>
-            <!-- 无子项，补白--><span @click="toggleOpen" v-else>&nbsp;&nbsp;</span>
+    <li :class="{'item-no-child-box':!model.extend}">
+        <div >
+            <!--有子项,显示+--><span @click="toggleOpen" v-if="isFolder"
+                                :class="{ 'item-close': !open, 'item-open': open }">{{open ? '-&nbsp;' : '+'}}&nbsp;</span>
+            <!-- 无子项，补白--><span @click="toggleOpen" v-else>&nbsp;&nbsp;&nbsp;</span>
 
             <!--field--><input v-if="!model.arrayField"
                                type="text" v-model="model.field" class="data-field" placeholder="field"
-        >
+                             >
                 <select v-else v-model="model.field" class="tree_select">
                     <option v-for="v in model.arrayField ">{{v}}</option>
                 </select>
@@ -53,10 +54,10 @@
             </span>
 
 
-            <span @click="delChild" v-if="!model.undelete">X</span>
+            <span @click="delChild" v-if="!model.undelete" class="delete-child">X</span>
             <!--有括展项-->
             <span v-if="model.extend" class="choose-child">
-                <a  href='#' @click.stop="showchooseChild" v-bind:class="{'color-grey':view.hideChooseChildBtn}">+</a>
+                <a  href='#' class="choose-child-add" @click.stop="showchooseChild" v-bind:class="{'color-grey':view.hideChooseChildBtn}">+</a>
 
                 <!-- 下拉扩展项 -->
                 <ul v-show="chooseChildShow" class="choose-child-box">
@@ -71,7 +72,9 @@
             </span>
 
         </div>
-        <ul v-show="open" v-if="isFolder">
+        <ul v-show="open" v-if="isFolder"
+            :class="{'item-array':model.array,'item-no-child':!model.extend}"
+           >
             <item
                     class="data-item"
                     v-for="model in model.child"
