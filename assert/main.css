@@ -60,7 +60,7 @@ input.data-value{
   padding:0.1em;
   font-size: 0.9em;
   width:6em;
-  height:1em;
+  height:1.1em;
   background-color: #eee;
   border-bottom: 1px solid #eee;
   margin-bottom: 0.05em;
@@ -72,8 +72,8 @@ select.tree_select{
   line-height: 0.9em;
   width:6em;
   height:1.5em;
-  background-color: #f5f5f5;
-  border-bottom: 1px solid #f5f5f5;
+  background-color: #eee;
+  border-bottom: 1px solid #eee;
   vertical-align:bottom;
 }
 
@@ -136,6 +136,7 @@ select{
 
 .item-no-child-box{
   background-color: #f9f9f9;
+  margin-bottom: 1px;
 }
 
 .data-item{
