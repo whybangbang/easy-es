@@ -1,33 +1,80 @@
+/* wrap  */
+.wrap{
+  margin-top:10px;
+  margin-bottom: 10px;
+}
+
+/* nav 部分  */
+@media only screen and (min-width: 601px){
+  nav{
+   height:48px;
+   line-height:48px;
+  }
+}
+nav .brand-logo{
+  font-size:32px;
+  margin-left:32px;
+}
+
+
+/*  getstr */
 .getstr{
-  border:0 !important;
+  padding:13px;
+  border:1px #ddd solid;
   outline: none;
   color:#616161;
-  background-color: #e0f2f1;
+  background-color: #efefef;
   height:400px;
-  font-size:12px;
+  font-size:13px;
   line-height: 1.2;
   overflow: hidden;
   overflow-y:scroll;
+}
+
+.getstr-copy{
+  cursor:pointer;
+  padding: 4px 14px;
+  border-radius: 2px;
+}
+
+.getstr-copy:active{
+  background-color: #26a69a;
+  color:#fff;
 }
 
 input.data-field{
   padding:0.2em;
   font-size: 0.9em;
   width:6em;
-  height:1.4em;
+  height:1em;
   background-color: #f5f5f5;
   border-bottom: 1px solid #f5f5f5;
-  margin-bottom: 0.5em;
+  margin-bottom: 0.1em;
 }
 
+.date-value{
+  position:relative;
+  padding:0
+}
 input.data-value{
-  padding:0.2em;
+  padding:0.1em;
   font-size: 0.9em;
   width:6em;
-  height:1.4em;
+  height:1em;
   background-color: #f5f5f5;
   border-bottom: 1px solid #f5f5f5;
-  margin-bottom: 0.5em;
+  margin-bottom: 0.1em;
+}
+
+select.tree_select{
+  padding:0.1em;
+  font-size: 0.9em;
+  line-height: 0.9em;
+  width:6em;
+  height:1.5em;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #f5f5f5;
+  vertical-align:bottom;
 }
 
 select{
@@ -38,7 +85,7 @@ select{
   display:block;
   position:relative;
   width:100%;
-  height:3em;
+  height:30px;
 }
 .input-select input{
   position:absolute;
@@ -50,7 +97,7 @@ select{
   background-color: #fff;
   z-index:9001;
   width:calc(100% - 2em);
-  height:50px;
+  height:30px;
   box-sizing: inherit;
 }
 .input-select input:focus{
@@ -59,7 +106,7 @@ select{
 }
 
 .input-select select{
-  height:50px;
+  height:30px;
   position:absolute;
   top:0;
   left:0;
@@ -69,6 +116,11 @@ select{
   padding-top:0;
   padding-bottom:0;
   font-size:1rem;
+}
+
+.input-save a{
+  height:30px;
+  line-height: 30px;
 }
 
 .data-item{
@@ -110,31 +162,23 @@ select{
   color:#9e9e9e;
 }
 
-.tree_select{
-  padding: 0.2em;
-  font-size: 0.9em;
-  width: 6em;
-  height:1.8em;
-  background-color: #f5f5f5;
-  border-bottom: 1px solid #f5f5f5;
-  margin-bottom: 0.5em;
-}
 
-.customize-add{
+
+.custom-add{
   background-color: #84c7c1;
   color:#fff;
   border-radius: 1em;
   height:1em;
   font-size: 0.7em;
-  padding: 0.1em 0.5em;
+  padding: 0.2em 0.5em;
 }
-.customize-array{
+.custom-array{
   background-color: #84c7c1;
   color:#fff;
   border-radius: 1em;
   height:1em;
   font-size: 0.7em;
-  padding: 0.1em 0.5em;
+  padding: 0.2em 0.5em;
   margin-right:0.2em;
 }
 
@@ -147,7 +191,7 @@ select{
   color:#fff;
 }
 
-.customize-array [type="checkbox"]+label:before{
+.customi-array [type="checkbox"]+label:before{
   top:5px;
   color:#fff;
   height:10px;

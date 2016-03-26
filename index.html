@@ -7,6 +7,7 @@
     <script src="http://cdn.bootcss.com/vue/1.0.17/vue.js"></script>
     <script src="http://cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
     <script src="assert/clipboard.min.js"></script>
+    <script src="assert/jsonlint.min.js"></script>
 
     <script src="data.js"></script>
     <script src="parts.js"></script>
@@ -32,7 +33,8 @@
                     <option v-for="v in model.arrayField ">{{v}}</option>
                 </select>
 
-            <!--value--><span v-if="!model.child  && !model.extend">:
+            <!--value--><span v-if="!model.child  && !model.extend" class="data-value">
+                <span>:</span>
                 <input  v-if="!model.arrayValue"
                         type="text" v-model="model.value" class="data-value" placeholder="{{model.placeholder || 'value'}}">
 
@@ -43,8 +45,8 @@
             </span>
 
             <!--启用自定义模式--><span v-if="parts.tree_customize">
-            <a @click="extendCustomizeChild" class="customize-add">add</a>
-            <span class="customize-array">
+            <a @click="extendCustomizeChild" class="custom-add">add</a>
+            <span class="custom-array">
                 <input type="checkbox" id="customize-array" v-model="model.array">
                 <label for="customize-array">array</label>
             </span>
@@ -86,8 +88,9 @@
 <nav>
     <div class="nav-wrapper">
         <div class="col s12">
-            <a href="#!" class="brand-logo">&nbsp;&nbsp;ES Query</a>
+            <a href="#!" class="brand-logo">Easy Es</a>
             <ul class="right hide-on-med-and-down">
+
                 <li><a href="#">Document</a></li>
                 <li><a href="https://github.com/whybangbang/es_query_dsl_mindmanger">Github</a></li>
             </ul>
@@ -98,7 +101,16 @@
 <!-- app -->
 <div >
 
-    <div class="row">
+    <div class="row wrap">
+        <div class="col s3 input-select">
+            <div class="switch">
+                <label>
+                    <input type="checkbox" v-model="parts.tree_customize">
+                    <span class="lever"></span>
+                    Custom Model
+                </label>
+            </div>
+        </div>
         <div class="col s2 input-select">
             <input type="text" v-model="treeProject">
             <select v-model="treeProject">
@@ -106,28 +118,19 @@
             </select>
 
         </div>
-        <div class="col s6 input-select">
+        <div class="col s4 input-select">
             <input type="text" v-model="treeName">
             <select v-model="treeName">
                 <option v-for="item in treeNameLists" track-by="$index">{{item}}</option>
             </select>
         </div>
-        <div class="col s4">
+        <div class="col s3 input-save">
             <a  @click="openTree" class="waves-effect waves-light btn">open</a>
             <a @click="saveTree"  class="waves-effect waves-light btn">save</a>
         </div>
     </div>
-    <div class="row">
-        <div class="switch">
-            <label>
-                <input type="checkbox" v-model="parts.tree_customize">
-                <span class="lever"></span>
-                Customize Model
-            </label>
-        </div>
 
-    </div>
-    <!--<a  @mouseover="ss">Hover me!</a>-->
+
     <div class="row">
         <div class="col s6">
             <ul>
@@ -139,8 +142,10 @@
             </ul>
         </div>
         <div class="col s6">
-            <a class=" btn waves-effect waves-teal btn-flat" data-clipboard-target="#getstr">cope code</a>
-            <textarea class="getstr" id="getstr">{{{getStr | json 4}}}</textarea>
+            <a class="getstr-foramte" @click="validator">formate&validator</a>
+            <a class="getstr-copy copy" data-clipboard-target="#getstr">cope code</a>
+            <p> {{{ validJson }}}</p>
+            <textarea class="getstr" id="getstr" v-model="showJson">{{{getStr | json 4}}}</textarea>
             <textarea >{{getTree}}</textarea>
         </div>
     </div>
@@ -175,8 +180,10 @@
 
 
 <script>
+
+
     //注册剪贴板
-    new Clipboard('.btn');
+    new Clipboard('.copy');
     // 整体框架
     Vue.config.debug = true
     // define the item component
@@ -349,7 +356,9 @@
             treeProject:'base',
             treeProjectLists:[],
             treeName:'start',
-            treeNameLists:[]
+            treeNameLists:[],
+            showJson:'',
+            validJson:''
         },
         created:function() {
             this.updateTree();
@@ -362,10 +371,11 @@
         },
         computed: {
             getStr: function () {
-                var new_obj={};
 
-                return help.obj_parser(new_obj,this.treeData)[this.treeData.field];
+                //验证json的情况
+                    var new_obj={};
 
+                    return help.obj_parser(new_obj,this.treeData)[this.treeData.field];
             },
             getTree: function(){
                 return JSON.stringify(this.treeData);
@@ -437,8 +447,24 @@
                     localStorage['tree'] = JSON.stringify(tmp);
                 }
             },
-            ss:function(){
-                alert(1)
+            validator:function(){
+                try {
+                    var str;
+                    if(this.showJson.constructor==Object){
+                       str=JSON.stringify(this.showJson)
+                    }else{
+                        str=this.showJson;
+                    }
+                    //验证
+                    var result = jsonlint.parse(str);
+                    this.validJson=true;
+                    this.showJson=JSON.stringify(result,null,4);
+
+                } catch(e) {
+                    this.validJson=e;
+                    console.log(e)
+                };
+
             },
             //隐藏添加子选项菜单
             hideChildShow:function(){
