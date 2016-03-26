@@ -225,19 +225,19 @@ select{
 .custom-add{
   background-color: #84c7c1;
   color:#fff;
-  border-radius: 1em;
+  border-radius: 0.5em;
   height:1em;
   font-size: 0.7em;
-  padding: 0.2em 0.5em;
+  padding: 0.1em 0.5em;
   margin-left: 1em;
 }
 .custom-array{
   background-color: #84c7c1;
   color:#fff;
-  border-radius: 1em;
+  border-radius: 0.5em;
   height:1em;
   font-size: 0.7em;
-  padding: 0.2em 0.5em;
+  padding: 0.1em 0.5em;
   margin-right:1em;
   line-height: 1em;
 }
