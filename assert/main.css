@@ -42,6 +42,24 @@ nav .brand-logo{
   color:#fff;
 }
 
+/*valid-json*/
+.valid-json{
+  font-size: 13px;
+  padding:13px;
+}
+
+.valid-json-pass{
+  background-color: #efe;
+  color: #393;
+  border: 1px solid #393;
+}
+
+.valid-json-fail {
+  background-color: #fee;
+  color: #933;
+  border: 1px solid #933;
+}
+
 input.data-field{
   padding:0.2em;
   font-size: 0.9em;
@@ -255,4 +273,7 @@ select{
   padding-left:0;
   color:#fff;
 }
+
+
+
 

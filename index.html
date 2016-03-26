@@ -147,7 +147,9 @@
         <div class="col s6">
             <a class="getstr-foramte" @click="validator">formate&validator</a>
             <a class="getstr-copy copy" data-clipboard-target="#getstr">cope code</a>
-            <p> {{{ validJson }}}</p>
+            <div class="valid-json"
+                :class="{'valid-json-pass':validJson.state=='pass','valid-json-fail':validJson.state=='fail'}"
+            > {{{ validJson.doc }}}</div>
             <textarea class="getstr" id="getstr" v-model="showJson">{{{getStr | json 4}}}</textarea>
             <textarea >{{getTree}}</textarea>
         </div>
@@ -361,7 +363,10 @@
             treeName:'start',
             treeNameLists:[],
             showJson:'',
-            validJson:''
+            validJson:{
+                'state':false,
+                'doc':''
+            }
         },
         created:function() {
             this.updateTree();
@@ -460,12 +465,13 @@
                     }
                     //验证
                     var result = jsonlint.parse(str);
-                    this.validJson=true;
+                    this.validJson.state='pass';
+                    this.validJson.doc='pass';
                     this.showJson=JSON.stringify(result,null,4);
 
                 } catch(e) {
-                    this.validJson=e;
-                    console.log(e)
+                    this.validJson.doc=e;
+                    this.validJson.state='fail';
                 };
 
             },
