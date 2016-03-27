@@ -147,7 +147,12 @@
         <div class="col s6">
             <a class="getstr-foramte" @click="validator">formate&validator</a>
             <a class="getstr-copy copy" data-clipboard-target="#getstr">cope code</a>
-            <p> {{{ validJson }}}</p>
+            <div  v-if="validJson.state=='pass' " class="valid-json-pass">
+            </div>
+
+            <div  v-if="validJson.state=='fail' " class="valid-json-fail">
+                {{{ validJson.doc}}}
+            </div>
             <textarea class="getstr" id="getstr" v-model="showJson">{{{getStr | json 4}}}</textarea>
             <textarea >{{getTree}}</textarea>
         </div>
@@ -361,7 +366,10 @@
             treeName:'start',
             treeNameLists:[],
             showJson:'',
-            validJson:''
+            validJson:{
+                'state':false,
+                'doc':''
+            }
         },
         created:function() {
             this.updateTree();
@@ -453,19 +461,25 @@
             validator:function(){
                 try {
                     var str;
-                    if(this.showJson.constructor==Object){
-                       str=JSON.stringify(this.showJson)
+                    if(this.showJson.constructor==Object) {
+                        str = JSON.stringify(this.showJson)
+                    }else if(this.showJson==''){
+                        return
                     }else{
                         str=this.showJson;
                     }
                     //验证
                     var result = jsonlint.parse(str);
-                    this.validJson=true;
+                    this.validJson.state='pass';
+                    this.validJson.doc='pass';
                     this.showJson=JSON.stringify(result,null,4);
 
                 } catch(e) {
-                    this.validJson=e;
-                    console.log(e)
+                    this.validJson.doc= e.message;
+                    this.validJson.doc=this.validJson.doc.replace(/\n/, "<br>")
+                    console.log(this.validJson.doc)
+                    this.validJson.state='fail';
+
                 };
 
             },
