@@ -1,5 +1,4 @@
-![Alt text](assert/img/logo.png)
-<img width="100"src="assert/img/logo.png">
+<img width="120"src="assert/img/logo.png">
 # Easy Es
 
 [![experimental](http://badges.github.io/stability-badges/dist/experimental.svg)](http://github.com/badges/stability-badges)
