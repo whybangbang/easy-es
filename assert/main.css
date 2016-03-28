@@ -374,6 +374,10 @@ nav .brand-logo{
 
 footer.page-footer{
   background-color: #757575;
+  position:fixed; 
+  bottom:0; 
+  left:0; 
+  width:100%;
 }
 
 .footer-5m{
