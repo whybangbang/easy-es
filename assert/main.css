@@ -59,8 +59,10 @@ input.data-field{
 
 .date-value{
   position:relative;
-  padding:0
+  padding:0;
+
 }
+
 input.data-value{
   padding:0.1em;
   font-size: 0.9em;
@@ -69,6 +71,7 @@ input.data-value{
   background-color: #eee;
   border-bottom: 1px solid #eee;
   margin-bottom: 0.05em;
+  margin-right:7px;
 }
 
 select.tree_select{
