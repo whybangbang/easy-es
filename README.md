@@ -14,7 +14,7 @@
   
 ## Quick Start
 
-1. 打开（链接）立即使用
+1. 直接访问：[http://whybangbang.github.io/es_query_dsl_mindmanger/](http://whybangbang.github.io/es_query_dsl_mindmanger/ "Title")
 2. 下载后点击index.html即可使用
 3. 按装为elastic的插件使用（..)
 
