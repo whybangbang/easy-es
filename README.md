@@ -3,6 +3,8 @@
 
 [![experimental](http://badges.github.io/stability-badges/dist/experimental.svg)](http://github.com/badges/stability-badges)
 
+<img width="600"src="doc/img/introduce.gif">
+
   轻点鼠标，自动生成Elastic search 查询语句
   
 * 根据指引选项，点击鼠标自动生成查询语句
