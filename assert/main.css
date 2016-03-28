@@ -4,8 +4,6 @@
   margin-bottom: 10px;
 }
 
-
-
 /*  getstr */
 .getstr{
   padding:13px;
@@ -182,8 +180,11 @@ nav .brand-logo{
   margin-left: 18px;
   font-size:20px;
   float:left;
-  color:#039be5;
   font-weight: 700;
+}
+nav .brand-logo img{
+  height:24px;
+  vertical-align: middle;
 }
 
 @media only screen and (max-width: 992px) {
