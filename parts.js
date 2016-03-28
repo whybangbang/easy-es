@@ -283,12 +283,13 @@ var parts = {
             },
             {
               field: 'operator',
-              value: 'and',
-              arrayValue: ['and', 'or'],
+              value: 'or',
+              arrayValue: ['or','and'],
               undelete: true
             },
             {
-              field: 'analyzer'
+              field: 'analyzer',
+              value: 'standard'
             }
           ]
         }
