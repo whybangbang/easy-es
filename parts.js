@@ -28,13 +28,9 @@ var parts = {
       group: 5,
     },
     _source:{
-      extend:'fields',
-      array:true,
       open:true,
       group:6,
-      child:[
-        {field:""}
-      ]
+      arrayValue:true
     }
   },
 
@@ -211,7 +207,7 @@ var parts = {
     '[field]': {
       field: '',
       value:'asc',
-      arrayValue: ['desc', 'asc'],
+      selectValue: ['desc', 'asc'],
     },
     _geo_distance: {
       open: true,
@@ -237,7 +233,7 @@ var parts = {
         {
           field: 'order',
           value:'asc',
-          arrayValue:['asc','desc']
+          selectValue:['asc','desc']
         },
         {
           field: 'unit',
@@ -249,7 +245,7 @@ var parts = {
   sort_geo_distance:{
     order:{
       value:'asc',
-      arrayValue:['asc','desc']
+      selectValue:['asc','desc']
     },
     unnit:{
       value:'km'
@@ -284,7 +280,7 @@ var parts = {
             {
               field: 'operator',
               value: 'or',
-              arrayValue: ['or','and'],
+              selectValue: ['or','and'],
               undelete: true
             },
             {
@@ -398,7 +394,7 @@ var parts = {
         {
           field: 'operator',
           value: 'and',
-          arrayValue: ['and', 'or'],
+          selectValue: ['and', 'or'],
           undelete: true
         },
         {

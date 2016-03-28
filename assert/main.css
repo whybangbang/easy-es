@@ -59,16 +59,21 @@ input.data-field{
 
 .date-value{
   position:relative;
-  padding:0
+  padding:0;
+
 }
+
 input.data-value{
   padding:0.1em;
   font-size: 0.9em;
-  width:6em;
+  min-width:6em;
+  width:auto;
+  max-width:200px;
   height:1.1em;
   background-color: #eee;
   border-bottom: 1px solid #eee;
   margin-bottom: 0.05em;
+  margin-right:7px;
 }
 
 select.tree_select{
