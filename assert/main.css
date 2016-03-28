@@ -66,9 +66,7 @@ input.data-field{
 input.data-value{
   padding:0.1em;
   font-size: 0.9em;
-  min-width:6em;
-  width:auto;
-  max-width:200px;
+  width:6em;
   height:1.1em;
   background-color: #eee;
   border-bottom: 1px solid #eee;
