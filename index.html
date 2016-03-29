@@ -207,7 +207,7 @@
         template:'#array-value',
         data:function() {
             return{
-                arrayValue:'1211',
+                arrayValue:'',
                 key:''
             }
         },
@@ -253,7 +253,7 @@
             //arrayValue 处理
             if(this.model.arrayValue){
                 Vue.set(this.model,'value',[]);
-                this.model.value.push('11');
+                this.model.value.push('');
                 //this.model.value.push('');
             }
 
@@ -304,7 +304,7 @@
             },
             /*行内显示arrayValue:{
                 set: function(newValue){
-                    console.log(123);
+
                     Vue.set(this.model,'value',newValue.split(','))
                     return newValue
                 }
@@ -533,7 +533,6 @@
                 } catch(e) {
                     this.validJson.doc= e.message;
                     this.validJson.doc=this.validJson.doc.replace(/\n/, "<br>")
-                    console.log(this.validJson.doc)
                     this.validJson.state='fail';
 
                 };
