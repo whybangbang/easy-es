@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Easy Es</title>
+
+    <link rel="shortcut icon" href="assert/img/favico.ico">
 
     <script src="http://cdn.bootcss.com/vue/1.0.17/vue.js"></script>
     <script src="http://cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
@@ -19,6 +21,14 @@
     <script src="help.js"></script>
 </head>
 <body id="app" @click="hideChildShow">
+
+<!-- arrayValue template -->
+<script type="text/x-template" id="array-value">
+    <li class="data-item">
+    <input v-model="arrayValue" class="data-value" placeholder="array" >
+    <span @click="del" class="delete-child">X</span>
+    </li>
+</script>
 <!-- item template -->
 <script type="text/x-template" id="item-template">
     <li :class="{'item-no-child-box':!model.extend}">
@@ -40,13 +50,7 @@
                     <input  v-if="!model.selectValue && !model.arrayValue"
                             type="text" v-model="model.value" class="data-value" placeholder="{{model.placeholder || 'value'}}">
 
-                    <span v-if="model.arrayValue">
-                        [
-                        <input
-                            v-model="arrayValue" placeholder="array,array,array" class="data-value" style="width:120px;margin-right:0">
-                         <!--<a  href='#' class="choose-child-add" @click.stop="addArrayValue" >+</a>-->
-                        ]
-                    </span>
+
 
                     <select v-if="model.selectValue" v-model="model.value" class="tree_select">
                         <option v-for="v in model.selectValue ">{{v}}</option>
@@ -62,8 +66,18 @@
             </span>
             </span>
 
-
+            <span @click="addArrayValue" v-if="model.arrayValue" class="choose-child-add" >+</span>
             <span @click="delChild" v-if="!model.undelete" class="delete-child">X</span>
+            <!-- array value -->
+            <ul v-if="model.arrayValue">
+
+                <!--行内数组<input
+                    v-model="arrayValue" placeholder="array,array,array" class="data-value" style="width:120px;margin-right:0">-->
+                <!--<a  href='#' class="choose-child-add" @click.stop="addArrayValue" >+</a>-->
+
+                <array v-for="item in model.value" track-by="$index" ></array>
+            </ul>
+
             <!--有括展项-->
             <span v-if="model.extend" class="choose-child">
                 <a  href='#' class="choose-child-add" @click.stop="showchooseChild" v-bind:class="{'color-grey':view.hideChooseChildBtn}">+</a>
@@ -186,7 +200,32 @@
     //注册剪贴板
     new Clipboard('.copy');
     // 整体框架
-    Vue.config.debug = true
+    Vue.config.debug = true;
+
+    //defin the arrayValue componet
+    Vue.component('array', {
+        template:'#array-value',
+        data:function() {
+            return{
+                arrayValue:'1211',
+                key:''
+            }
+        },
+        created:function(){
+            this.key=this.$parent.model.value.length-1;
+        },
+        watch:{
+            'arrayValue':function(val,oldVal){
+                this.$parent.model.value.$set(this.key, val)
+
+            }
+        },
+        methods:{
+            del:function(){
+                this.$parent.model.value.splice(this.key,1);
+            }
+        }
+    });
     // define the item component
     Vue.component('item', {
         template: '#item-template',
@@ -198,7 +237,6 @@
                 chooseChildShow:this.model.choose ? this.model.choose : false,
                 subparts:help.clone(parts[this.model.extend]),
                 view:{},
-                arrayValue:''
             }
         },
         created:function(){
@@ -211,6 +249,13 @@
             //if(this.model.arrayValue && !this.model.value){
               //  this.model.value=['','']
             //}
+
+            //arrayValue 处理
+            if(this.model.arrayValue){
+                Vue.set(this.model,'value',[]);
+                this.model.value.push('11');
+                //this.model.value.push('');
+            }
 
 
         },
@@ -257,13 +302,14 @@
             isArray:function(){
                 return (typeof this.model.value=='object')&&this.model.value.constructor==Array;
             },
-            arrayValue:{
+            /*行内显示arrayValue:{
                 set: function(newValue){
                     console.log(123);
                     Vue.set(this.model,'value',newValue.split(','))
                     return newValue
                 }
-            },
+            },*/
+
         },
         methods: {
             toggleOpen: function () {
@@ -358,13 +404,8 @@
                 }
             },
             addArrayValue:function(){
-
-                this.model.value.push('2');
-                console.log(this.model.value)
+              this.model.value.push('')
             },
-            clearArrayValue:function(){
-
-            }
 
         }
     });

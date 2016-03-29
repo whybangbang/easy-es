@@ -231,6 +231,7 @@ nav .brand-logo img{
 .item-no-child-box{
   background-color: #f9f9f9;
   margin-bottom: 1px;
+  padding-bottom: 1px;
 }
 
 .data-item{
@@ -346,20 +347,22 @@ nav .brand-logo img{
   background-color: #b3e5fc;
   color:#fff;
   border-radius: 0.5em;
-  height:1em;
+  height:14px;
   font-size: 0.7em;
-  padding: 0.1em 0.5em;
+  padding: 1px 0.5em;
   margin-left: 4px;
 }
 .custom-array{
   background-color: #b3e5fc;
   color:#fff;
   border-radius: 0.5em;
-  height:1em;
-  font-size: 0.7em;
-  padding: 0.1em 0.5em;
+  height:14px;
+  font-size:12px;
+  padding: 1px 0.5em;
   margin-right:1em;
-  line-height: 1em;
+  line-height: 14px;
+  display:inline-block;
+  vertical-align: middle;
 }
 
 .custom-array input{
@@ -371,9 +374,12 @@ nav .brand-logo img{
   background-color:#84c7c1 ;
 }
 .custom-array label{
-  font-size: 0.7em;
+  height:14px;
+  font-size:12px;
+  line-height: 14px;
   padding-left:0;
   color:#fff;
+  vertical-align:text-bottom;
 }
 
 footer.page-footer{
