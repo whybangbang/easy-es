@@ -3,17 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <style>
 
-
-        .bold {
-            /*font-weight: bold;*/
-        }
-
-    </style>
     <script src="http://cdn.bootcss.com/vue/1.0.17/vue.js"></script>
     <script src="http://cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
     <script src="assert/clipboard.min.js"></script>
+    <script src="assert/jsonlint.min.js"></script>
 
     <script src="data.js"></script>
     <script src="parts.js"></script>
@@ -27,36 +21,52 @@
 <body id="app" @click="hideChildShow">
 <!-- item template -->
 <script type="text/x-template" id="item-template">
-    <li>
-        <div :class="{bold: isFolder}">
-            <!--有子项,显示+--><span @click="toggleOpen" v-if="isFolder">{{open ? '-' : '+'}}</span>
-            <!-- 无子项，补白--><span @click="toggleOpen" v-else>&nbsp;&nbsp;</span>
+    <li :class="{'item-no-child-box':!model.extend}">
+        <div >
+            <!--有子项,显示+--><span @click="toggleOpen" v-if="isFolder"
+                                :class="{ 'item-close': !open, 'item-open': open }">{{open ? '-&nbsp;' : '+'}}&nbsp;</span>
+            <!-- 无子项，补白--><span @click="toggleOpen" v-else>&nbsp;&nbsp;&nbsp;</span>
 
-            <!--field--><input type="text" v-model="model.field" class="data-field" placeholder="field">
-
-            <!--value--><span v-if="!model.child  && !model.extend">:
-                <input  v-if="!model.arrayValue"
-                        type="text" v-model="model.value" class="data-value" placeholder="{{model.placeholder || 'value'}}">
-
-                <select v-else v-model="model.value" class="tree_select">
-                    <option v-for="v in model.arrayValue ">{{v}}</option>
+            <!--field--><input v-if="!model.arrayField"
+                               type="text" v-model="model.field" class="data-field" placeholder="field"
+                             >
+                <select v-else v-model="model.field" class="tree_select">
+                    <option v-for="v in model.arrayField ">{{v}}</option>
                 </select>
+
+            <!--value-->
+                <span v-if="!model.child  && !model.extend" class="data-value">
+                    <span>:</span>
+                    <input  v-if="!model.selectValue && !model.arrayValue"
+                            type="text" v-model="model.value" class="data-value" placeholder="{{model.placeholder || 'value'}}">
+
+                    <span v-if="model.arrayValue">
+                        [
+                        <input
+                            v-model="arrayValue" placeholder="array,array,array" class="data-value" style="width:120px;margin-right:0">
+                         <!--<a  href='#' class="choose-child-add" @click.stop="addArrayValue" >+</a>-->
+                        ]
+                    </span>
+
+                    <select v-if="model.selectValue" v-model="model.value" class="tree_select">
+                        <option v-for="v in model.selectValue ">{{v}}</option>
+                    </select>
 
             </span>
 
             <!--启用自定义模式--><span v-if="parts.tree_customize">
-            <a @click="extendCustomizeChild" class="customize-add">add</a>
-            <span class="customize-array">
+            <a @click="extendCustomizeChild" class="custom-add">add</a>
+            <span class="custom-array">
                 <input type="checkbox" id="customize-array" v-model="model.array">
                 <label for="customize-array">array</label>
             </span>
             </span>
 
 
-            <span @click="delChild" v-if="!model.undelete">X</span>
+            <span @click="delChild" v-if="!model.undelete" class="delete-child">X</span>
             <!--有括展项-->
             <span v-if="model.extend" class="choose-child">
-                <a  href='#' @click.stop="showchooseChild" v-bind:class="{'color-grey':view.hideChooseChildBtn}">+</a>
+                <a  href='#' class="choose-child-add" @click.stop="showchooseChild" v-bind:class="{'color-grey':view.hideChooseChildBtn}">+</a>
 
                 <!-- 下拉扩展项 -->
                 <ul v-show="chooseChildShow" class="choose-child-box">
@@ -71,7 +81,9 @@
             </span>
 
         </div>
-        <ul v-show="open" v-if="isFolder">
+        <ul v-show="open" v-if="isFolder"
+            :class="{'item-array':model.array,'item-no-child':!model.extend}"
+           >
             <item
                     class="data-item"
                     v-for="model in model.child"
@@ -87,63 +99,57 @@
 <! -- nav -->
 <nav>
     <div class="nav-wrapper">
-        <div class="col s12">
-            <a href="#!" class="brand-logo">&nbsp;&nbsp;ES Query</a>
-            <ul class="right hide-on-med-and-down">
+            <a href="#!" class="brand-logo "><img src="assert/img/logo.png">&nbsp;&nbsp;Easy Es</a>
+            <ul class="right" >
+                <li class="tree-name">
+                    <input type="text" v-model="treeName">
+                    <select v-model="treeName">
+                        <option v-for="item in treeNameLists" track-by="$index">{{item}}</option>
+                    </select>
+                </li>
+                <li>
+                    <a  @click="openTree" class="nav btn">open</a>
+                </li>
+                <li>
+                    <a @click="saveTree"  class="nav btn">save</a>
+                </li>
                 <li><a href="#">Document</a></li>
-                <li><a href="https://github.com/whybangbang/es_query_dsl_mindmanger">Github</a></li>
             </ul>
-        </div>
+            <div style="clear:both"></div>
     </div>
 </nav>
 
-<!-- app -->
+
 <div >
-
     <div class="row">
-        <div class="col s2 input-select">
-            <input type="text" v-model="treeProject">
-            <select v-model="treeProject">
-                <option v-for="item in treeProjectLists" track-by="$index">{{item}}</option>
-            </select>
-
-        </div>
-        <div class="col s6 input-select">
-            <input type="text" v-model="treeName">
-            <select v-model="treeName">
-                <option v-for="item in treeNameLists" track-by="$index">{{item}}</option>
-            </select>
-        </div>
-        <div class="col s4">
-            <a  @click="openTree" class="waves-effect waves-light btn">open</a>
-            <a @click="saveTree"  class="waves-effect waves-light btn">save</a>
-        </div>
-    </div>
-    <div class="row">
-        <div class="switch">
-            <label>
-                <input type="checkbox" v-model="parts.tree_customize">
-                <span class="lever"></span>
-                Customize Model
-            </label>
-        </div>
-
-    </div>
-    <!--<a  @mouseover="ss">Hover me!</a>-->
-    <div class="row">
-        <div class="col s6">
+        <div class="col s7" style="position:relative">
             <ul>
                 <item
                         class="item"
                         :model="treeData"
                         :parts="parts">
                 </item>
+                <div class="switch custom-btn">
+                    <label>
+                        <input type="checkbox" v-model="parts.tree_customize">
+                        <span class="lever"></span>
+                        Custom Model
+                    </label>
+                </div>
             </ul>
         </div>
-        <div class="col s6">
-            <a class=" btn waves-effect waves-teal btn-flat" data-clipboard-target="#getstr">cope code</a>
-            <textarea class="getstr" id="getstr">{{{getStr | json 4}}}</textarea>
-            <textarea >{{getTree}}</textarea>
+
+        <div class="col s5">
+            <a class="getstr-copy" @click="validator">formate&validator</a>
+            <a class="getstr-copy copy" data-clipboard-target="#getstr">cope code</a>
+            <div  v-show="validJson.state=='pass' " class="valid-json-pass">
+            </div>
+
+            <div  v-show="validJson.state=='fail' " class="valid-json-fail">
+                {{{ validJson.doc}}}
+            </div>
+            <textarea class="getstr" id="getstr" v-model="showJson">{{{getStr | json 4}}}</textarea>
+
         </div>
     </div>
 </div>
@@ -153,32 +159,32 @@
     <div class="container">
         <div class="row">
             <div class="col l6 s12">
-                <h5 class="white-text">Footer Content</h5>
-                <p class="grey-text text-lighten-4">You can use rows and columns here to organize your footer content.</p>
+                <h5 class="white-text">Easy Es</h5>
+                <p class="grey-text text-lighten-4">轻点鼠标，快速写出elasticsearch语句!欢迎补充子选项<br>本项目遵循BSD协议。</p>
             </div>
             <div class="col l4 offset-l2 s12">
-                <h5 class="white-text">Links</h5>
                 <ul>
-                    <li><a class="grey-text text-lighten-3" href="http://es.xiaoleilu.com/">Elasticsearch 权威指南</a></li>
-                    <li><a class="grey-text text-lighten-3" href="#!">Link 2</a></li>
-                    <li><a class="grey-text text-lighten-3" href="#!">Link 3</a></li>
-                    <li><a class="grey-text text-lighten-3" href="#!">Link 4</a></li>
+                    <li><a class="grey-text text-lighten-3" href="https://github.com/whybangbang/es_query_dsl_mindmanger">View project on Github</a></li>
+                    <li><a class="grey-text text-lighten-3" href="https://www.5milesapp.com/">Elasticsearch 权威指南</a></li>
+
                 </ul>
             </div>
         </div>
     </div>
     <div class="footer-copyright">
         <div class="container">
-            © 2016 Copyright Text
-            <a class="grey-text text-lighten-4 right" href="#!">More Links</a>
+             2016 seaasun wangbangbang
+            <a class="grey-text text-lighten-4 right" href="https://www.5milesapp.com/"><img src="assert/img/fivemiles.jpg" class="footer-5m">5miles offers support</a>
         </div>
     </div>
 </footer>
 
 
 <script>
+
+
     //注册剪贴板
-    new Clipboard('.btn');
+    new Clipboard('.copy');
     // 整体框架
     Vue.config.debug = true
     // define the item component
@@ -191,7 +197,8 @@
                 open: this.model.open ? this.model.open : false,
                 chooseChildShow:this.model.choose ? this.model.choose : false,
                 subparts:help.clone(parts[this.model.extend]),
-                view:{}
+                view:{},
+                arrayValue:''
             }
         },
         created:function(){
@@ -200,26 +207,34 @@
                 this.$parent.chooseChildShow=false;
             }
 
+            //自动增加value array
+            //if(this.model.arrayValue && !this.model.value){
+              //  this.model.value=['','']
+            //}
+
 
         },
         ready:function(){
             //only 处理
             if(this.$parent.hasOwnProperty('model')){//非第一个组件
-                if(!this.$parent.model.array){ //排除and、or
+                //if(!this.$parent.model.array){ //排除and、or
 
                     for(var son in this.$parent.$children){ //遍历子对象
 
                         if(this.$parent.$children[son].model.group){//判断是否分组
                             var group_number=this.$parent.$children[son].model.group;//得到分组号
+
                             //修改数据subparts
                             for(var part in this.$parent.subparts){
-                                if(this.$parent.subparts[part].group===group_number){
-                                    Vue.set(this.$parent.subparts[part],'only',true)
+                                if(!this.$parent.model.array || this.$parent.subparts[part].force_only) {
+                                    if (this.$parent.subparts[part].group === group_number) {
+                                        Vue.set(this.$parent.subparts[part], 'only', true)
+                                    }
                                 }
                             }
                         }
                     }
-                }
+                //}
 
                 //检查父元素是否可以增加新的子元素
                 var part_open=true;
@@ -241,7 +256,14 @@
             },
             isArray:function(){
                 return (typeof this.model.value=='object')&&this.model.value.constructor==Array;
-            }
+            },
+            arrayValue:{
+                set: function(newValue){
+                    console.log(123);
+                    Vue.set(this.model,'value',newValue.split(','))
+                    return newValue
+                }
+            },
         },
         methods: {
             toggleOpen: function () {
@@ -334,6 +356,14 @@
                         this.$parent.view.hideChooseChildBtn=false
                     }
                 }
+            },
+            addArrayValue:function(){
+
+                this.model.value.push('2');
+                console.log(this.model.value)
+            },
+            clearArrayValue:function(){
+
             }
 
         }
@@ -348,7 +378,12 @@
             treeProject:'base',
             treeProjectLists:[],
             treeName:'start',
-            treeNameLists:[]
+            treeNameLists:[],
+            showJson:'',
+            validJson:{
+                'state':false,
+                'doc':''
+            }
         },
         created:function() {
             this.updateTree();
@@ -361,10 +396,11 @@
         },
         computed: {
             getStr: function () {
-                var new_obj={};
 
-                return help.obj_parser(new_obj,this.treeData)[this.treeData.field];
+                //验证json的情况
+                    var new_obj={};
 
+                    return help.obj_parser(new_obj,this.treeData)[this.treeData.field];
             },
             getTree: function(){
                 return JSON.stringify(this.treeData);
@@ -436,8 +472,31 @@
                     localStorage['tree'] = JSON.stringify(tmp);
                 }
             },
-            ss:function(){
-                alert(1)
+            validator:function(){
+                try {
+                    var str;
+                    if(this.showJson.constructor==Object) {
+                        str = JSON.stringify(this.showJson)
+                    }else if(this.showJson==''){
+                        this.validJson.state='pass';
+                        return
+                    }else{
+                        str=this.showJson;
+                    }
+                    //验证
+                    var result = jsonlint.parse(str);
+                    this.validJson.state='pass';
+                    this.validJson.doc='pass';
+                    this.showJson=JSON.stringify(result,null,4);
+
+                } catch(e) {
+                    this.validJson.doc= e.message;
+                    this.validJson.doc=this.validJson.doc.replace(/\n/, "<br>")
+                    console.log(this.validJson.doc)
+                    this.validJson.state='fail';
+
+                };
+
             },
             //隐藏添加子选项菜单
             hideChildShow:function(){

@@ -22,17 +22,21 @@ var parts = {
       choose: true
     },
     from: {
-      field: 'from',
       group: 4,
     },
     size: {
-      field: 'size',
       group: 5,
+    },
+    _source:{
+      open:true,
+      group:6,
+      arrayValue:true
     }
   },
 
 
-  'filter': {
+/***--filter--***/
+  filter: {
     term: {
       group: 1,
       child: [
@@ -77,10 +81,12 @@ var parts = {
           undelete: true,
           child: [
             {
-              field: 'from',
+              field: 'gte',
+              arrayField:['gte','gt','from']
             },
             {
-              field: 'to',
+              field: 'lte',
+              arrayField:['lte','lt','to']
             }
           ]
         }
@@ -113,7 +119,8 @@ var parts = {
       open: true,
       child: [
         {
-          field: ''
+          field: 'field',
+          undelete: true
         }
       ]
     },
@@ -122,16 +129,18 @@ var parts = {
       open: true,
       child: [
         {
-          field: '',
+          field: 'location',
           open: true,
           undelete: true,
           child: [
             {
               field: 'top_left',
+              value: '40.73, -74.1',
               undelete: true,
             },
             {
               field: 'bottom_right',
+              value: '40.73, -74.1',
               undelete: true,
             }
           ]
@@ -192,15 +201,19 @@ var parts = {
       value: "_null_"
     }
   },
+
+  /***--sort--***/
   sort: {
     '[field]': {
       field: '',
-      value: 'asc',
-      arrayValue: ['desc', 'asc'],
+      value:'asc',
+      selectValue: ['desc', 'asc'],
     },
     _geo_distance: {
       open: true,
       group: 1,
+      extend:'sort_geo_distance',
+      force_only:true,
       child: [
         {
           field: 'location',
@@ -216,10 +229,30 @@ var parts = {
               undelete: true
             }
           ]
+        },
+        {
+          field: 'order',
+          value:'asc',
+          selectValue:['asc','desc']
+        },
+        {
+          field: 'unit',
+          value:'km'
         }
       ]
     }
   },
+  sort_geo_distance:{
+    order:{
+      value:'asc',
+      selectValue:['asc','desc']
+    },
+    unnit:{
+      value:'km'
+    }
+  },
+
+  /***--query--***/
   query: {
     term: {
       open: true,
@@ -246,12 +279,89 @@ var parts = {
             },
             {
               field: 'operator',
-              value: 'and',
-              arrayValue: ['and', 'or'],
+              value: 'or',
+              selectValue: ['or','and'],
               undelete: true
             },
             {
-              field: 'analyzer'
+              field: 'analyzer',
+              value: 'standard'
+            }
+          ]
+        }
+      ]
+    },
+    filtered:{
+      open:true,
+      group:1,
+      child:[
+        {
+          field:'query',
+          extend:'query',
+          undelete:true,
+          },
+        {
+          field:'filter',
+          extend:'filter',
+          undelete:true,
+        },
+    ]
+    },
+    prefix:{
+      open:true,
+      group:1,
+      child:[
+        {field:'',
+        undelete:true
+        }
+      ]
+    },
+    wildcard:{
+      open:true,
+      group:1,
+      child:[
+        {field:'',
+        undelete:true
+        }
+      ]
+    },
+    query_string:{
+      open:true,
+      group:1,
+      child:[
+        {
+          field:'query',
+          value:'content:this OR name:this) AND (content:that OR name:that)',
+          undelete:true
+        }
+      ]
+    },
+    regexp:{
+      open:true,
+      group:1,
+      child:[
+        {
+          field:'name',
+          value:'s.*y',
+          undelete:true
+        }
+      ]
+    },
+    range: {
+      group: 1,
+      child: [
+        {
+          field: '',
+          open: true,
+          undelete: true,
+          child: [
+            {
+              field: 'gte',
+              arrayField:['gte','gt','from']
+            },
+            {
+              field: 'lte',
+              arrayField:['lte','lt','to']
             }
           ]
         }
@@ -284,7 +394,7 @@ var parts = {
         {
           field: 'operator',
           value: 'and',
-          arrayValue: ['and', 'or'],
+          selectValue: ['and', 'or'],
           undelete: true
         },
         {
@@ -297,8 +407,73 @@ var parts = {
       extend: 'query_bool',
       group: 1,
       choose: true,
+    },
+    function_score: {
+      extend: 'function_score',
+      group: 1,
+      choose: true,
     }
   },
+
+  /***--bool--***/
+  function_score:{
+    filter: {
+      extend: 'filter',
+      group: 1,
+      array: true,
+      choose: true,
+    },
+    query: {
+      extend: 'query',
+      group: 2,
+      array: true,
+      choose: true,
+    },
+    functions: {
+      extend: 'function_score_functions',
+      group: 3,
+      array: true,
+      choose: true,
+    }
+  },
+
+  function_score_functions:{
+    guass: {
+      open: true,
+      group: 1,
+      child: [
+        {
+          field: '',
+          open: true,
+          undelete: true,
+          child: [
+            {
+              field: 'origin',
+              value: '29,117',
+              undelete: true
+            },
+            {
+              field: 'scale',
+              value: '172800',
+              undelete: true
+            },
+            {
+              field: 'delay',
+              value: '0.5',
+              undelete: true
+            },
+            {
+              field: 'offset',
+              value: '172800',
+              undelete: true
+            }
+          ]
+        }
+      ]
+    }
+  },
+
+  /***--bool--***/
   query_bool: {
     must: {
       extend: 'query',
@@ -326,6 +501,9 @@ var parts = {
       group: 5,
     }
   },
+  
+
+  /***--other mode--***/
   only_analyzer: {
     analyzer: {
       open: true,
@@ -335,7 +513,6 @@ var parts = {
   fields: {
     '[filed]': {
       field: '',
-      name: '[filed]'
     }
   }
 };
