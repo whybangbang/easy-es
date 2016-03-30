@@ -4,6 +4,27 @@
   margin-bottom: 10px;
 }
 
+.card .card-content{
+  padding:10px;
+}
+input[type=text]{
+  padding:0.2em;
+  font-size: 1em;
+  line-height: 1.5em;
+  height:1.5em;
+}
+
+.btn{
+  text-transform:none;
+  height:2em;
+  line-height: 2em;
+  font-size:1em;
+  background-color: #039be5;
+}
+.btn:hover{
+  background-color: #29b6f6;
+}
+
 /*  getstr */
 .getstr{
   padding:13px;
@@ -12,7 +33,7 @@
   color:#616161;
   background-color: #efefef;
   height:auto;
-  min-height:400px;
+  min-height:270px;
   font-size:13px;
   line-height: 1.2;
   overflow: hidden;
@@ -384,9 +405,7 @@ nav .brand-logo img{
 
 footer.page-footer{
   background-color: #757575;
-  position:fixed; 
-  bottom:0; 
-  left:0; 
+
   width:100%;
 }
 
@@ -395,7 +414,28 @@ footer.page-footer{
   vertical-align: middle;
 }
 
+.result{
+  position:absolute;
+  top:100px;
+  left: 50%;
+  width:400px;
+  min-height:200px;
+  height:auto;
+  margin-left: -400px;
+  z-index:10000;
+  padding:10px;
+  color:#fff;
 
+  background-color: #424242;
+}
+
+.result .close{
+  position:absolute;
+  right:10px;
+  top:1px;
+  font-size: 18px;
+  color:#039be5;
+}
 
 
 

@@ -10,6 +10,7 @@
     <script src="http://cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
     <script src="assert/clipboard.min.js"></script>
     <script src="assert/jsonlint.min.js"></script>
+    <script src="assert/drag.js"></script>
 
     <script src="data.js"></script>
     <script src="parts.js"></script>
@@ -133,10 +134,16 @@
     </div>
 </nav>
 
+<div class="card result" v-show="resultShow">
+    <div class="close" @click="toggleResult">-</div>
+    <p>{{{resultData | json 4}}}</p>
+</div>
 
 <div >
     <div class="row">
         <div class="col s7" style="position:relative">
+            <div class="card">
+                <div class="card-content" style="min-height: 400px;">
             <ul>
                 <item
                         class="item"
@@ -151,19 +158,29 @@
                     </label>
                 </div>
             </ul>
+                    </div>
+                </div>
         </div>
 
         <div class="col s5">
+            <div class="card">
+                <div class="card-content">
+                    <input type="text" v-model="query.url">
+                    <a class="btn" @click="queryWeb">send</a>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-content">
             <a class="getstr-copy" @click="validator">formate&validator</a>
             <a class="getstr-copy copy" data-clipboard-target="#getstr">cope code</a>
-            <div  v-show="validJson.state=='pass' " class="valid-json-pass">
-            </div>
+            <div  v-show="validJson.state=='pass' " class="valid-json-pass"></div>
 
             <div  v-show="validJson.state=='fail' " class="valid-json-fail">
                 {{{validJson.doc}}}
             </div>
             <textarea class="getstr" id="getstr" v-model="showJson">{{{getStr | json 4}}}</textarea>
-
+            </div>
+                </div>
         </div>
     </div>
 </div>
@@ -179,7 +196,7 @@
             <div class="col l4 offset-l2 s12">
                 <ul>
                     <li><a class="grey-text text-lighten-3" href="https://github.com/whybangbang/es_query_dsl_mindmanger">View project on Github</a></li>
-                    <li><a class="grey-text text-lighten-3" href="https://www.5milesapp.com/">Elasticsearch 权威指南</a></li>
+                    <li><a class="grey-text text-lighten-3" href="http://es.xiaoleilu.com/">Elasticsearch 权威指南</a></li>
 
                 </ul>
             </div>
@@ -187,13 +204,9 @@
     </div>
     <div class="footer-copyright">
         <div class="container">
-<<<<<<< HEAD
              2016 wangbangbang seaasun
             <a class="grey-text text-lighten-4 right" href="https://www.5milesapp.com/"><img src="assert/img/fivemiles.jpg" class="footer-5m">&nbsp;&nbsp;5 miles offers support</a>
-=======
-             2016 seaasun wangbangbang
-            <a class="grey-text text-lighten-4 right" href="https://www.5milesapp.com/"><img src="assert/img/fivemiles.jpg" class="footer-5m">5miles offers support</a>
->>>>>>> 5972063a9fb5b266c359183b0a82fabeb9efb580
+
         </div>
     </div>
 </footer>
@@ -429,7 +442,12 @@
             validJson:{
                 'state':false,
                 'doc':''
-            }
+            },
+            query:{
+                url:'http://115.28.179.129:9200/test/_search',
+            },
+            resultShow:'',
+            restultData:{},
         },
         created:function() {
             this.updateTree();
@@ -494,7 +512,6 @@
                 }else{
                     Materialize.toast("there is no this template,pleses check name", 4000)
                 }
-
             },
             //更新树的显示
             updateTree: function () {
@@ -540,7 +557,7 @@
                     this.validJson.doc=this.validJson.doc.replace(/\n/, "<br>")
                     this.validJson.state='fail';
 
-                };
+                }
 
             },
             //隐藏添加子选项菜单
@@ -553,9 +570,48 @@
                     }
                 }
                 hide(this);
+            },
+            queryWeb:function(){
+
+                this.validator();
+                if(this.validJson.state=='fail'){
+                    Materialize.toast('pelase check DSL', 4000);
+                    return fasle;
+                }
+
+                console.log(data);
+                var that=this;
+                $.ajax({
+                    url:this.query.url,
+                    type:'POST',
+                    cache:false,
+                    data:this.showJson,
+                    dataType:'json',
+                    success:function(data){
+                        that.resultShow=true;
+                        data=JSON.stringify(data,null,4);
+                       // data=JSON.parse(data);
+                        Vue.set(that,'resultData',data);
+                        console.log(that)
+                    },
+                    error:function(msg){
+                        Materialize.toast('error:'+JSON.stringify(msg), 4000)
+                    }
+
+                })
+                console.log(this.resultShow);
+            },
+            toggleResult:function(){
+                this.resultShow=!this.resultShow;
             }
         }
     })
+
+    //拖动设置
+    $('.result').draggabilly({
+
+    })
+
 
 </script>
 
