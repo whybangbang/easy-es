@@ -27,13 +27,86 @@ var parts = {
     size: {
       group: 5,
     },
+    aggs: {
+      group: 6,
+      extend: 'aggs',
+      choose: true
+    },
     _source:{
       open:true,
-      group:6,
+      group:7,
       arrayValue:true
     }
   },
 
+aggs:{
+  min: {
+    field:'',
+    child:[
+      {
+        field: 'min',
+        open: true,
+        undelete: true,
+        child: [
+          {
+            field: 'field',
+            value: ''
+          }
+        ]
+      }
+    ]
+  },
+  max: {
+    field:'',
+    child:[
+      {
+        field: 'max',
+        open: true,
+        undelete: true,
+        child: [
+          {
+            field: 'field',
+            value: ''
+          }
+        ]
+      }
+    ]
+  },
+  sum: {
+    field:'',
+    child:[
+      {
+        field: 'sum',
+        open: true,
+        undelete: true,
+        child: [
+          {
+            field: 'field',
+            value: ''
+          }
+        ]
+      }
+    ]
+  },
+  avg: {
+    field:'',
+    child:[
+      {
+        field: 'avg',
+        open: true,
+        undelete: true,
+        child: [
+          {
+            field: 'field',
+            value: ''
+          }
+        ]
+      }
+    ]
+  },
+
+
+},
 
 /***--filter--***/
   filter: {
@@ -46,7 +119,7 @@ var parts = {
         }
       ]
     },
-    exist: {
+    exists: {
       group: 1,
       extend: 'exist_null',
       child: [
@@ -454,7 +527,7 @@ var parts = {
             },
             {
               field: 'scale',
-              value: '172800',
+              value: '86400',
               undelete: true
             },
             {
@@ -464,7 +537,73 @@ var parts = {
             },
             {
               field: 'offset',
-              value: '172800',
+              value: '0',
+              undelete: true
+            }
+          ]
+        }
+      ]
+    },
+    linear: {
+      open: true,
+      group: 2,
+      child: [
+        {
+          field: '',
+          open: true,
+          undelete: true,
+          child: [
+            {
+              field: 'origin',
+              value: '29,117',
+              undelete: true
+            },
+            {
+              field: 'scale',
+              value: '86400',
+              undelete: true
+            },
+            {
+              field: 'delay',
+              value: '0.5',
+              undelete: true
+            },
+            {
+              field: 'offset',
+              value: '0',
+              undelete: true
+            }
+          ]
+        }
+      ]
+    },
+    exp: {
+      open: true,
+      group: 3,
+      child: [
+        {
+          field: '',
+          open: true,
+          undelete: true,
+          child: [
+            {
+              field: 'origin',
+              value: '29,117',
+              undelete: true
+            },
+            {
+              field: 'scale',
+              value: '86400',
+              undelete: true
+            },
+            {
+              field: 'delay',
+              value: '0.5',
+              undelete: true
+            },
+            {
+              field: 'offset',
+              value: '0',
               undelete: true
             }
           ]
