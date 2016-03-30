@@ -39,8 +39,10 @@ var parts = {
     }
   },
 
+/***--aggs--***/
 aggs:{
   min: {
+    group: 1,
     field:'',
     child:[
       {
@@ -57,6 +59,7 @@ aggs:{
     ]
   },
   max: {
+    group: 1,
     field:'',
     child:[
       {
@@ -73,6 +76,7 @@ aggs:{
     ]
   },
   sum: {
+    group: 1,
     field:'',
     child:[
       {
@@ -89,6 +93,7 @@ aggs:{
     ]
   },
   avg: {
+    group: 1,
     field:'',
     child:[
       {
@@ -101,6 +106,56 @@ aggs:{
             value: ''
           }
         ]
+      }
+    ]
+  },
+  term: {
+    group: 1,
+    field:'genders',
+    child:[
+      {
+        field: 'terms',
+        open: true,
+        undelete: true,
+        child: [
+          {
+            field: 'field',
+            value: ''
+          }
+        ]
+      }
+    ]
+  },
+  geohash_grid: {
+    group: 1,
+    field:'GrainGeoHashGrid',
+    child:[
+      {
+        field: 'geohash_grid',
+        open: true,
+        undelete: true,
+        child: [
+          {
+            field: 'field',
+            value: 'location'
+            
+          },{
+            field: 'precision',
+            value: '5'
+          }
+        ]
+      }
+    ]
+  },
+  range: {
+    group: 1,
+    field:'price_ranges',
+    child:[
+      {
+        field: '',
+        open: true,
+        undelete: true,
+        
       }
     ]
   },
