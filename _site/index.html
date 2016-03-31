@@ -11,6 +11,7 @@
     <script src="assert/clipboard.min.js"></script>
     <script src="assert/jsonlint.min.js"></script>
     <script src="assert/drag.js"></script>
+    <script src="assert/autosize.js"></script>
 
     <script src="data.js"></script>
     <script src="parts.js"></script>
@@ -38,10 +39,11 @@
                                 :class="{ 'item-close': !open, 'item-open': open }">{{open ? '-&nbsp;' : '+'}}&nbsp;</span>
             <!-- 无子项，补白--><span @click="toggleOpen" v-else>&nbsp;&nbsp;&nbsp;</span>
 
-            <!--field--><input v-if="!model.arrayField"
+            <!--field--><input v-if="!model.arrayField&&!model.object"
                                type="text" v-model="model.field" class="data-field" placeholder="field"
                              >
-                <select v-else v-model="model.field" class="tree_select">
+                <span v-if="model.object">{{model.field}}</span>
+                <select v-if="model.arrayField" v-model="model.field" class="tree_select">
                     <option v-for="v in model.arrayField ">{{v}}</option>
                 </select>
 
@@ -136,7 +138,7 @@
 
 <div class="card result" v-show="resultShow">
     <div class="close" @click="toggleResult">-</div>
-    <p>{{{resultData | json 4}}}</p>
+    <pre>{{resultData}}</pre>
 </div>
 
 <div >
@@ -167,6 +169,8 @@
                 <div class="card-content">
                     <input type="text" v-model="query.url">
                     <a class="btn" @click="queryWeb">send</a>
+                    <a class="getstr-copy" @click="toggleResult"
+                    :class="{'un-getstr-copy':resultShow}">last result</a>
                 </div>
             </div>
             <div class="card">
@@ -204,14 +208,10 @@
     </div>
     <div class="footer-copyright">
         <div class="container">
-<<<<<<< HEAD:index.html
              2016 wangbangbang seaasun
             <a class="grey-text text-lighten-4 right" href="https://www.5milesapp.com/"><img src="assert/img/fivemiles.jpg" class="footer-5m">&nbsp;&nbsp;5 miles offers support</a>
 
-=======
-             2016 seaasun wangbangbang
-            <a class="grey-text text-lighten-4 right" href="https://www.5milesapp.com/"><img src="assert/img/fivemiles.jpg" class="footer-5m">5miles offers support</a>
->>>>>>> 61ad85e69fda98b2f3f1390721c4268555b89ae9:_site/index.html
+
         </div>
     </div>
 </footer>
@@ -220,8 +220,6 @@
 <script>
 
 
-    //注册剪贴板
-    new Clipboard('.copy');
     // 整体框架
     Vue.config.debug = true;
 
@@ -584,7 +582,6 @@
                     return fasle;
                 }
 
-                console.log(data);
                 var that=this;
                 $.ajax({
                     url:this.query.url,
@@ -597,14 +594,16 @@
                         data=JSON.stringify(data,null,4);
                        // data=JSON.parse(data);
                         Vue.set(that,'resultData',data);
-                        console.log(that)
                     },
-                    error:function(msg){
-                        Materialize.toast('error:'+JSON.stringify(msg), 4000)
+                    error:function(httpd,msg){
+
+                        that.resultShow=true;
+                        data=JSON.stringify(httpd,null,4);
+                        Vue.set(that,'resultData',data);
+
                     }
 
                 })
-                console.log(this.resultShow);
             },
             toggleResult:function(){
                 this.resultShow=!this.resultShow;
@@ -614,8 +613,13 @@
 
     //拖动设置
     $('.result').draggabilly({
-
     })
+
+    //注册剪贴板
+    new Clipboard('.copy');
+
+    //textarea 自动
+
 
 
 </script>

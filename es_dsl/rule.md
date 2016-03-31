@@ -27,6 +27,7 @@
 16. arrayField
 16. force_only 即使在数组中也只能出现一次
 17. transform 将结果自动转换为数组、bool、数组，默认为true，禁止用false
+18. object 数组中直接包含子对象
  概念辨析：
 1.  extend：增加子项
 2.  add：增同级项目

@@ -147,21 +147,49 @@ aggs:{
       }
     ]
   },
-  range: {
+  field_range: {
     group: 1,
     field:'price_ranges',
     child:[
       {
-        field: '',
+        field: 'range',
         open: true,
         undelete: true,
-        
+        child: [
+          {
+            field: 'field',
+            value: 'price',
+            undelete: true
+          },
+          {
+            field:'range',
+            extend:'aggs_ranges',
+            array:true,
+            undelete: true
+          }
+        ]
       }
     ]
-  },
-
+  }
 
 },
+  aggs_ranges:{
+    to:{
+    },
+    from:{
+
+    },
+    from_to:{
+      object:true,
+      child:[
+        {field:'from',
+          undelete: true},
+        {field:'to',
+          undelete: true},
+      ]
+
+    }
+  },
 
 /***--filter--***/
   filter: {
