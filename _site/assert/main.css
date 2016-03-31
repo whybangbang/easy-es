@@ -20,6 +20,8 @@ input[type=text]{
   line-height: 2em;
   font-size:1em;
   background-color: #039be5;
+  margin-left: 7px;
+  margin-right: 7px;
 }
 .btn:hover{
   background-color: #29b6f6;
@@ -42,7 +44,7 @@ input[type=text]{
 
 .getstr-copy{
   cursor:pointer;
-  padding: 4px 14px;
+  padding: 4px 7px;
   border-radius: 2px;
 }
 
