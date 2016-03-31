@@ -24,8 +24,8 @@
 <!-- edite template -->
 <script type="text/x-exmplate" id="edit">
     <div>
-    <p class="getstr"  contenteditable="true"
-        @dblclick="goExtend($event)"></p>
+    <textarea class="getstr" v-model="content | json 4"
+        @dblclick="goExtend($event)"><br></textarea>
     </div>
 </script>
 
@@ -33,23 +33,23 @@
 <! -- nav -->
 <nav>
     <div class="nav-wrapper">
-            <a href="#!" class="brand-logo "><img src="assert/img/logo.png">&nbsp;&nbsp;Easy Es</a>
-            <ul class="right" >
-                <li class="tree-name">
-                    <input type="text" v-model="treeName">
-                    <select v-model="treeName">
-                        <option ></option>
-                    </select>
-                </li>
-                <li>
-                    <a   class="nav btn">open</a>
-                </li>
-                <li>
-                    <a class="nav btn">save</a>
-                </li>
-                <li><a href="#">Document</a></li>
-            </ul>
-            <div style="clear:both"></div>
+        <a href="#!" class="brand-logo "><img src="assert/img/logo.png">&nbsp;&nbsp;Easy Es</a>
+        <ul class="right" >
+            <li class="tree-name">
+                <input type="text" v-model="treeName">
+                <select v-model="treeName">
+                    <option v-for="item in treeNameLists" track-by="$index">{{item}}</option>
+                </select>
+            </li>
+            <li>
+                <a   class="nav btn">open</a>
+            </li>
+            <li>
+                <a   class="nav btn">save</a>
+            </li>
+            <li><a href="#">Document</a></li>
+        </ul>
+        <div style="clear:both"></div>
     </div>
 </nav>
 
@@ -111,13 +111,7 @@
 <a href="javascript:saveFile('zggo.html',document.documentElement.outerHTML)" mce_href="javascript:saveFile('zggo.html',document.documentElement.outerHTML)">立即保存本页</a>
 
 <script>
-    function save_file(filename,content)
-    {
-        var win=window.open('','','top=10000,left=10000');
-        win.document.write(content);
-        win.document.execCommand('SaveAs','',filename)
-        win.close();
-    }
+
 
 
     //注册剪贴板
@@ -131,7 +125,7 @@
         props: ['content','extend'],
         data:function(){
             return{
-
+                contents:'<br>ssss'
             }
         },
         watch:{
@@ -141,7 +135,6 @@
         },
         methods:{
             goExtend:function(event){
-                this.content='<a>ssss</a>';
                 console.log(event);
             }
         }
