@@ -162,7 +162,7 @@ aggs:{
             undelete: true
           },
           {
-            field:'range',
+            field:'ranges',
             extend:'aggs_ranges',
             array:true,
             undelete: true
