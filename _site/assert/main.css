@@ -469,6 +469,10 @@ footer.page-footer{
   font-size: 12px;
   line-height: 17px;
 }
+.result-th{
+  border-bottom: 1px solid #fff;
+  margin-bottom: 7px;
+}
 
 
 

@@ -19,6 +19,7 @@
     <link href="assert/materialize/css/materialize.min.css" rel="stylesheet">
     <link href="assert/main.css" rel="stylesheet">
     <link href="assert/font-awesome-4.5.0/css/font-awesome.css" rel="stylesheet">
+    <script src="assert/excellentexport-master/excellentexport.js"></script>
 
     <script src="assert/materialize/js/materialize.min.js"></script>
     <script src="help.js"></script>
@@ -141,30 +142,32 @@
     <div class="result-nav">
         <span class="close right" @click="toggleResult"><i class="fa fa-minus"></i></span>
         <span class="result-handle right"><i class="fa fa-arrows"></i></span>
-        {{!resultData.hits}}
         <a @click="changeResultType('response')"
             :class="{'undeline':resultShow=='response'}">response</a>
         <a @click="changeResultType('table')" class=""
         :class="{'undeline':resultShow=='table','line-through':!resultData.hits}">
             table</a>
+        <a download="es data.xls" href="#"
+           :class="{'line-through':!resultData.hits}"
+           onclick="return ExcellentExport.excel(this, 'result-data-table', 'result');">export excel</a>
 
     </div>
     <pre v-if="resultShow=='response'">{{resultData | json 4}}</pre>
+    <div v-if="resultData.hits">
+        <table v-show="resultShow=='table'" id="result-data-table">
 
-    <table v-if="resultShow=='table'" >
-        <thead>
-            <tr>
-                <th>No</th>
-                <th v-for="row in resultData.hits.hits[0]._source">{{$key}}</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr  v-for="row in resultData.hits.hits | orderBy parseInt('_id')" >{{row}}
-                <td>{{row._id}}</td>
-                <td v-for="td in row._source">{{td}}</td>
-            </tr>
-        </tbody>
-    </table>
+                <tr class="result-th">
+                    <th>No</th>
+                    <th v-for="row in resultData.hits.hits[0]._source">{{$key}}</th>
+                </tr>
+
+                <tr  v-for="row in resultData.hits.hits | orderBy '_id'" >{{row}}
+                    <td>{{row._id}}</td>
+                    <td v-for="td in row._source">{{td}}</td>
+                </tr>
+
+        </table>
+    </div>
 
     <table>
         <tr></tr>
@@ -637,6 +640,9 @@
             },
             changeResultType:function(val){
                 this.resultShow=val;
+            },
+            exportResult:function(){
+                window.open('data:application/vnd.ms-excel,' + $('#result-data-table').html());
             }
         }
     })
