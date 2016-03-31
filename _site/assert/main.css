@@ -437,17 +437,11 @@ footer.page-footer{
 
 .result .close{
   position:absolute;
-  left:7px;
-  top:7px;
-  font-size: 18px;
-  height:10px;
-  width:10px;
-  line-height: 10px;
-  padding:0;
+  left:14px;
+  top:0px;
+  font-size: 24px;
+  line-height: 24px;
   color:#039be5;
-  background-color: #e0e0e0;
-  border-radius: 100%;
-  text-align: center;
 }
 .result pre{
   font-size: 12px;

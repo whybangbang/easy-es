@@ -136,7 +136,7 @@
     </div>
 </nav>
 
-<div class="card result" v-show="resultShow">
+<div class="card result" v-if="resultShow">
     <div class="close" @click="toggleResult">-</div>
     <pre>{{resultData}}</pre>
 </div>
