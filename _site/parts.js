@@ -27,13 +27,169 @@ var parts = {
     size: {
       group: 5,
     },
+    aggs: {
+      group: 6,
+      extend: 'aggs',
+      choose: true
+    },
     _source:{
       open:true,
-      group:6,
+      group:7,
       arrayValue:true
     }
   },
 
+/***--aggs--***/
+aggs:{
+  min: {
+    group: 1,
+    field:'',
+    child:[
+      {
+        field: 'min',
+        open: true,
+        undelete: true,
+        child: [
+          {
+            field: 'field',
+            value: ''
+          }
+        ]
+      }
+    ]
+  },
+  max: {
+    group: 1,
+    field:'',
+    child:[
+      {
+        field: 'max',
+        open: true,
+        undelete: true,
+        child: [
+          {
+            field: 'field',
+            value: ''
+          }
+        ]
+      }
+    ]
+  },
+  sum: {
+    group: 1,
+    field:'',
+    child:[
+      {
+        field: 'sum',
+        open: true,
+        undelete: true,
+        child: [
+          {
+            field: 'field',
+            value: ''
+          }
+        ]
+      }
+    ]
+  },
+  avg: {
+    group: 1,
+    field:'',
+    child:[
+      {
+        field: 'avg',
+        open: true,
+        undelete: true,
+        child: [
+          {
+            field: 'field',
+            value: ''
+          }
+        ]
+      }
+    ]
+  },
+  term: {
+    group: 1,
+    field:'genders',
+    child:[
+      {
+        field: 'terms',
+        open: true,
+        undelete: true,
+        child: [
+          {
+            field: 'field',
+            value: ''
+          }
+        ]
+      }
+    ]
+  },
+  geohash_grid: {
+    group: 1,
+    field:'GrainGeoHashGrid',
+    child:[
+      {
+        field: 'geohash_grid',
+        open: true,
+        undelete: true,
+        child: [
+          {
+            field: 'field',
+            value: 'location'
+            
+          },{
+            field: 'precision',
+            value: '5'
+          }
+        ]
+      }
+    ]
+  },
+  field_range: {
+    group: 1,
+    field:'price_ranges',
+    child:[
+      {
+        field: 'range',
+        open: true,
+        undelete: true,
+        child: [
+          {
+            field: 'field',
+            value: 'price',
+            undelete: true
+          },
+          {
+            field:'range',
+            extend:'aggs_ranges',
+            array:true,
+            undelete: true
+          }
+        ]
+      }
+    ]
+  }
+
+},
+  aggs_ranges:{
+    to:{
+    },
+    from:{
+
+    },
+    from_to:{
+      object:true,
+      child:[
+        {field:'from',
+          undelete: true},
+        {field:'to',
+          undelete: true},
+      ]
+
+    }
+  },
 
 /***--filter--***/
   filter: {
@@ -46,7 +202,7 @@ var parts = {
         }
       ]
     },
-    exist: {
+    exists: {
       group: 1,
       extend: 'exist_null',
       child: [
@@ -454,7 +610,7 @@ var parts = {
             },
             {
               field: 'scale',
-              value: '172800',
+              value: '86400',
               undelete: true
             },
             {
@@ -464,7 +620,73 @@ var parts = {
             },
             {
               field: 'offset',
-              value: '172800',
+              value: '0',
+              undelete: true
+            }
+          ]
+        }
+      ]
+    },
+    linear: {
+      open: true,
+      group: 2,
+      child: [
+        {
+          field: '',
+          open: true,
+          undelete: true,
+          child: [
+            {
+              field: 'origin',
+              value: '29,117',
+              undelete: true
+            },
+            {
+              field: 'scale',
+              value: '86400',
+              undelete: true
+            },
+            {
+              field: 'delay',
+              value: '0.5',
+              undelete: true
+            },
+            {
+              field: 'offset',
+              value: '0',
+              undelete: true
+            }
+          ]
+        }
+      ]
+    },
+    exp: {
+      open: true,
+      group: 3,
+      child: [
+        {
+          field: '',
+          open: true,
+          undelete: true,
+          child: [
+            {
+              field: 'origin',
+              value: '29,117',
+              undelete: true
+            },
+            {
+              field: 'scale',
+              value: '86400',
+              undelete: true
+            },
+            {
+              field: 'delay',
+              value: '0.5',
+              undelete: true
+            },
+            {
+              field: 'offset',
+              value: '0',
               undelete: true
             }
           ]

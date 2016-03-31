@@ -177,11 +177,36 @@ function help() {
 
       //转数组
       if (obj['array']) {
-        new_obj[obj['field']] = []
+        new_obj[obj['field']] = [];
         for (var key in obj['child']) {
-          var tmp = {};
-          new_obj[obj['field']].push(this.obj_parser(tmp, obj['child'][key]));
+            //数组中包含有连续对象
+            if(obj['child'][key]['object']) {
+              var o = {};
+              var tmpSon = {};
+
+              for (var keySon in obj['child'][key]['child']) {
+                //有子对象
+                if(obj['child'][key]['child'][keySon].hasOwnProperty('child')){
+                o[obj['child'][key]['child'][keySon]['field']] = this.obj_parser(tmpSon, obj['child'][key]['child'][keySon])
+                }
+                //无子对象
+                else{
+                  console.log(1111)
+                  o[obj['child'][key]['child'][keySon]['field']]=obj['child'][key]['child'][keySon]['value']
+                }
+              }
+              console.log(o)
+              new_obj[obj['field']].push(o);
+              //正常情况
+
+          //正常情况
+          }else{
+            var tmp = {};
+            new_obj[obj['field']].push(this.obj_parser(tmp, obj['child'][key]));
+          }
+
         }
+
         //不转数组
       } else {
         var tmp = {};
@@ -222,5 +247,6 @@ function help() {
   }
 }
 var help = help()
+
 
 
