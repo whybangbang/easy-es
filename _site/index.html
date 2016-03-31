@@ -198,7 +198,10 @@
         <div class="col s5">
             <div class="card">
                 <div class="card-content">
-                    <input type="text" v-model="query.url">
+                    <input type="text" v-model="queryUrl">
+                    <div class="url">
+                        <span v-for="u in querySubUrl">{{u}}/</span>
+                    </div>
                     <a class="btn" @click="queryWeb">send</a>
                     <a class="getstr-copy" @click="toggleResult"
                     :class="{'un-getstr-copy':resultShow||resultShow=='no'}">last result</a>
@@ -477,9 +480,9 @@
                 'state':false,
                 'doc':''
             },
-            query:{
-                url:'http://115.28.179.129:9200/test/_search',
-            },
+            queryUrl:'http://115.28.179.129:9200/test/_search',
+           querySubUrl: [],
+
             resultShow:'no',
             resultData:{},
         },
@@ -487,10 +490,30 @@
             this.updateTree();
             this.parts.tree_chooseChidShow=true;
 
+            if(val=this.queryUrl.replace(/^http:\/\//g,'')){
+
+                this.querySubUrl=val.split('/');
+
+                this.querySubUrl.$set(0,'https://'+this.querySubUrl[0]);
+
+            }
+
             //隐藏选项，这里同上冗余
         },
         watch: {
-            treeProject:'updateTree'
+            treeProject:'updateTree',
+            queryUrl:function(val){
+
+                if(val=this.queryUrl.replace(/^http:\/\//g,'')){
+
+                    this.querySubUrl=val.split('/');
+
+                    this.querySubUrl.$set(0,'https://'+this.querySubUrl[0]);
+
+                }
+
+                //console.log(this.querySubUrl);
+            }
         },
         computed: {
             getStr: function () {
@@ -615,7 +638,7 @@
 
                 var that=this;
                 $.ajax({
-                    url:this.query.url,
+                    url:this.queryUrl,
                     type:'POST',
                     cache:false,
                     data:this.showJson,
