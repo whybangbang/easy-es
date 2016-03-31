@@ -18,6 +18,8 @@
 
     <link href="assert/materialize/css/materialize.min.css" rel="stylesheet">
     <link href="assert/main.css" rel="stylesheet">
+    <link href="assert/font-awesome-4.5.0/css/font-awesome.css" rel="stylesheet">
+    <script src="assert/excellentexport-master/excellentexport.js"></script>
 
     <script src="assert/materialize/js/materialize.min.js"></script>
     <script src="help.js"></script>
@@ -136,9 +138,40 @@
     </div>
 </nav>
 
-<div class="card result" v-show="resultShow">
-    <div class="close" @click="toggleResult">-</div>
-    <pre>{{resultData}}</pre>
+<div class="card result" v-show="resultShow&&resultShow!=='no'">
+    <div class="result-nav">
+        <span class="close right" @click="toggleResult"><i class="fa fa-minus"></i></span>
+        <span class="result-handle right"><i class="fa fa-arrows"></i></span>
+        <a @click="changeResultType('response')"
+            :class="{'undeline':resultShow=='response'}">response</a>
+        <a @click="changeResultType('table')" class=""
+        :class="{'undeline':resultShow=='table','line-through':!resultData.hits}">
+            table</a>
+        <a download="es data.xls" href="#"
+           :class="{'line-through':!resultData.hits}"
+           onclick="return ExcellentExport.excel(this, 'result-data-table', 'result');">export excel</a>
+
+    </div>
+    <pre v-if="resultShow=='response'">{{resultData | json 4}}</pre>
+    <div v-if="resultData.hits">
+        <table v-show="resultShow=='table'" id="result-data-table">
+
+                <tr class="result-th">
+                    <th>No</th>
+                    <th v-for="row in resultData.hits.hits[0]._source">{{$key}}</th>
+                </tr>
+
+                <tr  v-for="row in resultData.hits.hits | orderBy '_id'" >{{row}}
+                    <td>{{row._id}}</td>
+                    <td v-for="td in row._source">{{td}}</td>
+                </tr>
+
+        </table>
+    </div>
+
+    <table>
+        <tr></tr>
+    </table>
 </div>
 
 <div >
@@ -165,10 +198,13 @@
         <div class="col s5">
             <div class="card">
                 <div class="card-content">
-                    <input type="text" v-model="query.url">
+                    <input type="text" v-model="queryUrl">
+                    <div class="url">
+                        <span v-for="u in querySubUrl">{{u}}/</span>
+                    </div>
                     <a class="btn" @click="queryWeb">send</a>
                     <a class="getstr-copy" @click="toggleResult"
-                    :class="{'un-getstr-copy':resultShow}">last result</a>
+                    :class="{'un-getstr-copy':resultShow||resultShow=='no'}">last result</a>
                 </div>
             </div>
             <div class="card">
@@ -444,20 +480,40 @@
                 'state':false,
                 'doc':''
             },
-            query:{
-                url:'http://115.28.179.129:9200/test/_search',
-            },
-            resultShow:'',
-            restultData:{},
+            queryUrl:'http://115.28.179.129:9200/test/_search',
+           querySubUrl: [],
+
+            resultShow:'no',
+            resultData:{},
         },
         created:function() {
             this.updateTree();
             this.parts.tree_chooseChidShow=true;
 
+            if(val=this.queryUrl.replace(/^http:\/\//g,'')){
+
+                this.querySubUrl=val.split('/');
+
+                this.querySubUrl.$set(0,'https://'+this.querySubUrl[0]);
+
+            }
+
             //隐藏选项，这里同上冗余
         },
         watch: {
-            treeProject:'updateTree'
+            treeProject:'updateTree',
+            queryUrl:function(val){
+
+                if(val=this.queryUrl.replace(/^http:\/\//g,'')){
+
+                    this.querySubUrl=val.split('/');
+
+                    this.querySubUrl.$set(0,'https://'+this.querySubUrl[0]);
+
+                }
+
+                //console.log(this.querySubUrl);
+            }
         },
         computed: {
             getStr: function () {
@@ -577,25 +633,24 @@
                 this.validator();
                 if(this.validJson.state=='fail'){
                     Materialize.toast('pelase check DSL', 4000);
-                    return fasle;
+                    return false;
                 }
 
                 var that=this;
                 $.ajax({
-                    url:this.query.url,
+                    url:this.queryUrl,
                     type:'POST',
                     cache:false,
                     data:this.showJson,
                     dataType:'json',
                     success:function(data){
-                        that.resultShow=true;
-                        data=JSON.stringify(data,null,4);
-                       // data=JSON.parse(data);
+                        that.resultShow='response';
                         Vue.set(that,'resultData',data);
+
                     },
                     error:function(httpd,msg){
 
-                        that.resultShow=true;
+                        that.resultShow='response';
                         data=JSON.stringify(httpd,null,4);
                         Vue.set(that,'resultData',data);
 
@@ -605,13 +660,20 @@
             },
             toggleResult:function(){
                 this.resultShow=!this.resultShow;
+            },
+            changeResultType:function(val){
+                this.resultShow=val;
+            },
+            exportResult:function(){
+                window.open('data:application/vnd.ms-excel,' + $('#result-data-table').html());
             }
         }
-    })
+    });
 
     //拖动设置
     $('.result').draggabilly({
-    })
+        handle: '.result-handle'
+    });
 
     //注册剪贴板
     new Clipboard('.copy');

@@ -27,6 +27,11 @@ input[type=text]{
   background-color: #29b6f6;
 }
 
+td,th{
+  padding:5px;
+  font-size: 13px;
+}
+
 /*  getstr */
 .getstr{
   padding:13px;
@@ -438,16 +443,40 @@ footer.page-footer{
 }
 
 .result .close{
-  position:absolute;
-  left:14px;
-  top:0px;
-  font-size: 24px;
-  line-height: 24px;
   color:#039be5;
+  margin-left:14px;
+}
+.result-handle{
+  color:#039be5;
+}
+.result-nav{
+  font-size:14px;
+}
+
+.result a{
+  margin-right: 14px;
+}
+
+.result a.undeline{
+  text-decoration:underline;
+}
+
+.result a.line-through{
+  text-decoration:line-through;
+  pointer-events: none;
 }
 .result pre{
   font-size: 12px;
   line-height: 17px;
+}
+.result-th{
+  border-bottom: 1px solid #fff;
+  margin-bottom: 7px;
+}
+
+.url span{
+  background-color:#eee ;
+ margin-right: 7px;
 }
 
 
