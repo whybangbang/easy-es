@@ -315,13 +315,17 @@
         created:function(){
             this.dealUrl()
         },
+        watch:{
+         url:function(){
+            this.dealUrl();
+            }
+        },
         methods:{
             showInputShow:function(){
                 this.inputShow=true;
             },
            hideInputShow:function(){
             this.inputShow=false;
-            this.dealUrl()
             },
             dealUrl:function(){
                 var re=/^.*:\/\//;
