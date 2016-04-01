@@ -10,19 +10,46 @@
     <script src="http://cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
     <script src="assert/clipboard.min.js"></script>
     <script src="assert/jsonlint.min.js"></script>
+    <script src="assert/drag.js"></script>
+    <script src="assert/autosize.js"></script>
 
     <script src="data.js"></script>
     <script src="parts.js"></script>
 
     <link href="assert/materialize/css/materialize.min.css" rel="stylesheet">
     <link href="assert/main.css" rel="stylesheet">
+    <link href="assert/font-awesome-4.5.0/css/font-awesome.css" rel="stylesheet">
+    <script src="assert/excellentexport-master/excellentexport.js"></script>
 
     <script src="assert/materialize/js/materialize.min.js"></script>
     <script src="help.js"></script>
 </head>
 <body id="app" @click="hideChildShow">
 
-<!-- arrayValue template -->
+
+<!-- aurlItem template -->
+<script type="text/babel/x-template" id="url-item">
+    <span class="url-item" >
+        <span  @blur="changeValue"
+                contentEditable="true">{{val}}</span>/
+    </span>
+</script>
+
+<!-- url template -->
+<script type="text/babel/x-template" id="url">
+    <div class="url">
+        <input type="text" v-model="url" v-show="inputShow"
+               @blur="hideInputShow">
+        <div class="url-all"  v-show="!inputShow">
+            <url-item v-for="u in subUrl"
+                      :index="$index" :val="u"></url-item>
+        </div>
+        <div v-show="!inputShow" class="url-bottom" @click="showInputShow"></div>
+    </div>
+</script>
+
+
+
 <script type="text/x-template" id="array-value">
     <li class="data-item">
     <input v-model="arrayValue" class="data-value" placeholder="array" >
@@ -37,10 +64,11 @@
                                 :class="{ 'item-close': !open, 'item-open': open }">{{open ? '-&nbsp;' : '+'}}&nbsp;</span>
             <!-- 无子项，补白--><span @click="toggleOpen" v-else>&nbsp;&nbsp;&nbsp;</span>
 
-            <!--field--><input v-if="!model.arrayField"
+            <!--field--><input v-if="!model.arrayField&&!model.object"
                                type="text" v-model="model.field" class="data-field" placeholder="field"
                              >
-                <select v-else v-model="model.field" class="tree_select">
+                <span v-if="model.object">{{model.field}}</span>
+                <select v-if="model.arrayField" v-model="model.field" class="tree_select">
                     <option v-for="v in model.arrayField ">{{v}}</option>
                 </select>
 
@@ -133,10 +161,46 @@
     </div>
 </nav>
 
+<div class="card result" v-show="resultShow&&resultShow!=='no'">
+    <div class="result-nav">
+        <span class="close right" @click="toggleResult"><i class="fa fa-minus"></i></span>
+        <span class="result-handle right"><i class="fa fa-arrows"></i></span>
+        <a @click="changeResultType('response')"
+            :class="{'undeline':resultShow=='response'}">response</a>
+        <a @click="changeResultType('table')" class=""
+        :class="{'undeline':resultShow=='table','line-through':!resultData.hits}">
+            table</a>
+        <a download="es data.xls" href="#"
+           :class="{'line-through':!resultData.hits}"
+           onclick="return ExcellentExport.excel(this, 'result-data-table', 'result');">export excel</a>
+
+    </div>
+    <pre v-if="resultShow=='response'">{{resultData | json 4}}</pre>
+    <div v-if="resultData.hits">
+        <table v-show="resultShow=='table'" id="result-data-table">
+
+                <tr class="result-th">
+                    <th>No</th>
+                    <th v-for="row in resultData.hits.hits[0]._source">{{$key}}</th>
+                </tr>
+
+                <tr  v-for="row in resultData.hits.hits | orderBy '_id'" >{{row}}
+                    <td>{{row._id}}</td>
+                    <td v-for="td in row._source">{{td}}</td>
+                </tr>
+
+        </table>
+    </div>
+
+    <table>
+        <tr></tr>
+    </table>
+</div>
 
 <div >
     <div class="row">
         <div class="col s7" style="position:relative">
+                <div class="card-content" style="min-height: 400px;">
             <ul>
                 <item
                         class="item"
@@ -151,19 +215,31 @@
                     </label>
                 </div>
             </ul>
+                    </div>
         </div>
 
         <div class="col s5">
+            <div class="card">
+                <div class="card-content">
+                    <url :url.sync="queryUrl"></url>
+
+                    <a class="btn" @click="queryWeb">send</a>
+                    <a class="getstr-copy" @click="toggleResult"
+                    :class="{'un-getstr-copy':resultShow||resultShow=='no'}">last result</a>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-content">
             <a class="getstr-copy" @click="validator">formate&validator</a>
             <a class="getstr-copy copy" data-clipboard-target="#getstr">cope code</a>
-            <div  v-show="validJson.state=='pass' " class="valid-json-pass">
-            </div>
+            <div  v-show="validJson.state=='pass' " class="valid-json-pass"></div>
 
             <div  v-show="validJson.state=='fail' " class="valid-json-fail">
                 {{{validJson.doc}}}
             </div>
             <textarea class="getstr" id="getstr" v-model="showJson">{{{getStr | json 4}}}</textarea>
-
+            </div>
+                </div>
         </div>
     </div>
 </div>
@@ -179,7 +255,7 @@
             <div class="col l4 offset-l2 s12">
                 <ul>
                     <li><a class="grey-text text-lighten-3" href="https://github.com/whybangbang/es_query_dsl_mindmanger">View project on Github</a></li>
-                    <li><a class="grey-text text-lighten-3" href="https://www.5milesapp.com/">Elasticsearch 权威指南</a></li>
+                    <li><a class="grey-text text-lighten-3" href="http://es.xiaoleilu.com/">Elasticsearch 权威指南</a></li>
 
                 </ul>
             </div>
@@ -187,8 +263,10 @@
     </div>
     <div class="footer-copyright">
         <div class="container">
-             2016 seaasun wangbangbang
-            <a class="grey-text text-lighten-4 right" href="https://www.5milesapp.com/"><img src="assert/img/fivemiles.jpg" class="footer-5m">5miles offers support</a>
+             2016 wangbangbang seaasun
+            <a class="grey-text text-lighten-4 right" href="https://www.5milesapp.com/"><img src="assert/img/fivemiles.jpg" class="footer-5m">&nbsp;&nbsp;5 miles offers support</a>
+
+
         </div>
     </div>
 </footer>
@@ -197,10 +275,70 @@
 <script>
 
 
-    //注册剪贴板
-    new Clipboard('.copy');
     // 整体框架
     Vue.config.debug = true;
+
+    //defin the arrayValue componet
+    Vue.component('url-item', {
+        template:'#url-item',
+        props: ['index','val'],
+        data:function(){
+            return{
+                show:true
+            }
+        },
+        methods:{
+            changeValue:function(){
+                //需取得最后的'/'
+                this.$parent.subUrl.$set(this.index,this.$el.innerText.substring(0,this.$el.innerText.length-1));
+                this.$parent.url=this.$parent.subUrl.join('/');
+                this.show=true;
+            },
+            toggleShow:function(event){
+                this.show=false;
+                if(!this.show){
+                }
+            }
+        }
+    });
+
+    //defin the url componet
+    Vue.component('url', {
+        template:'#url',
+        props: ['url'],
+        data:function(){
+            return{
+                inputShow:false,
+                subUrl:[]
+            }
+        },
+        created:function(){
+            this.dealUrl()
+        },
+        watch:{
+         url:function(){
+            this.dealUrl();
+            }
+        },
+        methods:{
+            showInputShow:function(){
+                this.inputShow=true;
+            },
+           hideInputShow:function(){
+            this.inputShow=false;
+            },
+            dealUrl:function(){
+                var re=/^.*:\/\//;
+                var urlHead=re.exec(this.url);
+                var urlBack=this.url.replace(re,'');
+                this.subUrl=urlBack.split('/');
+                if(urlHead){
+                    this.subUrl.$set(0,urlHead+this.subUrl[0])
+                }
+            }
+     }
+
+    });
 
     //defin the arrayValue componet
     Vue.component('array', {
@@ -217,7 +355,6 @@
         watch:{
             'arrayValue':function(val,oldVal){
                 this.$parent.model.value.$set(this.key, val)
-
             }
         },
         methods:{
@@ -424,7 +561,12 @@
             validJson:{
                 'state':false,
                 'doc':''
-            }
+            },
+            queryUrl:window.location.protocol+'//'+window.location.host+'/index/type/_search',
+           querySubUrl: [],
+
+            resultShow:'no',
+            resultData:{},
         },
         created:function() {
             this.updateTree();
@@ -433,7 +575,8 @@
             //隐藏选项，这里同上冗余
         },
         watch: {
-            treeProject:'updateTree'
+            treeProject:'updateTree',
+
         },
         computed: {
             getStr: function () {
@@ -489,7 +632,6 @@
                 }else{
                     Materialize.toast("there is no this template,pleses check name", 4000)
                 }
-
             },
             //更新树的显示
             updateTree: function () {
@@ -535,7 +677,7 @@
                     this.validJson.doc=this.validJson.doc.replace(/\n/, "<br>")
                     this.validJson.state='fail';
 
-                };
+                }
 
             },
             //隐藏添加子选项菜单
@@ -548,9 +690,60 @@
                     }
                 }
                 hide(this);
+            },
+            queryWeb:function(){
+
+                this.validator();
+                if(this.validJson.state=='fail'){
+                    Materialize.toast('pelase check DSL', 4000);
+                    return false;
+                }
+
+                var that=this;
+                $.ajax({
+                    url:this.queryUrl,
+                    type:'POST',
+                    cache:false,
+                    data:this.showJson,
+                    dataType:'json',
+                    success:function(data){
+                        that.resultShow='response';
+                        Vue.set(that,'resultData',data);
+
+                    },
+                    error:function(httpd,msg){
+
+                        that.resultShow='response';
+                        data=JSON.stringify(httpd,null,4);
+                        Vue.set(that,'resultData',data);
+
+                    }
+
+                })
+            },
+            toggleResult:function(){
+                this.resultShow=!this.resultShow;
+            },
+            changeResultType:function(val){
+                this.resultShow=val;
+            },
+            exportResult:function(){
+                window.open('data:application/vnd.ms-excel,' + $('#result-data-table').html());
             }
         }
-    })
+    });
+
+    //拖动设置
+    $('.result').draggabilly({
+        handle: '.result-handle'
+    });
+
+    //注册剪贴板
+    new Clipboard('.copy');
+
+    //textarea 自动
+
+
 
 </script>
 
