@@ -447,6 +447,9 @@ aggs:{
         }
       ]
     },
+    match_all:{
+      child:[]
+    },
     filtered:{
       open:true,
       group:1,
