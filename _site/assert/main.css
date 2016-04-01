@@ -480,6 +480,7 @@ footer.page-footer{
   display:block;
   width:100%;
   position:relative;
+  height:auto;
   min-height:24px;
   padding-bottom: 4px;
   margin-bottom: 7px;
