@@ -26,7 +26,30 @@
 </head>
 <body id="app" @click="hideChildShow">
 
-<!-- arrayValue template -->
+
+<!-- aurlItem template -->
+<script type="text/babel/x-template" id="url-item">
+    <span class="url-item" >
+        <span  @blur="changeValue"
+                contentEditable="true">{{val}}</span>/
+    </span>
+</script>
+
+<!-- url template -->
+<script type="text/babel/x-template" id="url">
+    <div class="url">
+        <input type="text" v-model="url" v-show="inputShow"
+               @blur="hideInputShow">
+        <div class="url-all"  v-show="!inputShow">
+            <url-item v-for="u in subUrl"
+                      :index="$index" :val="u"></url-item>
+        </div>
+        <div v-show="!inputShow" class="url-bottom" @click="showInputShow"></div>
+    </div>
+</script>
+
+
+
 <script type="text/x-template" id="array-value">
     <li class="data-item">
     <input v-model="arrayValue" class="data-value" placeholder="array" >
@@ -198,10 +221,8 @@
         <div class="col s5">
             <div class="card">
                 <div class="card-content">
-                    <input type="text" v-model="queryUrl">
-                    <div class="url">
-                        <span v-for="u in querySubUrl">{{u}}/</span>
-                    </div>
+                    <url :url.sync="queryUrl"></url>
+
                     <a class="btn" @click="queryWeb">send</a>
                     <a class="getstr-copy" @click="toggleResult"
                     :class="{'un-getstr-copy':resultShow||resultShow=='no'}">last result</a>
@@ -258,6 +279,62 @@
     Vue.config.debug = true;
 
     //defin the arrayValue componet
+    Vue.component('url-item', {
+        template:'#url-item',
+        props: ['index','val'],
+        data:function(){
+            return{
+                show:true
+            }
+        },
+        methods:{
+            changeValue:function(){
+                //需取得最后的'/'
+                this.$parent.subUrl.$set(this.index,this.$el.innerText.substring(0,this.$el.innerText.length-1));
+                this.$parent.url=this.$parent.subUrl.join('/');
+                this.show=true;
+            },
+            toggleShow:function(event){
+                this.show=false;
+                if(!this.show){
+                }
+            }
+        }
+    });
+
+    //defin the url componet
+    Vue.component('url', {
+        template:'#url',
+        props: ['url'],
+        data:function(){
+            return{
+                inputShow:false,
+                subUrl:[]
+            }
+        },
+        created:function(){
+            this.dealUrl()
+        },
+        methods:{
+            showInputShow:function(){
+                this.inputShow=true;
+            },
+           hideInputShow:function(){
+            this.inputShow=false;
+            this.dealUrl()
+            },
+            dealUrl:function(){
+                var re=/^.*:\/\//;
+                var urlHead=re.exec(this.url);
+                var urlBack=this.url.replace(re,'');
+                this.subUrl=urlBack.split('/');
+                this.subUrl.$set(0,urlHead+this.subUrl[0])
+            }
+     }
+
+    });
+
+    //defin the arrayValue componet
     Vue.component('array', {
         template:'#array-value',
         data:function() {
@@ -272,7 +349,6 @@
         watch:{
             'arrayValue':function(val,oldVal){
                 this.$parent.model.value.$set(this.key, val)
-
             }
         },
         methods:{
@@ -490,30 +566,11 @@
             this.updateTree();
             this.parts.tree_chooseChidShow=true;
 
-            if(val=this.queryUrl.replace(/^http:\/\//g,'')){
-
-                this.querySubUrl=val.split('/');
-
-                this.querySubUrl.$set(0,'https://'+this.querySubUrl[0]);
-
-            }
-
             //隐藏选项，这里同上冗余
         },
         watch: {
             treeProject:'updateTree',
-            queryUrl:function(val){
 
-                if(val=this.queryUrl.replace(/^http:\/\//g,'')){
-
-                    this.querySubUrl=val.split('/');
-
-                    this.querySubUrl.$set(0,'https://'+this.querySubUrl[0]);
-
-                }
-
-                //console.log(this.querySubUrl);
-            }
         },
         computed: {
             getStr: function () {
