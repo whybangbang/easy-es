@@ -489,6 +489,7 @@ footer.page-footer{
 
 
 .url input{
+  font-size: 14px;
   border-bottom: 0 !important;
   margin-bottom: 0;
   border-bottom: 0;
@@ -514,17 +515,19 @@ footer.page-footer{
 
 }
 .url-item span{
+  font-size: 14px;
   padding:2px 4px;
   background-color: #e3f2fd;
-  border-radius: 2px;
+  border-radius: 3px;
   z-index: 200;
-  margin-left: 4px;
-  margin-right: 4px;
+  color:#616161;
+
 }
 
 .url-item span:focus{
   background-color: #fff;
   outline: none;
+  color:#000;
 }
 
 .url .url-bottom{

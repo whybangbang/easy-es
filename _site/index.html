@@ -332,7 +332,9 @@
                 var urlHead=re.exec(this.url);
                 var urlBack=this.url.replace(re,'');
                 this.subUrl=urlBack.split('/');
-                this.subUrl.$set(0,urlHead+this.subUrl[0])
+                if(urlHead){
+                    this.subUrl.$set(0,urlHead+this.subUrl[0])
+                }
             }
      }
 
