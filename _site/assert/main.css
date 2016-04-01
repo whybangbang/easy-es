@@ -474,10 +474,67 @@ footer.page-footer{
   margin-bottom: 7px;
 }
 
-.url span{
-  background-color:#eee ;
- margin-right: 7px;
+
+
+.url{
+  display:block;
+  width:100%;
+  position:relative;
+  min-height:24px;
+  padding-bottom: 4px;
+  margin-bottom: 7px;
+  border-bottom: 1px solid #9e9e9e;
 }
+
+
+.url input{
+  border-bottom: 0 !important;
+  margin-bottom: 0;
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+.url input:focus{
+
+  outline: none !important;
+  box-shadow:none !important;
+}
+
+.url-item{
+  position: relative;
+  display: inline-block;
+
+
+}
+.url .url-all{
+  position: absolute;
+  left:0;
+  top:0;
+  z-index: 200;
+
+}
+.url-item span{
+  padding:2px 4px;
+  background-color: #e3f2fd;
+  border-radius: 2px;
+  z-index: 200;
+  margin-left: 4px;
+  margin-right: 4px;
+}
+
+.url-item span:focus{
+  background-color: #fff;
+  outline: none;
+}
+
+.url .url-bottom{
+  position: absolute;
+  width:100%;
+  height:20px;
+  display: block;
+  left:0;
+  top:0;
+}
+
 
 
 
