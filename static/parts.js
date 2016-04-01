@@ -448,7 +448,7 @@ aggs:{
       ]
     },
     match_all:{
-      child:[]
+      value:{}
     },
     filtered:{
       open:true,
