@@ -5,6 +5,7 @@
 *.db
 *.rdb
 node_modules/
+/test/lab
 npm-debug.log
 selenium-debug.log
 test/unit/coverage

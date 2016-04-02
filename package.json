@@ -15,7 +15,8 @@
     "clipboard": "^1.5.9",
     "draggabilly": "^2.1.0",
     "jquery": "^2.2.2",
-    "vue": "^1.0.18"
+    "vue": "^1.0.18",
+    "vue-router": "^0.7.11"
   },
   "devDependencies": {
     "babel-core": "^6.0.0",

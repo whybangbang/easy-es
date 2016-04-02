@@ -3,15 +3,15 @@
  */
 export default {
   // 深度复制js对象
-  clone:function (obj) {
+  clone: function (obj) {
     var str, newobj = obj.constructor === Array ? [] : {};
-    if(typeof obj !== 'object'){
+    if (typeof obj !== 'object') {
       return;
-    } else if(window.JSON){
+    } else if (window.JSON) {
       str = JSON.stringify(obj), //系列化对象
         newobj = JSON.parse(str); //还原
     } else {
-      for(var i in obj){
+      for (var i in obj) {
         newobj[i] = typeof obj[i] === 'object' ?
           cloneObj(obj[i]) : obj[i];
       }
@@ -88,6 +88,16 @@ export default {
       return new_obj
     }
     return new_obj
+  },
+  //保存文件到本地：http://www.alloyteam.com/2014/01/use-js-file-download/
+  downloadFile(fileName, content){
+    var aLink = document.createElement('a');
+    var blob = new Blob([content]);
+    var evt = document.createEvent("HTMLEvents");
+    evt.initEvent("click", false, false);
+    aLink.download = fileName;
+    aLink.href = URL.createObjectURL(blob);
+    aLink.dispatchEvent(evt);
   }
 }
 

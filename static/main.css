@@ -161,7 +161,6 @@ select{
   font-size:1rem;
   border-radius: 4px;
 }
-
 .tree-name{
   display:block;
   position:relative;
@@ -207,6 +206,7 @@ select{
   width:100%;
   font-weight: 300;
 }
+
 
 nav{
   height:auto;
