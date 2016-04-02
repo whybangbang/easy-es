@@ -1,9 +1,11 @@
-# Created by .ignore support plugin (hsz.mobi)
+.DS_Store
+.idea
 *.pyc
 *.swp
 *.db
 *.rdb
-.idea
-
-.DS_Store
-
+node_modules/
+npm-debug.log
+selenium-debug.log
+test/unit/coverage
+test/e2e/reports
