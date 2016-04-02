@@ -27,7 +27,7 @@ export default {
     this.dealUrl()
   },
   watch:{
-    url:function(){
+    url(){
       this.dealUrl();
     }
   },

@@ -23,7 +23,7 @@
     </nav>
     <div class="card result" v-show="resultShow&&resultShow!=='no'">
       <div class="result-nav">
-        <span class="close right" @click="toggleResult"><i class="fa fa-minus"></i></span>
+        <span class="close right" @click="toggleResult"><i class="fa fa-times"></i></span>
         <span class="result-handle right"><i class="fa fa-arrows"></i></span>
         <a @click="changeResultType('response')"
            :class="{'undeline':resultShow=='response'}">response</a>
@@ -100,34 +100,7 @@
       </div>
     </div>
 
-    <!-- footer -->
-    <footer class="page-footer">
-      <div class="container">
-        <div class="row">
-          <div class="col l6 s12">
-            <h5 class="white-text">Easy Es</h5>
-            <p class="grey-text text-lighten-4">轻点鼠标，快速写出elasticsearch语句!欢迎补充子选项<br>本项目遵循BSD协议。</p>
-          </div>
-          <div class="col l4 offset-l2 s12">
-            <ul>
-              <li><a class="grey-text text-lighten-3" href="https://github.com/whybangbang/es_query_dsl_mindmanger">View
-                project on Github</a></li>
-              <li><a class="grey-text text-lighten-3" href="http://es.xiaoleilu.com/">Elasticsearch 权威指南</a></li>
 
-            </ul>
-          </div>
-        </div>
-      </div>
-      <div class="footer-copyright">
-        <div class="container">
-          2016 wangbangbang seaasun
-          <a class="grey-text text-lighten-4 right" href="https://www.5milesapp.com/"><img
-            src="../static/img/fivemiles.jpg" class="footer-5m">&nbsp;&nbsp;5 miles offers support</a>
-
-
-        </div>
-      </div>
-    </footer>
   </div>
 </template>
 
@@ -185,12 +158,26 @@
     },
     created: function () {
       this.updateTree();
+      //读取最后的树
+      if (localStorage['tree']&&localStorage['last_tree']) {
+        var tmp = JSON.parse(localStorage['tree']);
+        var last = JSON.parse(localStorage['last_tree']);
+
+        this.treeData = tmp[last['treeProject']][last['treeName']];
+        if(tmp[last['treeProject']][last['treeName'] + '_url']){
+          this.queryUrl = tmp[last['treeProject']][last['treeName'] + '_url'];
+        }
+
+        this.treeName=last['treeName'];
+        this.treeProject=last['treeProject'];
+      }
       this.parts.tree_chooseChidShow = true;
+
 
       // 隐藏选项，这里同上冗余
     },
     watch: {
-      treeProject: 'updateTree',
+      treeProject: 'updateTree'
 
     },
     computed: {
@@ -225,17 +212,15 @@
           }
 
           tmp[this.treeProject][this.treeName] = this.treeData;
+          tmp[this.treeProject][this.treeName + '_url'] = this.queryUrl;
           localStorage['tree'] = JSON.stringify(tmp)
 
-          // 从未存储树（可以取消了）
-        } else {
-          var tmp = {};
-          tmp[this.treeProject] = {}
-          tmp[this.treeProject][this.treeName] = this.treeData;
-          localStorage['tree'] = JSON.stringify(tmp);
         }
         //更新树的视图
-        this.updateTree()
+        this.updateTree();
+
+        this.saveLastTree();
+
         Materialize.toast('template saved', 4000)
       },
       // 打开树
@@ -243,7 +228,11 @@
         var tmp = JSON.parse(localStorage['tree']);
         if (tmp[this.treeProject][this.treeName]) {
           this.treeData = tmp[this.treeProject][this.treeName];
-          Materialize.toast('template open', 4000)
+          this.queryUrl=tmp[this.treeProject][this.treeName+'_url'];
+          Materialize.toast('template open', 4000);
+
+          this.saveLastTree();
+
         } else {
           Materialize.toast("there is no this template,pleses check name", 4000)
         }
@@ -261,13 +250,24 @@
           for (var key in tree[this.treeProject]) {
             this.treeNameLists.push(key);
           }
+
           // 本地没有保存则创建新tree
         } else {
-          var tmp = {}
-          tmp[this.treeProject] = {}
+          var tmp = {};
+          tmp[this.treeProject] = {};
           tmp[this.treeProject][this.treeName] = this.treeData;
           localStorage['tree'] = JSON.stringify(tmp)
+          localStorage['last_tree']=JSON.stringify({
+            treeProject:this.treeProject,
+            treeName:this.treeName
+          })
         }
+      },
+      saveLastTree:function(){
+        localStorage['last_tree']=JSON.stringify({
+          treeProject:this.treeProject,
+          treeName:this.treeName
+        })
       },
       validator: function () {
         try {

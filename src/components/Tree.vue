@@ -44,7 +44,7 @@
             v-model="arrayValue" placeholder="array,array,array" class="data-value" style="width:120px;margin-right:0">-->
         <!--<a  href='#' class="choose-child-add" @click.stop="addArrayValue" >+</a>-->
 
-        <array v-for="item in model.value" track-by="$index" ></array>
+        <tree-array-value v-for="item in model.value" track-by="$index" ></tree-array-value>
       </ul>
 
       <!--有括展项-->
@@ -83,10 +83,13 @@
 <script>
   import help from '../help'
   import Vue from 'vue'
-  import Tree from './Tree'
+  import TreeValueArray from './TreeValueArray'
 
 export default {
   props: ['model', 'parts'],
+  components:{
+    TreeValueArray
+  },
   name:"tree",
   data: function () {
     return {

@@ -3,6 +3,10 @@
   margin-top:10px;
   margin-bottom: 10px;
 }
+input:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
 
 .card .card-content{
   padding:10px;
