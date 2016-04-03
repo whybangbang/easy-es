@@ -4,7 +4,9 @@
       <div class="nav-wrapper">
         <a href="#!" class="brand-logo "><img src="../static/img/logo.png">&nbsp;&nbsp;Easy Es</a>
         <ul class="right">
+          <li><a class="btn" @click="saveParts">save</a></li>
           <li><a href="#">Document</a></li>
+          <li><a href="#">Query</a></li>
         </ul>
         <div style="clear:both"></div>
       </div>
@@ -16,22 +18,25 @@
     <div class="row">
       <div class="col s2 extend-lists" >
         <input type="text" v-model="searchExtend" placeholder="search">
-        <ul v-if="updateExtend">
-          <li v-for="extend in parts  | noTreeConfig| filterBy searchExtend "
+        <ul >
+          <li v-for="extend in parts  |  filterBy searchExtend "
+              v-if="$key.substr(0,5)!=='tree_'"
               @click="selectExtend($key)">{{$key}}</li>
         </ul>
       </div>
 
       <div class="col s5" >
-        <extend-edit :content.sync="content"
+        <extend-edit :parts.sync="parts"
               :extend="extend"></extend-edit>
       </div>
 
-      <div class="col s5" >
+      <div class="col s5 tree" >
+        <a class="" @click="updataTree" id="update-tree"><i class="fa fa-refresh"></i>refresh</a>
         <tree
+          v-if="s"
           class="item"
           :model="treeData"
-          :parts="treeParts">
+          :parts="parts">
         </tree>
       </div>
 
@@ -41,9 +46,10 @@
 </template>
 
 <script>
+import Vue from 'vue'
 import help from './help.js'
 import ExtendEdit from './components/ExtendEdit'
-import Tree from './components/TreeItem'
+import Tree from './components/Tree'
 export default {
   components:{
     ExtendEdit,
@@ -53,59 +59,32 @@ export default {
     return{
       parts:parts,
       searchExtend:'',
-      content:'',
       extend:'',
-      treeParts:parts,
-      updateExtend:true,
-      treeData:{
-        field: 'Elasticsearch',
-        open: true,
-        extend:'elastic_search',
-        root:true,
-        choose:true,
-        undelete:true,
-      }
+      treeData:'',
+      s:true
     }
   },
-  watch:{
-    extend:function(){
 
-      if(this.extend!==''){
-
-      }
-      this.updtaeExtend=true;
-      },
-
-    content(){
-      this.treeParts=this.content
-    }
-  },
   methods:{
     //选择合适的分支
     selectExtend:function($extend){
       //修改编辑器
-      this.content=JSON.stringify(this.parts[$extend],null,4),
       this.extend=$extend
-
-      //修改树
-      this.updtaeExtend=false;
-      this.treeData.field=this.extend;
-      this.treeData.extend=this.extend;
-      this.treeParts=this.content
-      this.updtaeExtend=true;
-
     },
     //保存新的parts
     saveParts:function(){
       var content=JSON.stringify(this.parts,null,4);
       help.downloadFile('myparts.js',content);
-    }
+    },
+    updataTree:function(){
+      this.$broadcast('updateTree',this.extend);
+   }
   }
 }
 
 </script>
 
-<style >
+<style scoped>
 
   .extend-lists{
     padding-top:14px !important;
@@ -115,5 +94,17 @@ export default {
   }
   .extend-lists ul{
     margin-top: 0;
+  }
+
+  .tree{
+    position:relative;
+  }
+  #update-tree{
+    position:absolute;
+    right:28px;
+    top:14px;
+  }
+  #update-tree i{
+    margin-right:7px;
   }
 </style>

@@ -11,23 +11,23 @@
   let editor;
 
   export default {
-    props: ['content', 'extend'],
+    props: ['parts', 'extend'],
     ready(){
       editor = ace.edit("editor");
       editor.setTheme("ace/theme/github");
       editor.getSession().setMode("ace/mode/json")
+      editor.$blockScrolling = Infinity
       var that=this;
       editor.getSession().on('change', function(e) {
-        that.content=editor.getValue()
+        try{
+          that.parts[that.extend]=JSON.parse(editor.getValue());
+        }catch(e){}
       });
     },
     watch: {
-      'content': function (newContent, oldContent) {
-        if (newContent != editor.getValue()) {
-          this.$parent.parts[this.extend] = newContent;
-          editor.setValue(this.content);
+      'extend': function (newContent, oldContent) {
+          editor.setValue(JSON.stringify(this.parts[this.extend],null,4));
           editor.clearSelection()
-        }
       }
     }
   }

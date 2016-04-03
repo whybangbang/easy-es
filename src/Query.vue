@@ -17,6 +17,7 @@
             <a @click="saveTree" class="nav btn">save</a>
           </li>
           <li><a href="#">Document</a></li>
+          <li><a href="#extend">Extend</a></li>
         </ul>
         <div style="clear:both"></div>
       </div>
@@ -59,7 +60,7 @@
           <div class="card-content" style="min-height: 400px;">
 
               <tree
-                :model="treeData"
+                :model.sync="treeData"
                 :parts="parts">
               </tree>
               <div class="switch custom-btn">
@@ -110,7 +111,7 @@
   import help from './help'
 
   import InputUrl from './components/InputUrl'
-  import Tree from './components/TreeItem'
+  import Tree from './components/Tree'
 
   import Clipboard from 'clipboard'
   new Clipboard('.copy');
