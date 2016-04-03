@@ -3,6 +3,11 @@
     <nav>
       <div class="nav-wrapper">
         <a href="#!" class="brand-logo "><img src="../static/img/logo.png">&nbsp;&nbsp;Easy Es</a>
+        <ul class="nav-center">
+          <li><a href="#query"  class="activate "
+                >query</a></li>
+          <li><a href="#extend" >extend</a></li>
+        </ul>
         <ul class="right">
           <li class="tree-name">
             <input type="text" v-model="treeName">
@@ -14,10 +19,11 @@
             <a @click="openTree" class="nav btn">open</a>
           </li>
           <li>
-            <a @click="saveTree" class="nav btn">save</a>
+            <a @click="saveTree" class="nav btn" style="background-color:#039be5 "
+               data-position="bottom" data-delay="50"
+               data-tooltip="浏览器本地保存你的查询">save</a>
           </li>
           <li><a href="#">Document</a></li>
-          <li><a href="#extend">Extend</a></li>
         </ul>
         <div style="clear:both"></div>
       </div>
@@ -56,6 +62,7 @@
 
     <div>
       <div class="row">
+        <div class="nav-bottom"></div>
         <div class="col s7" style="position:relative">
           <div class="card-content" style="min-height: 400px;">
 
