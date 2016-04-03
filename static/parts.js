@@ -4,6 +4,14 @@
 
 var parts = {
   tree_customize: false,
+  tree_root:{
+    field: 'Elasticsearch',
+    open: true,
+    extend:'elastic_search',
+    root:true,
+    choose:true,
+    undelete:true,
+  },
   elastic_search: {
     sort: {
       extend: 'sort',
@@ -138,7 +146,7 @@ aggs:{
           {
             field: 'field',
             value: 'location'
-            
+
           },{
             field: 'precision',
             value: '5'
@@ -726,7 +734,7 @@ aggs:{
       group: 5,
     }
   },
-  
+
 
   /***--other mode--***/
   only_analyzer: {

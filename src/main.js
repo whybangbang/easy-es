@@ -11,8 +11,14 @@ var vm = new Vue({
   components: { App }
 });*/
 
-//路由
+//滤镜
+import filter from './filter'
 
+Object.keys(filter).forEach(function(k) {
+  Vue.filter(k, filter[k]);
+});
+
+//路由
 import Router from 'vue-router'
 import Query from './Query'
 import Extend from './Extend'

@@ -16,7 +16,8 @@
     "draggabilly": "^2.1.0",
     "jquery": "^2.2.2",
     "vue": "^1.0.18",
-    "vue-router": "^0.7.11"
+    "vue-router": "^0.7.11",
+    "vuex": "^0.6.2"
   },
   "devDependencies": {
     "babel-core": "^6.0.0",

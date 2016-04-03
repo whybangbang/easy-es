@@ -1,4 +1,8 @@
 /* wrap  */
+a{
+  cursor:pointer
+}
+
 .wrap{
   margin-top:10px;
   margin-bottom: 10px;

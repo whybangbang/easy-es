@@ -57,9 +57,8 @@
       <div class="row">
         <div class="col s7" style="position:relative">
           <div class="card-content" style="min-height: 400px;">
-            <ul>
+
               <tree
-                class="item"
                 :model="treeData"
                 :parts="parts">
               </tree>
@@ -86,13 +85,13 @@
           </div>
           <div class="card">
             <div class="card-content">
-              <a class="getstr-copy" @click="validator">formate&validator</a>
+              <!--<a class="getstr-copy" @click="validator">formate&validator</a>
               <a class="getstr-copy copy" data-clipboard-target="#getstr">cope code</a>
               <div v-show="validJson.state=='pass' " class="valid-json-pass"></div>
 
               <div v-show="validJson.state=='fail' " class="valid-json-fail">
                 {{{validJson.doc}}}
-              </div>
+              </div>-->
               <!--<textarea class="getstr" id="getstr" v-model="showJson">{{{getStr | json 4}}}</textarea>-->
               <div class="getstr" id="ace-query"></div>
             </div>
@@ -111,10 +110,11 @@
   import help from './help'
 
   import InputUrl from './components/InputUrl'
-  import Tree from './components/Tree'
+  import Tree from './components/TreeItem'
 
   import Clipboard from 'clipboard'
   new Clipboard('.copy');
+  var editor={};
 
   export default {
     components:{
@@ -147,7 +147,6 @@
         resultShow: 'no',
         resultData: {},
         aceQuery:'',
-        aceResponse:''
       }
 
     },
@@ -175,19 +174,23 @@
       this.aceQuery.setTheme("ace/theme/github");
       this.aceQuery.getSession().setMode("ace/mode/json")
 
-      this.aceResponse = ace.edit("ace-response");
-      this.aceResponse.setTheme("ace/theme/twilight");
-      this.aceResponse.getSession().setMode("ace/mode/json")
+      editor.response = ace.edit("ace-response");
+      editor.response.setTheme("ace/theme/twilight");
+      editor.response.getSession().setMode("ace/mode/json")
     },
     watch: {
       treeProject: 'updateTree',
       getStr(){
-        this.aceQuery.setValue(JSON.stringify(this.getStr,null,4))
+        let new_obj={};
+        let content=JSON.stringify(help.obj_parser(new_obj, this.treeData)[this.treeData.field],null,4);
+        if(typeof(content)===typeof('')){
+          this.aceQuery.setValue(content);
           this.aceQuery.clearSelection()
+        }
       },
       resultData(){
-        this.aceResponse.setValue(JSON.stringify(JSON.parse(this.resultData),null,4))
-        console.log(this.aceResponse.getValue())
+        editor.response.setValue(JSON.stringify(JSON.parse(this.resultData),null,4))
+        editor.response.clearSelection()
       },
 
     },
@@ -196,7 +199,6 @@
 
         // 验证json的情况
         var new_obj = {};
-
         return help.obj_parser(new_obj, this.treeData)[this.treeData.field];
       },
       getTree: function () {
@@ -305,18 +307,6 @@
         }
 
       },
-      // 隐藏添加子选项菜单
-      hideChildShow: function () {
-        function hide(obj) {
-          obj.$data.chooseChildShow = false
-          // 隐藏所有的子选项
-          for (var i in obj.$children) {
-            hide(obj.$children[i])
-          }
-        }
-
-        hide(this)
-      },
       queryWeb: function () {
 
         this.validator();
@@ -370,10 +360,18 @@
     color:#616161;
     font-size: 12px;
   }
+  #ace-query .ace_gutter{
+    background-color: #fff;
+    border-right:1px #eee solid !important
+  }
   #ace-response{
     width:900px!important;
     overflow:hidden !important;
     min-height:300px;
+    background-color: #424242 !important;
+  }
+  #ace-response .ace_gutter{
+    background-color: #424242 !important;
   }
 
 </style>
