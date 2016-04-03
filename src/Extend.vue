@@ -29,7 +29,7 @@
         <div v-show="helpState">
           <div class="help-nav">
              <a @click="changeNav('scan')"> <div class="help-name">scan</div></a>
-            <a @click="changeNav('tip')"> <div class="help-name activate">tip</div></a>
+            <a @click="changeNav('tip')"> <div class="help-name activate">tip!</div></a>
           </div>
           <ul class="help">
             <li v-for="item in helpBrief">
@@ -42,7 +42,7 @@
         <div v-show="!helpState">
           <div class="help-nav">
             <a @click="changeNav('scan')"> <div class="help-name activate">scan</div></a>
-            <a @click="changeNav('tip')"> <div class="help-name">tip</div></a>
+            <a @click="changeNav('tip')"> <div class="help-name">tip!</div></a>
           </div>
           <input type="text" v-model="searchExtend" placeholder="search">
           <span class="new-btn"><a @click="newExtend(searchExtend)" ><i class="fa fa-plus"></i>new extend</a></span>
