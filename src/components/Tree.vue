@@ -33,6 +33,7 @@ export default {
   },
   events:{
     updateTree(val){
+
       this.update(val);
     }
   },

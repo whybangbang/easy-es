@@ -68,5 +68,19 @@
     "webpack-dev-middleware": "^1.4.0",
     "webpack-hot-middleware": "^2.6.0",
     "webpack-merge": "^0.8.3"
-  }
+  },
+  "main": ".eslintrc.js",
+  "directories": {
+    "doc": "doc",
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/seaasun/es_query_dsl_mindmanger.git"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/seaasun/es_query_dsl_mindmanger/issues"
+  },
+  "homepage": "https://github.com/seaasun/es_query_dsl_mindmanger#readme"
 }

@@ -18,6 +18,23 @@ Object.keys(directive).forEach(function(k) {
   Vue.directive(k, directive[k]);
 });
 
+// i18n
+/*
+import i18n from 'vue-i18n'
+import locales from './assets/locales'
+var a=function(){
+  return{
+    function(lang){
+      Vue.use(i18n,{
+        lang:lang,
+        locales:locales
+      });
+  }
+  }
+};
+console.log(a);
+a('cn');*/
+
 //路由
 import Router from 'vue-router'
 import Query from './Query'
@@ -26,15 +43,16 @@ Vue.use(Router);
 
 var router=new Router();
 router.map({
-  '*':{
-    component: Query
-  },
-  '/index': {
+
+  '/query': {
     component: Query
   },
   '/extend': {
     component: Extend
   }
+});
+router.redirect({
+  '*':'/query'
 });
 
 router.start(App, 'app');

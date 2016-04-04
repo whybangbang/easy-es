@@ -1,15 +1,6 @@
 <template>
-  <div>
-    <nav>
-      <div class="nav-wrapper">
-        <a href="#!" class="brand-logo "><img src="../static/img/logo.png"><span word="中">&nbsp;&nbsp;Easy Es</span></a>
-        <ul class="nav-center">
-          <li><a href="#query"  class="activate "
-                 word="查询"
-                >query</a></li>
-          <li><a href="#extend" >extend</a></li>
-        </ul>
-        <ul class="right">
+  <wrap>
+    <span slot="nav-right">
           <li class="tree-name">
             <input type="text" v-model="treeName">
             <select v-model="treeName">
@@ -24,11 +15,7 @@
                data-position="bottom" data-delay="50"
                data-tooltip="浏览器本地保存你的查询">save</a>
           </li>
-          <li><a href="#">Document</a></li>
-        </ul>
-        <div style="clear:both"></div>
-      </div>
-    </nav>
+    </span>
     <div class="card result" v-show="resultShow&&resultShow!=='no'">
       <div class="result-nav">
         <span class="close right" @click="toggleResult"><i class="fa fa-times"></i></span>
@@ -110,7 +97,7 @@
     </div>
 
 
-  </div>
+  </wrap>
 </template>
 
 <script>
@@ -120,6 +107,7 @@
 
   import InputUrl from './components/InputUrl'
   import Tree from './components/Tree'
+  import Wrap from './Wrap'
 
   import Clipboard from 'clipboard'
   new Clipboard('.copy');
@@ -129,6 +117,7 @@
     components:{
       InputUrl,
       Tree,
+      Wrap
     },
     data: function(){
       return{

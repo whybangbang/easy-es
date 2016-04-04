@@ -119,6 +119,7 @@ export default {
    closeSelect(){
      this.chooseChildShow=false;
      return true
+
    }
  },
   ready: function () {

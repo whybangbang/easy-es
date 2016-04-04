@@ -1,25 +1,10 @@
 <template >
-  <div >
-    <nav>
-      <div class="nav-wrapper">
-        <a href="#!" class="brand-logo"><img src="../static/img/logo.png">&nbsp;&nbsp;Easy Es</a>
-        <ul class="nav-center">
-          <li><a href="#query"
-                 >query</a></li>
-          <li><a href="#extend" class="activate"
-                 >extend</a></li>
-        </ul>
-
-
-        <ul class="right">
-          <li><a class="btn tooltipped" @click="saveParts"
-                 data-position="bottom" data-delay="50"
-                 data-tooltip="保存你的自定义至本地，替换/static/parts.js即可">save</a></li>
-          <li><a href="#">Document</a></li>
-        </ul>
-        <div style="clear:both"></div>
-      </div>
-    </nav>
+  <wrap>
+    <span slot="nav-right">
+        <li><a class="btn tooltipped" @click="saveParts"
+               data-position="bottom" data-delay="50"
+               data-tooltip="保存你的自定义至本地，替换/static/parts.js即可">save</a></li>
+     </span>
 
     <!--<div class="row">
       <a class="btn" @click="saveParts"></a>
@@ -76,7 +61,7 @@
 
 
     </div>
-  </div>
+  </wrap>
 </template>
 
 <script>
@@ -84,6 +69,7 @@ import Vue from 'vue'
 import help from './help.js'
 import ExtendEdit from './components/ExtendEdit'
 import Tree from './components/Tree'
+import Wrap from './Wrap'
 var helpBrief={
   "field":[
     "'field'","键名"
@@ -135,7 +121,8 @@ export default {
 
   components:{
     ExtendEdit,
-    Tree
+    Tree,
+    Wrap
   },
   data() {
     return{
@@ -151,7 +138,6 @@ export default {
     getStr: function () {
       // 验证json的情况
       var new_obj = {};
-      console.log(this.treeData)
       return help.obj_parser(new_obj, this.treeData)[this.treeData.field];
     }
   },
@@ -167,6 +153,7 @@ export default {
       help.downloadFile('myparts.js',content);
     },
     updataTree:function(){
+      console.log(this.extend)
       this.$broadcast('updateTree',this.extend);
       Materialize.toast('refresh tree success', 4000)
    },
