@@ -7,6 +7,8 @@ function word(conf) {
     lang: ['en', 'cn']
   };
 
+  var nowLang=conig.lang[0]
+
   function inlinTranse(el, lang) {
     var word = el.getAttribute('word');
     el.setAttribute('word', el.innerHTML);
@@ -27,16 +29,24 @@ function word(conf) {
     }
   }
 
-  function change(lang) {
-    if (config.lang.indexOf(lang) === -1) {
-      throw 'no language in config';
-    }
+  //自动调用
+  function translate() {
     var els = document.querySelectorAll("[word]");
     for (var i = 0; i < els.length; i++) {
-      inlineWrap(els[i], lang);
+      inlineWrap(els[i], nowLang);
+    }
+  }
+  //改变语言
+  function change(lang){
+    if (config.lang.indexOf(lang === -1)) {
+      throw 'no language in config';
+    }else{
+      nowLang=lang
+      translate()
     }
   }
   return{
-    change:change
+    change:change,
+    translate:translate
   }
 }
