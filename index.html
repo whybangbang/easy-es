@@ -8,7 +8,7 @@
 
 
 
-    <link href="static/materialize/css/materialize.min.css" rel="stylesheet">
+    <link href="static/materialize/css/materialize.css" rel="stylesheet">
     <link href="static/font-awesome-4.5.0/css/font-awesome.css" rel="stylesheet">
     <link href="static/main.css" rel="stylesheet">
 
@@ -16,48 +16,25 @@
   <body>
     <app></app>
     <!-- built files will be auto injected -->
-    <script src="http://cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
-    <script src="static/materialize/js/materialize.min.js" ></script>
-    <script src="static/materialize/js/materialize.min.js" ></script>
+    <script src="static/jquery.min.js"></script>
+    <script src="static/materialize/js/materialize.js" ></script>
     <script src="static/drag.js"></script>
     <script src="static/jsonlint.min.js"></script>
     <script src="static/excellentexport.js"></script>
+    <script src="static/ace-src-min-noconflict/ace.js"></script>
+    <script src="static/lang.js"></script>
     <script>
       $(document).ready(function(){
         $('.result').draggabilly({
           handle: '.result-handle'
         });
-      })
 
+      });
+      //全局注册
+      var word=word();
 
     </script>
-    <footer class="page-footer">
-      <div class="container">
-        <div class="row">
-          <div class="col l6 s12">
-            <h5 class="white-text">Easy Es</h5>
-            <p class="grey-text text-lighten-4">轻点鼠标，快速写出elasticsearch语句!欢迎补充子选项<br>本项目遵循BSD协议。</p>
-          </div>
-          <div class="col l4 offset-l2 s12">
-            <ul>
-              <li><a class="grey-text text-lighten-3" href="https://github.com/whybangbang/es_query_dsl_mindmanger">View
-                project on Github</a></li>
-              <li><a class="grey-text text-lighten-3" href="http://es.xiaoleilu.com/">Elasticsearch 权威指南</a></li>
 
-            </ul>
-          </div>
-        </div>
-      </div>
-      <div class="footer-copyright">
-        <div class="container">
-          2016 wangbangbang seaasun
-          <a class="grey-text text-lighten-4 right" href="https://www.5milesapp.com/"><img
-            src="./static/img/fivemiles.jpg" class="footer-5m">&nbsp;&nbsp;5 miles offers support</a>
-
-
-        </div>
-      </div>
-    </footer>
   </body>
 <script>
 

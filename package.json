@@ -15,7 +15,9 @@
     "clipboard": "^1.5.9",
     "draggabilly": "^2.1.0",
     "jquery": "^2.2.2",
-    "vue": "^1.0.18"
+    "vue": "^1.0.18",
+    "vue-router": "^0.7.11",
+    "vuex": "^0.6.2"
   },
   "devDependencies": {
     "babel-core": "^6.0.0",
@@ -66,5 +68,19 @@
     "webpack-dev-middleware": "^1.4.0",
     "webpack-hot-middleware": "^2.6.0",
     "webpack-merge": "^0.8.3"
-  }
+  },
+  "main": ".eslintrc.js",
+  "directories": {
+    "doc": "doc",
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/seaasun/es_query_dsl_mindmanger.git"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/seaasun/es_query_dsl_mindmanger/issues"
+  },
+  "homepage": "https://github.com/seaasun/es_query_dsl_mindmanger#readme"
 }
