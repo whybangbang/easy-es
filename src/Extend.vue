@@ -55,6 +55,7 @@
       </div>
 
       <div class="col s5" >
+        <p v-lang>ssss</p>
         <div class="nav-bottom"></div>
         <extend-edit :parts.sync="parts"
               :extend="extend"></extend-edit>

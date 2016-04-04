@@ -21,21 +21,16 @@
     <script src="static/drag.js"></script>
     <script src="static/jsonlint.min.js"></script>
     <script src="static/excellentexport.js"></script>
-    <script src="static/ace-builds-master/src/ace.js"></script>
+    <script src="static/ace-src-min-noconflict/ace.js"></script>
+    <script src="static/lang.js"></script>
     <script>
       $(document).ready(function(){
         $('.result').draggabilly({
           handle: '.result-handle'
         });
+
       });
-      helpShow=false;
-      document.addEventListener('click',function(){
-        if(helpShow==true){
-          helpShow=false;
-        }
-      })
-
-
+      var word=word();
     </script>
 
   </body>

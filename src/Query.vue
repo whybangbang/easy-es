@@ -2,9 +2,10 @@
   <div>
     <nav>
       <div class="nav-wrapper">
-        <a href="#!" class="brand-logo "><img src="../static/img/logo.png">&nbsp;&nbsp;Easy Es</a>
+        <a href="#!" class="brand-logo "><img src="../static/img/logo.png"><span word="中">&nbsp;&nbsp;Easy Es</span></a>
         <ul class="nav-center">
           <li><a href="#query"  class="activate "
+                 word="查询"
                 >query</a></li>
           <li><a href="#extend" >extend</a></li>
         </ul>
@@ -164,6 +165,8 @@
 
         this.treeName=last['treeName'];
         this.treeProject=last['treeProject'];
+
+
       }
       this.parts.tree_chooseChidShow = true;
 
@@ -179,6 +182,7 @@
       editor.response.setTheme("ace/theme/twilight");
       editor.response.getSession().setMode("ace/mode/json")
       editor.response.$blockScrolling = Infinity
+      //word.change('cn');
     },
     watch: {
       treeProject: 'updateTree',
