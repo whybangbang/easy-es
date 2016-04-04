@@ -131,14 +131,7 @@
     },
     data: function(){
       return{
-        treeData: {
-          field: 'Elasticsearch',
-          open: true,
-          extend:'elastic_search',
-          root:true,
-          choose:true,
-          undelete:true,
-        },
+        treeData: '',
         parts: parts,
         treeProject: 'base',
         treeProjectLists: [],
@@ -154,7 +147,6 @@
 
         resultShow: 'no',
         resultData: {},
-        aceQuery:'',
       }
 
     },
@@ -166,8 +158,8 @@
         var last = JSON.parse(localStorage['last_tree']);
 
         this.treeData = tmp[last['treeProject']][last['treeName']];
-        if(tmp[last['treeProject']][last['treeName'] + '_url']){
-          this.queryUrl = tmp[last['treeProject']][last['treeName'] + '_url'];
+        if(tmp[last['treeProject']][last['treeName']['url']]){
+          this.queryUrl = tmp[last['treeProject']][last['treeName']['url']];
         }
 
         this.treeName=last['treeName'];
@@ -178,13 +170,15 @@
       // 隐藏选项，这里同上冗余
     },
     ready(){
-      this.aceQuery = ace.edit("ace-query");
-      this.aceQuery.setTheme("ace/theme/github");
-      this.aceQuery.getSession().setMode("ace/mode/json")
+      editor.aceQuery = ace.edit("ace-query");
+      editor.aceQuery.setTheme("ace/theme/github");
+      editor.aceQuery.getSession().setMode("ace/mode/json")
+      editor.aceQuery.$blockScrolling = Infinity
 
       editor.response = ace.edit("ace-response");
       editor.response.setTheme("ace/theme/twilight");
       editor.response.getSession().setMode("ace/mode/json")
+      editor.response.$blockScrolling = Infinity
     },
     watch: {
       treeProject: 'updateTree',
@@ -192,8 +186,8 @@
         let new_obj={};
         let content=JSON.stringify(help.obj_parser(new_obj, this.treeData)[this.treeData.field],null,4);
         if(typeof(content)===typeof('')){
-          this.aceQuery.setValue(content);
-          this.aceQuery.clearSelection()
+          editor.aceQuery.setValue(content);
+          editor.aceQuery.clearSelection()
         }
       },
       resultData(){
@@ -231,9 +225,8 @@
               return;
             }
           }
-
           tmp[this.treeProject][this.treeName] = this.treeData;
-          tmp[this.treeProject][this.treeName + '_url'] = this.queryUrl;
+          tmp[this.treeProject][this.treeName]['url'] = this.queryUrl;
           localStorage['tree'] = JSON.stringify(tmp)
 
         }
@@ -249,7 +242,10 @@
         var tmp = JSON.parse(localStorage['tree']);
         if (tmp[this.treeProject][this.treeName]) {
           this.treeData = tmp[this.treeProject][this.treeName];
-          this.queryUrl=tmp[this.treeProject][this.treeName+'_url'];
+          if(tmp[this.treeProject][this.treeName]['url']){
+            this.queryUrl=tmp[this.treeProject][this.treeName]['url'];
+          }
+
           Materialize.toast('template open', 4000);
 
           this.saveLastTree();

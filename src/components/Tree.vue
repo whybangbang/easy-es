@@ -24,6 +24,12 @@ export default {
   created(){
     this.update(this.model)
 
+    var that=this;
+    document.addEventListener('click',function(){
+
+      that.closeSelect();
+    });
+
   },
   events:{
     updateTree(val){
@@ -31,11 +37,10 @@ export default {
     }
   },
   methods:{
+    // 更新mode
     update(val){
-
       //为对象直接用
-      if (val == Object) {
-        consol.log(1)
+      if (typeof(val) === 'object') {
       }
       //字符串则自动判定位extend
       else if(typeof(val)==='string' &&val!==''){
@@ -52,7 +57,13 @@ export default {
         this.model = this.parts.tree_root;
       }
 
+    },
+    //广播关闭弹出
+    closeSelect(){
+      this.$broadcast('closeSelect');
     }
+
+
   }
 }
 </script>

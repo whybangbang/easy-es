@@ -103,12 +103,6 @@ export default {
     }
   },
   created: function () {
-    console.log(this.model.extend);
-    //增加取消单击事件
-    var that=this;
-    document.addEventListener('click',function(){
-      that.chooseChildShow=false;
-    });
     //清除父展开的选项
     if (this.$parent.hasOwnProperty('chooseChildShow')) {
       this.$parent.chooseChildShow = false;
@@ -120,13 +114,13 @@ export default {
       this.model.value.push('');
     }
   },
-  watch:{
-    parts(){
-      if(this.model.extend){
-        this.subparts=help.clone(parts[this.model.extend]);
-      }
-    }
-  },
+ events:{
+   //响应关闭所有弹窗
+   closeSelect(){
+     this.chooseChildShow=false;
+     return true
+   }
+ },
   ready: function () {
     //only 处理
     if (this.$parent.hasOwnProperty('chooseChildShow')) {//非第一个组件

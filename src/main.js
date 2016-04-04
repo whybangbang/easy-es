@@ -5,17 +5,17 @@ import App from './App'
 Vue.config.debug = true;
 Vue.config.devtools = true;
 
-/* eslint-disable no-unused-vars
-var vm = new Vue({
-  el: 'body',
-  components: { App }
-});*/
-
 //滤镜
 import filter from './filter'
 
 Object.keys(filter).forEach(function(k) {
   Vue.filter(k, filter[k]);
+});
+
+//指令
+import directive from './directive'
+Object.keys(directive).forEach(function(k) {
+  Vue.directive(k, directive[k]);
 });
 
 //路由
