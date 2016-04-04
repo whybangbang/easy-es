@@ -7,7 +7,7 @@ function word(conf) {
     lang: ['en', 'cn']
   };
 
-  var nowLang=conig.lang[0]
+  var nowLang=config.lang[0];
 
   function inlinTranse(el, lang) {
     var word = el.getAttribute('word');
@@ -19,12 +19,10 @@ function word(conf) {
   function inlineWrap(el, lang) {
     //改变的语言不是默认项
     if (lang !== config.lang[0]) {
-      if (!el.getAttribute('world-l')) {
-        inlinTranse(el, lang);
-      } else if (el.getAttribute('world-l') !== lang) {
+     if (el.getAttribute('word-l') !== lang) {
         inlinTranse(el, lang);
       }
-    } else if (lang === config.lang[0] && el.getAttribute('world-l') !== lang) {
+    } else{
       inlinTranse(el, lang);
     }
   }
@@ -38,15 +36,20 @@ function word(conf) {
   }
   //改变语言
   function change(lang){
-    if (config.lang.indexOf(lang === -1)) {
+    if (config.lang.indexOf(lang )=== -1) {
       throw 'no language in config';
     }else{
       nowLang=lang
       translate()
     }
   }
+  //在js中调用
+  function get(word){
+    return word[config.lang.indexOf(nowLang)]
+  }
   return{
     change:change,
-    translate:translate
+    translate:translate,
+    get:get
   }
 }

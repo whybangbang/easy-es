@@ -2,14 +2,18 @@
 <div>
   <nav>
     <div class="nav-wrapper">
-      <a href="#!" class="brand-logo "><img src="../static/img/logo.png"><span word="中">&nbsp;&nbsp;Easy Es</span></a>
+      <a href="#!" class="brand-logo "><img src="../static/img/logo.png"><span>&nbsp;&nbsp;Easy Es</span></a>
       <ul class="nav-center">
-        <li><a v-link="{ path: '/query', activeClass: 'activate' }">query</a></li>
-        <li><a v-link="{ path: '/extend', activeClass: 'activate' }">extend</a></li>
+        <li><a v-link="{ path: '/query', activeClass: 'activate' }" word="查询">query</a></li>
+        <li><a v-link="{ path: '/extend', activeClass: 'activate' }" word="扩展">extend</a></li>
       </ul>
       <ul class="right">
         <slot name="nav-right"></slot>
-        <li><a href="#">Document</a></li>
+        <li><a href="#" word="文档">Document</a></li>
+        <li>
+          <a v-show="lang=='en'" @click="selectLang('cn')">中文</a>
+          <a v-show="lang=='cn'" @click="selectLang('en')">English</a>
+        </li>
       </ul>
       <div style="clear:both"></div>
     </div>
@@ -51,7 +55,13 @@
 export default {
   data () {
     return {
-      msg: 'Hello from vue-loader!'
+      lang:'en'
+    }
+  },
+  methods:{
+    selectLang(lang){
+      this.lang=lang
+      word.change(lang)
     }
   }
 }

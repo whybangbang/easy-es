@@ -3,7 +3,7 @@
     <span slot="nav-right">
         <li><a class="btn tooltipped" @click="saveParts"
                data-position="bottom" data-delay="50"
-               data-tooltip="保存你的自定义至本地，替换/static/parts.js即可">save</a></li>
+               data-tooltip="保存你的自定义至本地，替换/static/parts.js即可" word="保存">save</a></li>
      </span>
 
     <!--<div class="row">
@@ -13,8 +13,8 @@
       <div class="col s2 extend-lists" >
         <div v-show="helpState">
           <div class="help-nav">
-             <a @click="changeNav('scan')"> <div class="help-name">scan</div></a>
-            <a @click="changeNav('tip')"> <div class="help-name activate">tip!</div></a>
+             <a @click="changeNav('scan')"> <div class="help-name" word="浏览">scan</div></a>
+            <a @click="changeNav('tip')"> <div class="help-name activate" word="贴士">tip!</div></a>
           </div>
           <ul class="help">
             <li v-for="item in helpBrief">
@@ -26,8 +26,8 @@
         </div>
         <div v-show="!helpState">
           <div class="help-nav">
-            <a @click="changeNav('scan')"> <div class="help-name activate">scan</div></a>
-            <a @click="changeNav('tip')"> <div class="help-name">tip!</div></a>
+            <a @click="changeNav('scan')"> <div class="help-name activate" word="浏览">scan</div></a>
+            <a @click="changeNav('tip')"> <div class="help-name" word="贴士">tip!</div></a>
           </div>
           <input type="text" v-model="searchExtend" placeholder="search">
           <span class="new-btn"><a @click="newExtend(searchExtend)" ><i class="fa fa-plus"></i>new extend</a></span>
@@ -40,7 +40,6 @@
       </div>
 
       <div class="col s5" >
-        <p v-lang>ssss</p>
         <div class="nav-bottom"></div>
         <extend-edit :parts.sync="parts"
               :extend="extend"></extend-edit>
@@ -48,7 +47,7 @@
 
       <div class="col s5 tree" >
         <div class="nav-bottom"></div>
-        <a class="" @click="updataTree" id="update-tree"><i class="fa fa-refresh"></i>refresh</a>
+        <a class="" @click="updataTree" id="update-tree"><i class="fa fa-refresh"></i><span word="刷新">refresh</span></a>
         <div class="tree">
         <tree
           class="item"
@@ -141,6 +140,9 @@ export default {
       return help.obj_parser(new_obj, this.treeData)[this.treeData.field];
     }
   },
+  ready(){
+    word.translate();
+  },
   methods:{
     //选择合适的分支
     selectExtend:function($extend){
@@ -155,25 +157,26 @@ export default {
     updataTree:function(){
       console.log(this.extend)
       this.$broadcast('updateTree',this.extend);
-      Materialize.toast('refresh tree success', 4000)
+      Materialize.toast(word.get(['refresh tree success','成功刷新']), 4000)
    },
     newExtend(name){
       //检测有无名称
       if(!name || name===''){
-        Materialize.toast('Plase give a name', 4000);
+        Materialize.toast(word.get(['Plase give a name','请给个名称']), 4000);
         return
       }
 
       //检测重名
       if(this.parts[this.newExtend]){
-        if(!confirm("The nam is exist ,do you want to overwrite?")){
+        if(!confirm(word.get(["The nam is exist ,do you want to overwrite?",
+            "此名称已存在，是否要覆盖？"]))){
           return
         }
       }
 
       Vue.set(this.parts,name,{});
       this.extend=name;
-      Materialize.toast('Built a new extend success', 4000);
+      Materialize.toast(word.get(['Built a new extend success','成功新建分支']), 4000);
     },
     changeNav(name){
       if(name=='tip'){

@@ -155,7 +155,7 @@ export default {
         Vue.set(this.$parent.view, 'hideChooseChildBtn', true)
       }
     }
-
+    word.translate();
   },
   computed: {
     isFolder: function () {

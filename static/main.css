@@ -2,7 +2,9 @@
 a{
   cursor:pointer
 }
-
+html{
+  font-family: "微软雅黑","Helvetica Neue", Helvetica, Arial, sans-serif;
+}
 .wrap{
   margin-top:10px;
   margin-bottom: 10px;

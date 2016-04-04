@@ -8,12 +8,12 @@
             </select>
           </li>
           <li>
-            <a @click="openTree" class="nav btn">open</a>
+            <a @click="openTree" class="nav btn" word="打开">open</a>
           </li>
           <li>
             <a @click="saveTree" class="nav btn" style="background-color:#039be5 "
                data-position="bottom" data-delay="50"
-               data-tooltip="浏览器本地保存你的查询">save</a>
+               data-tooltip="浏览器本地保存你的查询" word="保存">save</a>
           </li>
     </span>
     <div class="card result" v-show="resultShow&&resultShow!=='no'">
@@ -21,13 +21,13 @@
         <span class="close right" @click="toggleResult"><i class="fa fa-times"></i></span>
         <span class="result-handle right"><i class="fa fa-arrows"></i></span>
         <a @click="changeResultType('response')"
-           :class="{'undeline':resultShow=='response'}">response</a>
+           :class="{'undeline':resultShow=='response'}" word="响应">response</a>
         <a @click="changeResultType('table')" class=""
-           :class="{'undeline':resultShow=='table','line-through':!resultData.hits}">
+           :class="{'undeline':resultShow=='table','line-through':!resultData.hits}" word="表格">
           table</a>
         <a download="es data.xls" href="#"
            :class="{'line-through':!resultData.hits}"
-           onclick="return ExcellentExport.excel(this, 'result-data-table', 'result');">export excel</a>
+           onclick="return ExcellentExport.excel(this, 'result-data-table', 'result');" word="导出Excel">export excel</a>
 
       </div>
       <div v-show="resultShow=='response'" id="ace-response"></div>
@@ -62,7 +62,7 @@
                 <label>
                   <input type="checkbox" v-model="parts.tree_customize">
                   <span class="lever"></span>
-                  Custom Model
+                  <span word="自定义模式">Custom Model</span>
                 </label>
               </div>
             </ul>
@@ -74,9 +74,9 @@
             <div class="card-content">
               <input-url :url.sync="queryUrl"></input-url>
 
-              <a class="btn" @click="queryWeb">send</a>
+              <a class="btn" @click="queryWeb" word="发送">send</a>
               <a class="getstr-copy" @click="toggleResult"
-                 :class="{'un-getstr-copy':resultShow||resultShow=='no'}">last result</a>
+                 :class="{'un-getstr-copy':resultShow||resultShow=='no'}" word="最近查询结果">last result</a>
             </div>
           </div>
           <div class="card">
@@ -171,7 +171,7 @@
       editor.response.setTheme("ace/theme/twilight");
       editor.response.getSession().setMode("ace/mode/json")
       editor.response.$blockScrolling = Infinity
-      //word.change('cn');
+      word.translate();
     },
     watch: {
       treeProject: 'updateTree',
@@ -214,7 +214,8 @@
 
           // 检查重名
           if (tmp[this.treeProject][this.treeName]) {
-            if (!confirm('Name already exists, you want to replace it?')) {
+            if (!confirm(word.get(['Name already exists, you want to replace it?',
+                '此文件以及存在，你想替换它么？']))) {
               return;
             }
           }
@@ -228,7 +229,7 @@
 
         this.saveLastTree();
 
-        Materialize.toast('template saved', 4000)
+        Materialize.toast(word.get(['template saved','模板保存成功']), 4000)
       },
       // 打开树
       openTree: function () {
@@ -239,12 +240,13 @@
             this.queryUrl=tmp[this.treeProject][this.treeName]['url'];
           }
 
-          Materialize.toast('template open', 4000);
+          Materialize.toast(word.get(['template open','已打开模板']), 4000);
 
           this.saveLastTree();
 
         } else {
-          Materialize.toast("there is no this template,pleses check name", 4000)
+          Materialize.toast(word.get(["there is no this template,pleses check name",
+            "没有此模板，请检查名称"]), 4000)
         }
       },
       // 更新树的显示
@@ -308,7 +310,7 @@
 
         this.validator();
         if (this.validJson.state == 'fail') {
-          Materialize.toast('pelase check DSL', 4000);
+          Materialize.toast(word.get(['pelase check DSL','请检查语句']), 4000);
           return false;
         }
 

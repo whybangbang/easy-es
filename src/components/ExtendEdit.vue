@@ -2,8 +2,8 @@
   <div class="root">
     <div class="title">
       <input type="text" v-model="newExtend" placeholder="extend name">
-      <a @click="delExtend"><i class="fa fa-times"></i>delete</a>
-      <a @click="changeName"><i class="fa fa-exchange"></i>change name</a>
+      <a @click="delExtend"><i class="fa fa-times"></i ><span word="删除" >delete</span></a>
+      <a @click="changeName"><i class="fa fa-exchange"></i><span word="删除" >change name</span></a>
 
     </div>
     <div id="editor"></div>
@@ -33,6 +33,7 @@
         } catch (e) {
         }
       });
+      word.translate();
     },
     watch: {
       'extend': function (newContent, oldContent) {

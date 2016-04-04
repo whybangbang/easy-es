@@ -25,11 +25,15 @@ export default {
     this.update(this.model)
 
     var that=this;
+    //TODO 去除监听
     document.addEventListener('click',function(){
 
       that.closeSelect();
     });
 
+  },
+  ready(){
+    word.translate();
   },
   events:{
     updateTree(val){
