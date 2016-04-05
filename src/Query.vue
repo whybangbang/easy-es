@@ -32,6 +32,7 @@
       </div>
       <div v-show="resultShow=='response'" id="ace-response"></div>
       <div v-if="resultData.hits">
+        <div v-if="resultData.hits.hits[0]">
         <table v-show="resultShow=='table'" id="result-data-table">
 
           <tr class="result-th">
@@ -45,6 +46,7 @@
           </tr>
 
         </table>
+        </div>
       </div>
     </div>
 
@@ -77,6 +79,7 @@
               <a class="btn" @click="queryWeb" word="发送">send</a>
               <a class="getstr-copy" @click="toggleResult"
                  :class="{'un-getstr-copy':resultShow||resultShow=='no'}" word="最近查询结果">last result</a>
+              <url-es :url="queryUrl"></url-es>
             </div>
           </div>
           <div class="card">
@@ -108,6 +111,7 @@
   import InputUrl from './components/InputUrl'
   import Tree from './components/Tree'
   import Wrap from './Wrap'
+  import UrlEs from './components/UrlEs'
 
   import Clipboard from 'clipboard'
   new Clipboard('.copy');
@@ -117,7 +121,8 @@
     components:{
       InputUrl,
       Tree,
-      Wrap
+      Wrap,
+      UrlEs
     },
     data: function(){
       return{
@@ -147,13 +152,15 @@
         var tmp = JSON.parse(localStorage['tree']);
         var last = JSON.parse(localStorage['last_tree']);
 
-        this.treeData = tmp[last['treeProject']][last['treeName']];
-        if(tmp[last['treeProject']][last['treeName']['url']]){
-          this.queryUrl = tmp[last['treeProject']][last['treeName']['url']];
-        }
-
         this.treeName=last['treeName'];
         this.treeProject=last['treeProject'];
+
+        this.treeData = tmp[this.treeProject][this.treeName];
+        if(tmp[this.treeProject][this.treeName]['url']){
+          this.queryUrl = tmp[this.treeProject][this.treeName]['url'];
+        }
+
+
 
 
       }
@@ -182,12 +189,7 @@
           editor.aceQuery.setValue(content);
           editor.aceQuery.clearSelection()
         }
-      },
-      resultData(){
-        editor.response.setValue(JSON.stringify(JSON.parse(this.resultData),null,4))
-        editor.response.clearSelection()
-      },
-
+      }
     },
     computed: {
       getStr: function () {
@@ -234,12 +236,13 @@
       // 打开树
       openTree: function () {
         var tmp = JSON.parse(localStorage['tree']);
-        if (tmp[this.treeProject][this.treeName]) {
+        if (tmp[this.treeProject][this.treeName] || tmp[this.treeProject][this.treeName]==='') {
           this.treeData = tmp[this.treeProject][this.treeName];
           if(tmp[this.treeProject][this.treeName]['url']){
             this.queryUrl=tmp[this.treeProject][this.treeName]['url'];
           }
 
+          this.$broadcast('updateTree',this.treeData);//更新树
           Materialize.toast(word.get(['template open','已打开模板']), 4000);
 
           this.saveLastTree();
@@ -319,11 +322,14 @@
           url: this.queryUrl,
           type: 'POST',
           cache: false,
-          data: this.showJson,
+          data:  editor.aceQuery.getValue(),
           dataType: 'json',
           success: function (data) {
             that.resultShow = 'response';
-            Vue.set(that, 'resultData', data);
+            that.resultData=data;
+            console.log(data);
+            editor.response.setValue(JSON.stringify(data,null,4));
+            editor.response.clearSelection()
 
           },
           error: function (httpd, msg) {
@@ -358,6 +364,7 @@
   #ace-query{
     color:#616161;
     font-size: 12px;
+    min-height:377px;
   }
   #ace-query .ace_gutter{
     background-color: #fff;

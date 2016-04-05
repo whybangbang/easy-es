@@ -27,7 +27,6 @@ export default {
     var that=this;
     //TODO 去除监听
     document.addEventListener('click',function(){
-
       that.closeSelect();
     });
 
@@ -61,7 +60,6 @@ export default {
       } else {
         this.model = this.parts.tree_root;
       }
-
     },
     //广播关闭弹出
     closeSelect(){

@@ -155,7 +155,6 @@ export default {
       help.downloadFile('myparts.js',content);
     },
     updataTree:function(){
-      console.log(this.extend)
       this.$broadcast('updateTree',this.extend);
       Materialize.toast(word.get(['refresh tree success','成功刷新']), 4000)
    },
