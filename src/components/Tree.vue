@@ -22,17 +22,18 @@ export default {
     }
   },
   created(){
-    this.update(this.model)
-
-    var that=this;
-    //TODO 去除监听
-    document.addEventListener('click',function(){
-      that.closeSelect();
-    });
+    //更新模板
+    this.update(this.model);
+    //去除监听
+    document.addEventListener('click', this.closeSelect);
 
   },
   ready(){
     word.translate();
+  },
+
+  beforeDestroy(){
+    document.removeEventListener('click', this.closeSelect);
   },
   events:{
     updateTree(val){

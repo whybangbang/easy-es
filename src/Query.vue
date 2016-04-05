@@ -17,6 +17,7 @@
           </li>
     </span>
     <div class="card result" v-show="resultShow&&resultShow!=='no'">
+      <div class="resize"><i class="fa fa-arrows-alt"></i></div>
       <div class="result-nav">
         <span class="close right" @click="toggleResult"><i class="fa fa-times"></i></span>
         <span class="result-handle right"><i class="fa fa-arrows"></i></span>
@@ -30,6 +31,7 @@
            onclick="return ExcellentExport.excel(this, 'result-data-table', 'result');" word="导出Excel">export excel</a>
 
       </div>
+      <div class="result-wrap">
       <div v-show="resultShow=='response'" id="ace-response"></div>
       <div v-if="resultData.hits">
         <div v-if="resultData.hits.hits[0]">
@@ -47,6 +49,7 @@
 
         </table>
         </div>
+      </div>
       </div>
     </div>
 
@@ -74,24 +77,20 @@
         <div class="col s5">
           <div class="card">
             <div class="card-content">
-              <input-url :url.sync="queryUrl"></input-url>
+              <!--<input-url :url.sync="queryUrl"></input-url>
 
+              <-->
+              <url-es :url.sync="queryUrl"></url-es>
               <a class="btn" @click="queryWeb" word="发送">send</a>
               <a class="getstr-copy" @click="toggleResult"
                  :class="{'un-getstr-copy':resultShow||resultShow=='no'}" word="最近查询结果">last result</a>
-              <url-es :url="queryUrl"></url-es>
             </div>
           </div>
           <div class="card">
             <div class="card-content">
-              <!--<a class="getstr-copy" @click="validator">formate&validator</a>
-              <a class="getstr-copy copy" data-clipboard-target="#getstr">cope code</a>
-              <div v-show="validJson.state=='pass' " class="valid-json-pass"></div>
+              <a class="getstr-copy" @click="formate" word="formate">formate</a>
+              <a class="getstr-copy copy" @click="copy" word="copy">copy</a>
 
-              <div v-show="validJson.state=='fail' " class="valid-json-fail">
-                {{{validJson.doc}}}
-              </div>-->
-              <!--<textarea class="getstr" id="getstr" v-model="showJson">{{{getStr | json 4}}}</textarea>-->
               <div class="getstr" id="ace-query"></div>
             </div>
           </div>
@@ -114,7 +113,7 @@
   import UrlEs from './components/UrlEs'
 
   import Clipboard from 'clipboard'
-  new Clipboard('.copy');
+
   var editor={};
 
   export default {
@@ -137,7 +136,7 @@
           'state': false,
           'doc': ''
         },
-        queryUrl: window.location.protocol + '//' + window.location.host + '/index/type/_search',
+        queryUrl: window.location.protocol + '//' + window.location.host, //+ '/index/type/_search',
         querySubUrl: [],
 
         resultShow: 'no',
@@ -177,7 +176,8 @@
       editor.response = ace.edit("ace-response");
       editor.response.setTheme("ace/theme/twilight");
       editor.response.getSession().setMode("ace/mode/json")
-      editor.response.$blockScrolling = Infinity
+      editor.response.$blockScrolling = Infinity;
+      editor.response.setHScrollBarAlwaysVisible=true
       word.translate();
     },
     watch: {
@@ -205,6 +205,12 @@
     methods: {
       // 保存树
       saveTree: function () {
+        //检查语句
+        if (this.validJson.state == 'fail') {
+          Materialize.toast(word.get(['pelase check DSL','请检查语句']), 4000);
+          return false;
+        }
+
         // 已储存有树
         if (localStorage['tree']) {
           var tmp = JSON.parse(localStorage['tree']);
@@ -217,12 +223,13 @@
           // 检查重名
           if (tmp[this.treeProject][this.treeName]) {
             if (!confirm(word.get(['Name already exists, you want to replace it?',
-                '此文件以及存在，你想替换它么？']))) {
+                '此文件以经存在，你想替换它么？']))) {
               return;
             }
           }
-          tmp[this.treeProject][this.treeName] = this.treeData;
-          tmp[this.treeProject][this.treeName]['url'] = this.queryUrl;
+            tmp[this.treeProject][this.treeName]=this.treeData;
+            tmp[this.treeProject][this.treeName]['url'] = this.queryUrl;
+
           localStorage['tree'] = JSON.stringify(tmp)
 
         }
@@ -284,37 +291,45 @@
           treeName:this.treeName
         })
       },
+      formate(){
+        if (!this.validator()) {
+          return false;
+        }
+        var code = editor.aceQuery.getSession().getValue();
+        if(code!==''){
+          code=JSON.stringify(JSON.parse(code),null,4);
+          editor.aceQuery.getSession().setValue(code);
+        }
+      },
       validator: function () {
         try {
-          var str
-          if (this.showJson.constructor == Object) {
-            str = JSON.stringify(this.showJson)
-          } else if (this.showJson === '') {
-            this.validJson.state = 'pass'
-            return
-          } else {
-            str = this.showJson
+          var s=editor.aceQuery.getSession().getValue();
+          if(s!==''){
+            var result = jsonlint.parse(s);
+            this.validJson.doc = 'pass';
+            this.showJson = JSON.stringify(result, null, 4);
           }
-          //验证
-          var result = jsonlint.parse(str);
-          this.validJson.state = 'pass';
-          this.validJson.doc = 'pass';
-          this.showJson = JSON.stringify(result, null, 4);
-
+          return true
         } catch (e) {
           this.validJson.doc = e.message;
           this.validJson.doc = this.validJson.doc.replace(/\n/, "<br>")
-          this.validJson.state = 'fail';
-
+          Materialize.toast(word.get(['pelase check DSL','请检查语句']), 4000);
+          return false
         }
+
+      },
+      copy(){
+        new Clipboard('.copy', {
+          text: function(trigger) {
+            return editor.aceQuery.getSession().getValue();
+          }
+        });
 
       },
       queryWeb: function () {
 
-        this.validator();
-        if (this.validJson.state == 'fail') {
-          Materialize.toast(word.get(['pelase check DSL','请检查语句']), 4000);
-          return false;
+        if (!this.validator()) {
+          return
         }
 
         var that = this;
@@ -325,6 +340,7 @@
           data:  editor.aceQuery.getValue(),
           dataType: 'json',
           success: function (data) {
+
             that.resultShow = 'response';
             that.resultData=data;
             console.log(data);
@@ -371,13 +387,19 @@
     border-right:1px #eee solid !important
   }
   #ace-response{
-    width:900px!important;
     overflow:hidden !important;
-    min-height:300px;
+    min-height:340px;
     background-color: #424242 !important;
   }
   #ace-response .ace_gutter{
     background-color: #424242 !important;
   }
-
+  .result .resize{
+    cursor: nwse-resize;
+    position: absolute;
+    bottom:7px;
+    right:7px;
+    font-size: 13px;
+    color:#039be5;
+  }
 </style>

@@ -434,7 +434,7 @@ aggs:{
         {
           field: '',
           open: true,
-          extend: 'ony_analyzer',
+          extend: 'only_analyzer',
           undelete: true,
           child: [
             {

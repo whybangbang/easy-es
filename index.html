@@ -12,6 +12,7 @@
     <link href="static/font-awesome-4.5.0/css/font-awesome.css" rel="stylesheet">
     <link href="static/main.css" rel="stylesheet">
 
+
   </head>
   <body>
     <app></app>
@@ -23,13 +24,21 @@
     <script src="static/excellentexport.js"></script>
     <script src="static/ace-src-min-noconflict/ace.js"></script>
     <script src="static/lang.js"></script>
+    <script src="static/jquery-resizable.js"></script>
     <script>
+
       $(document).ready(function(){
+        //拖拽注册
         $('.result').draggabilly({
           handle: '.result-handle'
         });
+        //改变大小注册
+        $(".result").resizable({
+          handleSelector: ".resize"
+        });
 
       });
+
       //全局注册
       var word=word();
 

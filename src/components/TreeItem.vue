@@ -94,12 +94,16 @@ export default {
   },
   name:"treeItem",
   data: function () {
+    try{
     return {
       array: this.model.array ? this.model.array : false,
       open: this.model.open ? this.model.open : false,
       chooseChildShow: this.model.choose ? this.model.choose : false,
       subparts:this.model.extend? help.clone(parts[this.model.extend]): '',
       view: {},
+    }
+    }catch(e){
+      Materialize.toast(word.get(['template is error','模板错误']), 4000);
     }
   },
   created: function () {

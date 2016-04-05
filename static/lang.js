@@ -33,7 +33,7 @@ function word(conf) {
   function translate() {
     var els = document.querySelectorAll("[word]");
     for (var i = 0; i < els.length; i++) {
-      inlineWrap(els[i], nowLang);
+      inlineWrap(els[i], this.nowLang);
     }
   }
   //改变语言
@@ -41,17 +41,18 @@ function word(conf) {
     if (config.lang.indexOf(lang )=== -1) {
       throw 'no language in config';
     }else{
-      nowLang=lang
+      this.nowLang=lang
       translate()
     }
   }
   //在js中调用
   function get(word){
-    return word[config.lang.indexOf(nowLang)]
+    return word[config.lang.indexOf(this.nowLang)]
   }
   return{
     change:change,
     translate:translate,
-    get:get
+    get:get,
+    nowLang:nowLang
   }
 }
