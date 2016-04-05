@@ -17,12 +17,14 @@ function word(conf) {
   }
 
   function inlineWrap(el, lang) {
+
     //改变的语言不是默认项
     if (lang !== config.lang[0]) {
      if (el.getAttribute('word-l') !== lang) {
         inlinTranse(el, lang);
       }
     } else{
+      if(el.getAttribute('word-l') && el.getAttribute('word-l') !== lang)
       inlinTranse(el, lang);
     }
   }
