@@ -3,7 +3,7 @@
     <span slot="nav-right">
         <li><a class="btn tooltipped" @click="saveParts"
                data-position="bottom" data-delay="50"
-               data-tooltip="保存你的自定义至本地，替换/static/parts.js即可" word="保存">save</a></li>
+               data-tooltip="保存你的自定义至本地，替换/static/parts.js即可" word="导出">export</a></li>
      </span>
 
     <!--<div class="row">

@@ -9,10 +9,12 @@
       </ul>
       <ul class="right">
         <slot name="nav-right"></slot>
-        <li><a href="#" word="文档">Document</a></li>
+        <li><a class="grey-text text-lighten-3" href="https://github.com/whybangbang/es_query_dsl_mindmanger">
+          Github</a></li>
+        <li><a href="#" word="文档">Wiki</a></li>
         <li>
-          <a v-show="lang=='en'" @click="selectLang('cn')">中文</a>
-          <a v-show="lang=='cn'" @click="selectLang('en')">English</a>
+          <a v-show="lang==='en'" @click="selectLang('cn')">中文</a>
+          <a v-show="lang==='cn'" @click="selectLang('en')">English</a>
         </li>
       </ul>
       <div style="clear:both"></div>
@@ -55,12 +57,16 @@
 export default {
   data () {
     return {
-      lang:'en'
+      lang:''
+
     }
+  },
+  beforeCompile(){
+    this.lang=word.nowLang
   },
   methods:{
     selectLang(lang){
-      this.lang=lang
+      this.lang=lang;
       word.change(lang)
     }
   }

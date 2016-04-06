@@ -414,21 +414,25 @@ nav .brand-logo img{
   color:#fff;
   border-radius: 0.5em;
   height:14px;
+  line-height: 14px;
   font-size: 0.7em;
-  padding: 1px 0.5em;
+  padding-left:7px;
+  padding-right:7px;
   margin-left: 4px;
+  vertical-align:text-bottom;
 }
 .custom-array{
   background-color: #b3e5fc;
   color:#fff;
   border-radius: 0.5em;
-  height:14px;
+  height:16px;
   font-size:12px;
-  padding: 1px 0.5em;
-  margin-right:1em;
   line-height: 14px;
+  margin-right:1em;
+  padding-left:7px;
+  padding-right:7px;
   display:inline-block;
-  vertical-align: middle;
+  vertical-align:text-bottom;
 }
 
 .custom-array input{
@@ -445,7 +449,6 @@ nav .brand-logo img{
   line-height: 14px;
   padding-left:0;
   color:#fff;
-  vertical-align:text-bottom;
 }
 
 footer.page-footer{
@@ -463,19 +466,20 @@ footer.page-footer{
   position:absolute;
   top:60px;
   left: 50%;
-  width:auto;
-  min-width:400px;
-  max-width:800px;
-  min-height:200px;
-  height:auto;
+  width:600px;
+  height:400px;
   margin-left: -400px;
   z-index:10000;
   padding:10px;
   color:#fff;
-  overflow: auto;
 
   background-color: #424242;
+  overflow: auto;
 }
+.result-wrap{
+
+}
+
 
 .result .close{
   color:#039be5;
@@ -492,6 +496,7 @@ footer.page-footer{
   margin-right: 14px;
 }
 
+
 .result a.undeline{
   text-decoration:underline;
 }
@@ -500,20 +505,16 @@ footer.page-footer{
   text-decoration:line-through;
   pointer-events: none;
 }
-.result pre{
-  font-size: 12px;
-  line-height: 17px;
-  width:auto;
-  overflow: visible;
-}
+
 .result-th{
   border-bottom: 1px solid #fff;
   margin-bottom: 7px;
 }
 
-.result-data-table{
+#result-data-table{
   min-width:380px;
   width:auto;
+  overflow-y:auto;
 }
 
 
