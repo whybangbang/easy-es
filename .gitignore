@@ -6,7 +6,11 @@
 *.rdb
 node_modules/
 /test/lab
+/third
 npm-debug.log
 selenium-debug.log
 test/unit/coverage
 test/e2e/reports
+/_site/static/app.87ce29986789753e6415.js.map
+/_site/static/app.d6b15d770928d0008bde73c88a7669fc.css.map
+/_site/static/fivemiles.jpg
