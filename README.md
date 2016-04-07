@@ -20,9 +20,9 @@
 	
 ## Contribute
 
-欢迎为本项目提供代码！请切换至dev分支
+欢迎为本项目提供代码！请切换至dev分支，开发说明见dev分支。
 
-（master分支为es插件所在分支，为精简内容，源代码为提交到master分支内，保存在dev分支）
+（master分支为es插件所在分支，为精简内容，JS源代码并未提交到master分支，保存在dev分支）
 
 ## To Do List
 
