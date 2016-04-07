@@ -1,4 +1,4 @@
-<h1><img width="80" style="vertical-align: middle" src="_site/img/logo.png">Easy Es</h1>
+<h1><img width="80" style="vertical-align: middle" src="_site/static/img/logo.png">Easy Es</h1>
 
 
 [![experimental](http://badges.github.io/stability-badges/dist/experimental.svg)](http://github.com/badges/stability-badges)
