@@ -14,8 +14,8 @@
   
 ## Quick Start
 
-1. 直接访问：[http://whybangbang.github.io/es_query_dsl_mindmanger/](http://whybangbang.github.io/es_query_dsl_mindmanger/ "Title")
-2. es 安装方法: bin/plugin install whybangbang/easy-es
+1. 直接访问使用：[http://whybangbang.github.io/es_query_dsl_mindmanger/](http://whybangbang.github.io/es_query_dsl_mindmanger/ "Title")
+2. es 插件安装方法: `bin/plugin install whybangbang/easy-es`
 
 	
 ## Contribute
