@@ -1,6 +1,0 @@
-和query filter并列还有一个是_source
-
-example:
-	_source["fieldq","field2","field3"]
-
-这里面的field可以不断添加
