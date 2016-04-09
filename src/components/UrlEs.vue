@@ -1,9 +1,9 @@
 <template>
   <div class="urles">
-    <div><input type="text" v-model="urlRoot" class="url"></div>
+    <div><input type="text" v-model="urlRoot" class="url" @change="getDb"></div>
 
     <div class="input-select">
-      <input type="text" v-model="url1">
+      <input type="text" v-model="url1"  >
       <select v-model="url1">
         <option v-for="cat in db" track-by="$index">{{$key}}</option>
       </select>
@@ -29,7 +29,7 @@
     data () {
       return {
         db: {},
-        urlRoot:window.location.protocol + '//' + window.location.host,
+        urlRoot:window.location.protocol + '//' + window.location.host+'/index',
         url1: 'test',
         url2: 'type',
         connectState:'close'
@@ -37,7 +37,7 @@
     },
     created(){
       word.translate()
-      //this.getDb();
+      this.getDb();
     },
     computed:{
         url(){
@@ -46,6 +46,7 @@
     },
     methods: {
       getDb(){
+        console.log(1)
         this.connectState='ing'
         var that = this;
         //去最后位的'/'

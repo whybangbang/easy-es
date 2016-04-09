@@ -13,6 +13,7 @@
 <script>
 import TreeItem from './TreeItem'
 import help from '../help.js'
+
 export default {
   components: [TreeItem],
   props: ['parts', 'model'],

@@ -44,7 +44,7 @@
             v-model="arrayValue" placeholder="array,array,array" class="data-value" style="width:120px;margin-right:0">-->
         <!--<a  href='#' class="choose-child-add" @click.stop="addArrayValue" >+</a>-->
 
-        <tree-array-value v-for="item in model.value" track-by="$index" ></tree-array-value>
+        <tree-value-array v-for="item in model.value" track-by="$index" ></tree-value-array>
       </ul>
 
       <!--有括展项-->
@@ -155,7 +155,7 @@ export default {
           part_open = false
         }
       }
-      if (part_open) {
+      if (part_open&&!this.arrayValue) {
         Vue.set(this.$parent.view, 'hideChooseChildBtn', true)
       }
     }
@@ -283,5 +283,8 @@ export default {
 </script>
 
 <style scoped>
+  .choose-child-add{
+    color:#039be5;
+  }
 
 </style>
