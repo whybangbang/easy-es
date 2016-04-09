@@ -7,7 +7,7 @@ module.exports = {
     app: './src/main.js'
   },
   output: {
-    path: path.resolve(__dirname, '../dist/static'),
+    path: path.resolve(__dirname, '../_site/static'),
     publicPath: './static/',
     filename: '[name].js'
   },

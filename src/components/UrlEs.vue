@@ -97,15 +97,15 @@
             }
           },
           error: function (httpd, msg) {
-            thatconnectState='ing';
+            that.connectState='ing';
             Materialize.toast(word.get(['can not connect elestic，plase check root url', '无法链接数据库，请检查根URL']), 4000)
           }
         })
-
       }
-
     }
   }
+
+
 </script>
 
 <style scoped>
