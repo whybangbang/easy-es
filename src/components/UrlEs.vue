@@ -34,12 +34,11 @@
     },
     computed:{
         url(){
-          return this.urlRoot+"/"+this.url1+"/"+this.url2
+          return this.urlRoot+"/"+this.url1+"/_serach"
         }
     },
     methods: {
       getDb(){
-        console.log(1)
         this.connectState='ing'
         var that = this;
         //去最后位的'/'
@@ -58,9 +57,10 @@
             data = data.split('\n');
             data.pop();
             for (var i = 0; i < data.length; i++) {
-              data[i] = data[i].replace(/(^\s*)|(\s*$)/g, "")
+              data[i] = data[i].replace(/(^\s*)|(\s*$)/g, "");
               Vue.set(that.db, data[i], []);
             }
+            that.url1=data[0];
             if(i>0){
            that.connectState='open';
             }

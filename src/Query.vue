@@ -104,14 +104,14 @@
 
 <script>
   import Vue from 'vue'
-  import * as Jsonlint from './assets/jsonlint.min.js'
+  import  './assets/jsonlint.min.js'
+  //import 'ace-builds/src-min-noconflict/ace.js'
   import help from './help'
 
   import InputUrl from './components/InputUrl'
   import Tree from './components/Tree'
   import Wrap from './Wrap'
   import UrlEs from './components/UrlEs'
-
   import Clipboard from 'clipboard'
 
   var editor={};
@@ -340,6 +340,7 @@
           data:  editor.aceQuery.getValue(),
           dataType: 'json',
           success: function (data) {
+            console.log(that.queryUrl)
 
             that.resultShow = 'response';
             that.resultData=data;

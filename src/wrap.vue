@@ -14,9 +14,9 @@
       <div class="col l5 s12 s12">
       <ul class="" id="nav-mobile">
         <slot name="nav-right"></slot>
-        <li><a class="grey-text text-lighten-3" href="https://github.com/whybangbang/es_query_dsl_mindmanger">
+        <li><a class="grey-text text-lighten-3" href="https://github.com/whybangbang/es_query_dsl_mindmanger" target="_blank">
           Github</a></li>
-        <li><a href="#" word="文档">Wiki</a></li>
+        <li><a href="#" word="文档" target="_blank">Wiki</a></li>
         <!--<li>
           <a v-show="lang==='en'" @click="selectLang('cn')">中文</a>
           <a v-show="lang==='cn'" @click="selectLang('en')">English</a>
@@ -40,7 +40,7 @@
           <ul>
             <li><a class="grey-text text-lighten-3" href="https://github.com/whybangbang/es_query_dsl_mindmanger">View
               project on Github</a></li>
-            <li><a class="grey-text text-lighten-3" href="http://es.xiaoleilu.com/">Elasticsearch 权威指南</a></li>
+            <li><a class="grey-text text-lighten-3" href="http://es.xiaoleilu.com/" target="_blank">Elasticsearch 权威指南</a></li>
 
           </ul>
         </div>
@@ -49,8 +49,8 @@
     <div class="footer-copyright">
       <div class="container">
         2016 wangbangbang seaasun
-        <a class="grey-text text-lighten-4 right" href="https://www.5milesapp.com/"><img
-          src="../static/img/fivemiles.jpg" class="footer-5m">&nbsp;&nbsp;5 miles offers support</a>
+        <a class="grey-text text-lighten-4 right" href="https://www.5milesapp.com/" target="_blank"><img
+          src="../static/img/fivemiles.jpg" class="footer-5m" >&nbsp;&nbsp;5 miles offers support</a>
 
 
       </div>
