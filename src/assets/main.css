@@ -219,7 +219,7 @@ select{
 }
 
 nav{
-  height:auto;
+  height:auto !important;
   line-height:42px;
   background-color:#424242 ;
   display:block;
@@ -239,9 +239,6 @@ nav .brand-logo img{
   margin-top: -5px;
 }
 .nav-center{
-  position:absolute;
-  left:50%;
-  margin-left: -100px;
   height:40px;
   line-height: 40px;
   font-weight: 300;
@@ -262,10 +259,21 @@ nav .brand-logo img{
     -webkit-transform:none;
     transform: none;
   }
+  a.button-collapse{
+    line-height: 42px;
+    height:42px;
+  }
 }
+
+@media only screen and (min-width: 601px){
+nav, nav .nav-wrapper i, nav a.button-collapse, nav a.button-collapse i {
+  height:42px;
+  line-height: 42px;
+}
+}
+
 .nav.btn{
   height:28px;
-  line-height: 42px;
   padding-left:4px;
   padding-right:4px;
   line-height: 28px;
@@ -276,6 +284,10 @@ nav .brand-logo img{
   font-weight:300;
   font-size: 14px;
   border: 0;
+}
+a.button-collapse{
+  line-height: 42px;
+  height:42px;
 }
 
 .input-save a{

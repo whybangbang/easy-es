@@ -56,25 +56,25 @@
     <div>
       <div class="row">
         <div class="nav-bottom"></div>
-        <div class="col s7" style="position:relative">
+        <div class="col l7 s12" style="position:relative">
           <div class="card-content" style="min-height: 400px;">
 
               <tree
                 :model.sync="treeData"
                 :parts="parts">
               </tree>
-              <div class="switch custom-btn">
+              <!--<div class="switch custom-btn">
                 <label>
                   <input type="checkbox" v-model="parts.tree_customize">
                   <span class="lever"></span>
                   <span word="自定义模式">Custom Model</span>
                 </label>
-              </div>
+              </div>-->
             </ul>
           </div>
         </div>
 
-        <div class="col s5">
+        <div class="col l5 s12">
           <div class="card">
             <div class="card-content">
               <!--<input-url :url.sync="queryUrl"></input-url>
@@ -82,8 +82,8 @@
               <-->
               <url-es :url.sync="queryUrl"></url-es>
               <a class="btn" @click="queryWeb" word="发送">send</a>
-              <a class="getstr-copy" @click="toggleResult"
-                 :class="{'un-getstr-copy':resultShow||resultShow=='no'}" word="最近查询结果">last result</a>
+              <!--<a class="getstr-copy" @click="toggleResult"
+                 :class="{'un-getstr-copy':resultShow||resultShow=='no'}" word="最近查询结果">last result</a>-->
             </div>
           </div>
           <div class="card">

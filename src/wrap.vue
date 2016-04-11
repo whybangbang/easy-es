@@ -1,22 +1,28 @@
 <template>
 <div>
   <nav>
-    <div class="nav-wrapper">
+    <div class=" row">
+      <div class="col l4 s4 m4">
       <a href="#!" class="brand-logo "><img src="../static/img/logo.png"><span>&nbsp;&nbsp;Easy Es</span></a>
+      </div>
+      <div class="col l3 s8 m8">
       <ul class="nav-center">
         <li><a v-link="{ path: '/query', activeClass: 'activate' }" word="查询">query</a></li>
         <li><a v-link="{ path: '/extend', activeClass: 'activate' }" word="扩展">extend</a></li>
       </ul>
-      <ul class="right">
+      </div>
+      <div class="col l5 s12 s12">
+      <ul class="" id="nav-mobile">
         <slot name="nav-right"></slot>
         <li><a class="grey-text text-lighten-3" href="https://github.com/whybangbang/es_query_dsl_mindmanger">
           Github</a></li>
         <li><a href="#" word="文档">Wiki</a></li>
-        <li>
+        <!--<li>
           <a v-show="lang==='en'" @click="selectLang('cn')">中文</a>
           <a v-show="lang==='cn'" @click="selectLang('en')">English</a>
-        </li>
+        </li>-->
       </ul>
+      </div>
       <div style="clear:both"></div>
     </div>
   </nav>
