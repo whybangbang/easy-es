@@ -12,15 +12,17 @@
       </ul>
       </div>
       <div class="col l5 s12 s12">
-      <ul class="" id="nav-mobile">
-        <slot name="nav-right"></slot>
+      <ul  id="nav-mobile" class="nav-left">
+        <li><a href="#" word="文档" target="_blank">Wiki</a></li>
         <li><a class="grey-text text-lighten-3" href="https://github.com/whybangbang/es_query_dsl_mindmanger" target="_blank">
           Github</a></li>
-        <li><a href="#" word="文档" target="_blank">Wiki</a></li>
+
+        <slot name="nav-right"></slot>
         <!--<li>
           <a v-show="lang==='en'" @click="selectLang('cn')">中文</a>
           <a v-show="lang==='cn'" @click="selectLang('en')">English</a>
         </li>-->
+
       </ul>
       </div>
       <div style="clear:both"></div>
@@ -80,5 +82,8 @@ export default {
 </script>
 
 <style >
+  .nav-left li{
+    float:right;
+  }
 
 </style>

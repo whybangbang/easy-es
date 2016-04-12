@@ -9,6 +9,7 @@
       </select>
     </div>  <!--<i class="fa fa-refresh" :class="{'ok':connectState=='open','fa-spin':connectState=='ing'}">-->
 
+    <span class="url-search">/_search</span>
 
     <!--<a  @click="getDb" class="connect getstr-copy"><span word="连接">connect </span>
       <i class="fa fa-refresh" :class="{'ok':connectState=='open','fa-spin':connectState=='ing'}">
@@ -29,17 +30,16 @@
       }
     },
     created(){
-      word.translate();
       this.getDb();
     },
     computed:{
         url(){
-          return this.urlRoot+"/"+this.url1+"/_serach"
+          return this.urlRoot+"/"+this.url1+"/_search"
         }
     },
     methods: {
       getDb(){
-        this.connectState='ing'
+        this.connectState='ing';
         var that = this;
         //去最后位的'/'
         this.urlRoot = this.urlRoot.replace(/(^\s*)|(\s*$)/g, '');
@@ -78,6 +78,10 @@
 </script>
 
 <style scoped>
+  .url-search{
+    position:relative;
+    margin-left: 120px;
+  }
   .urles{
     margin-bottom: 14px;
     display:inline-block;

@@ -1,21 +1,37 @@
 <template>
   <wrap>
     <span slot="nav-right">
-          <li class="tree-name">
-            <input type="text" v-model="treeName">
-            <select v-model="treeName">
-              <option v-for="item in treeNameLists" track-by="$index">{{item}}</option>
-            </select>
-          </li>
-          <li>
-            <a @click="openTree" class="nav btn" word="打开">open</a>
-          </li>
+
+
           <li>
             <a @click="saveTree" class="nav btn" style="background-color:#039be5 "
                data-position="bottom" data-delay="50"
                data-tooltip="浏览器本地保存你的查询" word="保存">save</a>
           </li>
+        <li>
+          <a @click="openTree" class="nav btn" word="打开">open</a>
+        </li>
+       <li class="tree-name">
+         <input type="text" v-model="treeName">
+         <select v-model="treeName">
+           <option v-for="item in treeNameLists" track-by="$index">{{item}}</option>
+         </select>
+       </li>
     </span>
+    <div  v-show="queryWait" class="card wait">
+      <div class="preloader-wrapper small active">
+        <div class="spinner-layer spinner-blue-only">
+          <div class="circle-clipper left">
+            <div class="circle"></div>
+          </div><div class="gap-patch">
+          <div class="circle"></div>
+        </div><div class="circle-clipper right">
+          <div class="circle"></div>
+        </div>
+        </div>
+      </div>
+    </div>
+
     <div class="card result" v-show="resultShow&&resultShow!=='no'">
       <div class="resize"><i class="fa fa-arrows-alt"></i></div>
       <div class="result-nav">
@@ -137,10 +153,11 @@
           'doc': ''
         },
         queryUrl: window.location.protocol + '//' + window.location.host, //+ '/index/type/_search',
-        querySubUrl: [],
+        queryWait: false,
 
         resultShow: 'no',
         resultData: {},
+
       }
 
     },
@@ -331,7 +348,7 @@
         if (!this.validator()) {
           return
         }
-
+        this.queryWait=true
         var that = this;
         $.ajax({
           url: this.queryUrl,
@@ -340,17 +357,15 @@
           data:  editor.aceQuery.getValue(),
           dataType: 'json',
           success: function (data) {
-            console.log(that.queryUrl)
-
+            that.queryWait=false
             that.resultShow = 'response';
             that.resultData=data;
-            console.log(data);
             editor.response.setValue(JSON.stringify(data,null,4));
             editor.response.clearSelection()
 
           },
           error: function (httpd, msg) {
-
+            that.queryWait=false
             that.resultShow = 'response';
             var data = JSON.stringify(httpd, null, 4);
             Vue.set(that, 'resultData', data);
@@ -378,6 +393,22 @@
 </script>
 
 <style>
+  .card.wait{
+    position:absolute;
+    left:50%;
+    top:50%;
+    margin-top: -40px;
+    margin-left: -40px;
+    width:80px;
+    height:80px;
+    padding:20px;
+    background-color: #000;
+    border-radius: 8px;
+    opacity: 0.7;
+  }
+  .card.wait .preloader-wrapper {
+    opacity: 1!important;
+  }
   #ace-query{
     color:#616161;
     font-size: 12px;
