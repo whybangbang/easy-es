@@ -1,21 +1,37 @@
 <template>
   <wrap>
     <span slot="nav-right">
-          <li class="tree-name">
-            <input type="text" v-model="treeName">
-            <select v-model="treeName">
-              <option v-for="item in treeNameLists" track-by="$index">{{item}}</option>
-            </select>
-          </li>
-          <li>
-            <a @click="openTree" class="nav btn" word="打开">open</a>
-          </li>
+
+
           <li>
             <a @click="saveTree" class="nav btn" style="background-color:#039be5 "
                data-position="bottom" data-delay="50"
                data-tooltip="浏览器本地保存你的查询" word="保存">save</a>
           </li>
+        <li>
+          <a @click="openTree" class="nav btn" word="打开">open</a>
+        </li>
+       <li class="tree-name">
+         <input type="text" v-model="treeName">
+         <select v-model="treeName">
+           <option v-for="item in treeNameLists" track-by="$index">{{item}}</option>
+         </select>
+       </li>
     </span>
+    <div  v-show="queryWait" class="card wait">
+      <div class="preloader-wrapper small active">
+        <div class="spinner-layer spinner-blue-only">
+          <div class="circle-clipper left">
+            <div class="circle"></div>
+          </div><div class="gap-patch">
+          <div class="circle"></div>
+        </div><div class="circle-clipper right">
+          <div class="circle"></div>
+        </div>
+        </div>
+      </div>
+    </div>
+
     <div class="card result" v-show="resultShow&&resultShow!=='no'">
       <div class="resize"><i class="fa fa-arrows-alt"></i></div>
       <div class="result-nav">
@@ -56,25 +72,25 @@
     <div>
       <div class="row">
         <div class="nav-bottom"></div>
-        <div class="col s7" style="position:relative">
+        <div class="col l7 s12" style="position:relative">
           <div class="card-content" style="min-height: 400px;">
 
               <tree
                 :model.sync="treeData"
                 :parts="parts">
               </tree>
-              <div class="switch custom-btn">
+              <!--<div class="switch custom-btn">
                 <label>
                   <input type="checkbox" v-model="parts.tree_customize">
                   <span class="lever"></span>
                   <span word="自定义模式">Custom Model</span>
                 </label>
-              </div>
+              </div>-->
             </ul>
           </div>
         </div>
 
-        <div class="col s5">
+        <div class="col l5 s12">
           <div class="card">
             <div class="card-content">
               <!--<input-url :url.sync="queryUrl"></input-url>
@@ -82,8 +98,8 @@
               <-->
               <url-es :url.sync="queryUrl"></url-es>
               <a class="btn" @click="queryWeb" word="发送">send</a>
-              <a class="getstr-copy" @click="toggleResult"
-                 :class="{'un-getstr-copy':resultShow||resultShow=='no'}" word="最近查询结果">last result</a>
+              <!--<a class="getstr-copy" @click="toggleResult"
+                 :class="{'un-getstr-copy':resultShow||resultShow=='no'}" word="最近查询结果">last result</a>-->
             </div>
           </div>
           <div class="card">
@@ -104,14 +120,14 @@
 
 <script>
   import Vue from 'vue'
-  import * as Jsonlint from './assets/jsonlint.min.js'
+  import  './assets/jsonlint.min.js'
+  //import 'ace-builds/src-min-noconflict/ace.js'
   import help from './help'
 
   import InputUrl from './components/InputUrl'
   import Tree from './components/Tree'
   import Wrap from './Wrap'
   import UrlEs from './components/UrlEs'
-
   import Clipboard from 'clipboard'
 
   var editor={};
@@ -137,10 +153,11 @@
           'doc': ''
         },
         queryUrl: window.location.protocol + '//' + window.location.host, //+ '/index/type/_search',
-        querySubUrl: [],
+        queryWait: false,
 
         resultShow: 'no',
         resultData: {},
+
       }
 
     },
@@ -331,7 +348,7 @@
         if (!this.validator()) {
           return
         }
-
+        this.queryWait=true
         var that = this;
         $.ajax({
           url: this.queryUrl,
@@ -340,16 +357,15 @@
           data:  editor.aceQuery.getValue(),
           dataType: 'json',
           success: function (data) {
-
+            that.queryWait=false
             that.resultShow = 'response';
             that.resultData=data;
-            console.log(data);
             editor.response.setValue(JSON.stringify(data,null,4));
             editor.response.clearSelection()
 
           },
           error: function (httpd, msg) {
-
+            that.queryWait=false
             that.resultShow = 'response';
             var data = JSON.stringify(httpd, null, 4);
             Vue.set(that, 'resultData', data);
@@ -377,6 +393,22 @@
 </script>
 
 <style>
+  .card.wait{
+    position:absolute;
+    left:50%;
+    top:50%;
+    margin-top: -40px;
+    margin-left: -40px;
+    width:80px;
+    height:80px;
+    padding:20px;
+    background-color: #000;
+    border-radius: 8px;
+    opacity: 0.7;
+  }
+  .card.wait .preloader-wrapper {
+    opacity: 1!important;
+  }
   #ace-query{
     color:#616161;
     font-size: 12px;

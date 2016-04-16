@@ -44,7 +44,7 @@
             v-model="arrayValue" placeholder="array,array,array" class="data-value" style="width:120px;margin-right:0">-->
         <!--<a  href='#' class="choose-child-add" @click.stop="addArrayValue" >+</a>-->
 
-        <tree-array-value v-for="item in model.value" track-by="$index" ></tree-array-value>
+        <tree-value-array v-for="item in model.value" track-by="$index" ></tree-value-array>
       </ul>
 
       <!--有括展项-->
@@ -94,19 +94,16 @@ export default {
   },
   name:"treeItem",
   data: function () {
-    try{
     return {
       array: this.model.array ? this.model.array : false,
       open: this.model.open ? this.model.open : false,
       chooseChildShow: this.model.choose ? this.model.choose : false,
-      subparts:this.model.extend? help.clone(parts[this.model.extend]): '',
+      subparts:parts[this.model.extend]? help.clone(parts[this.model.extend]): {},
       view: {},
-    }
-    }catch(e){
-      Materialize.toast(word.get(['template is error','模板错误']), 4000);
     }
   },
   created: function () {
+
     //清除父展开的选项
     if (this.$parent.hasOwnProperty('chooseChildShow')) {
       this.$parent.chooseChildShow = false;
@@ -155,7 +152,7 @@ export default {
           part_open = false
         }
       }
-      if (part_open) {
+      if (part_open&&!this.arrayValue) {
         Vue.set(this.$parent.view, 'hideChooseChildBtn', true)
       }
     }
@@ -204,6 +201,10 @@ export default {
     //扩展子项目
     //field str 子项目的名称
     extendChild: function (field) {
+      //检查值是否正确
+      if(!this.subparts[field]){
+        return false
+      }
       //影藏所有展开的弹出菜单
       function hide(obj) {
         obj.$data.chooseChildShow = false;
@@ -283,5 +284,8 @@ export default {
 </script>
 
 <style scoped>
+  .choose-child-add{
+    color:#039be5;
+  }
 
 </style>

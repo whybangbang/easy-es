@@ -8,5 +8,6 @@ node_modules/
 /test/lab
 npm-debug.log
 selenium-debug.log
+/_site
 test/unit/coverage
 test/e2e/reports
