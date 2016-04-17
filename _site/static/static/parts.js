@@ -456,6 +456,7 @@ aggs:{
       ]
     },
     match_all:{
+      group:1,
       value:{}
     },
     filtered:{
