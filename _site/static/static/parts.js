@@ -546,18 +546,9 @@ aggs:{
         },
         {
           field: 'fields',
-          extend: 'fields',
-          array: true,
+          arrayValue: true,
           open: true,
           undelete: true,
-          child: [
-            {
-              'field': ''
-            },
-            {
-              'field': ''
-            },
-          ]
         },
         {
           field: 'operator',
