@@ -1,30 +1,33 @@
-<h1><img width="80" style="vertical-align: middle" src="assert/img/logo.png">Easy Es</h1>
+<h1><img width="80" style="vertical-align: middle" src="wiki/img/logo.png">Easy Es</h1>
+轻点鼠标，自动生成Elastic search 查询语句  [立即使用](http://whybangbang.github.io/es_query_dsl_mindmanger/ "Title")
 
+<img width="600"src="wiki/img/introduce.gif">
 
-[![experimental](http://badges.github.io/stability-badges/dist/experimental.svg)](http://github.com/badges/stability-badges)
-
-<img width="600"src="doc/img/introduce.gif">
-
-  轻点鼠标，自动生成Elastic search 查询语句
-  
-* 根据指引选项，点击鼠标自动生成查询语句
-* 启用custom模式，可随意添加语句
-* 可本地保存查询语句
-* 简单快速自定义指引选项
+* 不需记忆复杂的ES语句，轻点鼠标，立刻生成查询语句
+* 可作为ES 插件直接查询数据
+* 可本地保存查询语言，方便使用
+* 具有极强扩展性
   
 ## Quick Start
 
-1. 直接访问：[http://whybangbang.github.io/es_query_dsl_mindmanger/](http://whybangbang.github.io/es_query_dsl_mindmanger/ "Title")
-2. es 安装方法: bin/plugin install whybangbang/easy-es
+1. 直接访问使用：[http://whybangbang.github.io/es_query_dsl_mindmanger/](http://whybangbang.github.io/es_query_dsl_mindmanger/ "Title")
+2. es 插件安装方法: `bin/plugin install whybangbang/easy-es`
+
+## Extend tree
+仅需写几条语句，可以极其方便的扩展语句
+文档写作中
+
+
+## Contribute
+
+欢迎为本项目提供代码！请切换至dev分支，开发说明见dev分支。
+（master分支为es插件所在分支，为精简内容，JS源代码并未提交到master分支，保存在dev分支）
 
 ## To Do List
 
-* 添加自定义指引选项编辑器
 * 由json反向生成树状图
 * 添加wiki
  
-## Custom tree
-见....
 
 ## License
 * BSD
