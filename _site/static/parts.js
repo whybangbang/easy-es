@@ -456,6 +456,7 @@ aggs:{
       ]
     },
     match_all:{
+      group: 1,
       value:{}
     },
     filtered:{
@@ -546,21 +547,13 @@ aggs:{
         {
           field: 'fields',
           extend: 'fields',
-          array: true,
-          open: true,
-          undelete: true,
-          child: [
-            {
-              'field': ''
-            },
-            {
-              'field': ''
-            },
-          ]
+          open:true,
+          group:1,
+          arrayValue:true
         },
         {
           field: 'operator',
-          value: 'and',
+          value: 'or',
           selectValue: ['and', 'or'],
           undelete: true
         },
