@@ -546,7 +546,6 @@ aggs:{
         },
         {
           field: 'fields',
-          extend: 'fields',
           open:true,
           group:1,
           arrayValue:true
